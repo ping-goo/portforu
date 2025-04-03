@@ -2,7 +2,7 @@ package org.pinggu.portforu.domain.auth.controller;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.pinggu.portforu.common.domain.Response;
+import org.pinggu.portforu.common.dto.ApiResponse;
 import org.pinggu.portforu.domain.auth.dto.response.SigninResponseDto;
 import org.pinggu.portforu.domain.auth.dto.response.SignupResponseDto;
 import org.pinggu.portforu.domain.auth.dto.request.SigninRequestDto;
@@ -22,13 +22,13 @@ public class AuthController {
 
 
     @PostMapping("/signup")
-    public ResponseEntity<Response<SignupResponseDto>> signup(@Valid @RequestBody SignupRequestDto requestDto) {
-        return ResponseEntity.ok().body(Response.of(authService.signup(requestDto)));
+    public ResponseEntity<ApiResponse<SignupResponseDto>> signup(@Valid @RequestBody SignupRequestDto requestDto) {
+        return ResponseEntity.ok().body(ApiResponse.of(authService.signup(requestDto)));
     }
 
     @PostMapping("/signin")
-    public ResponseEntity<Response<SigninResponseDto>> signin(@Valid @RequestBody SigninRequestDto requestDto) {
-        return ResponseEntity.ok().body(Response.of(authService.signin(requestDto)));
+    public ResponseEntity<ApiResponse<SigninResponseDto>> signin(@Valid @RequestBody SigninRequestDto requestDto) {
+        return ResponseEntity.ok().body(ApiResponse.of(authService.signin(requestDto)));
     }
 
     @PostMapping("/refresh")

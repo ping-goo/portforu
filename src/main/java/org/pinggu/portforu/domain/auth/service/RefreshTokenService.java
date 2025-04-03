@@ -8,8 +8,8 @@ import org.pinggu.portforu.common.exception.CustomException;
 import org.pinggu.portforu.config.JwtUtil;
 import org.pinggu.portforu.domain.auth.dto.response.SigninResponseDto;
 import org.pinggu.portforu.domain.auth.repository.RefreshTokenRepository;
-import org.pinggu.portforu.domain.user.entity.User;
-import org.pinggu.portforu.domain.user.repository.UserRepository;
+import org.pinggu.portforu.domain.member.entity.Member;
+import org.pinggu.portforu.domain.member.repository.MemberRepository;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
@@ -19,7 +19,7 @@ public class RefreshTokenService {
 
     private final JwtUtil jwtUtil;
     private final RefreshTokenRepository refreshTokenRepository;
-    private final UserRepository userRepository;
+    private final MemberRepository memberRepository;
 
     public SigninResponseDto refreshToken(String bearerToken) {
         String token = jwtUtil.substringToken(bearerToken);
@@ -36,25 +36,25 @@ public class RefreshTokenService {
             throw new CustomException(HttpStatus.UNAUTHORIZED, "Access Token이 제공되었습니다. Refresh Token 필요");
         }
 
-        Long userId = Long.parseLong(claims.getSubject());
+        Long memberId = Long.parseLong(claims.getSubject());
 
-        RefreshToken saved = refreshTokenRepository.findById(userId)
+        RefreshToken saved = refreshTokenRepository.findById(memberId)
                 .orElseThrow(() -> new CustomException(HttpStatus.UNAUTHORIZED, "Refresh Token 없음"));
 
         if (!saved.getToken().equals(bearerToken)) {
             throw new CustomException(HttpStatus.UNAUTHORIZED, "Refresh Token 불일치");
         }
 
-        User user = userRepository.findById(userId)
+        Member member = memberRepository.findById(memberId)
                 .orElseThrow(() -> new CustomException(HttpStatus.NOT_FOUND, "유저 없음"));
 
-        String newAccessToken = jwtUtil.createToken(user.getId(),
-                user.getEmail(),
-                user.getUserRole()
+        String newAccessToken = jwtUtil.createToken(member.getId(),
+                member.getEmail(),
+                member.getUserRole()
         );
-        String newRefreshToken = jwtUtil.createRefreshToken(user.getId(),
-                user.getEmail(),
-                user.getUserRole()
+        String newRefreshToken = jwtUtil.createRefreshToken(member.getId(),
+                member.getEmail(),
+                member.getUserRole()
         );
         saved.updateToken(newRefreshToken);
 

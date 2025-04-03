@@ -1,15 +1,16 @@
-package org.pinggu.portforu.domain.user.entity;
+package org.pinggu.portforu.domain.member.entity;
 
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.pinggu.portforu.common.domain.BaseEntity;
+import org.pinggu.portforu.domain.member.enums.UserRole;
 
 @Getter
 @Entity
-@Table(name = "users")
+@Table(name = "members")
 @NoArgsConstructor
-public class User extends BaseEntity {
+public class Member extends BaseEntity {
 
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -33,7 +34,7 @@ public class User extends BaseEntity {
     @Enumerated(EnumType.STRING)
     private UserRole userRole;
 
-    public User(String email, String password, String name, String phoneNumber, String address, UserRole userRole) {
+    public Member(String email, String password, String name, String phoneNumber, String address, UserRole userRole) {
         this.email = email;
         this.password = password;
         this.name = name;
