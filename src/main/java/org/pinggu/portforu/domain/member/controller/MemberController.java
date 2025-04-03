@@ -40,7 +40,7 @@ public class MemberController {
     public ResponseEntity<Void> deleteMember(
             @AuthenticationPrincipal AuthMember authMember,
             @Valid @RequestBody MemberDeleteRequestDto requestDto
-            ) {
+    ) {
         memberService.deleteMember(authMember, requestDto);
         return ResponseEntity.noContent().build();
     }

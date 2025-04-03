@@ -53,15 +53,15 @@ public class Member extends BaseEntity {
         this.userRole = userRole;
     }
 
-    public static Member fromAuthMember(AuthMember authMember) {
-        return new Member(authMember.getId(), authMember.getEmail(), authMember.getName(), authMember.getPhoneNumber(), authMember.getAddress(), authMember.getUserRole());
-    }
-
     public void update(String password, String name, String phoneNumber, String address) {
         if (password != null) this.password = password;
         if (name != null) this.name = name;
         if (phoneNumber != null) this.phoneNumber = phoneNumber;
         if (address != null) this.address = address;
+    }
+
+    public static Member fromAuthMember(AuthMember authMember) {
+        return new Member(authMember.getId(), authMember.getEmail(), authMember.getName(), authMember.getPhoneNumber(), authMember.getAddress(), authMember.getUserRole());
     }
 
 }
