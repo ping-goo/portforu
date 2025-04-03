@@ -28,18 +28,19 @@ public class AuthService {
 
     @Transactional
     public SignupResponseDto signup(SignupRequestDto requestDto) {
-
         if (userRepository.existsByEmail(requestDto.getEmail())) {
             throw new CustomException(HttpStatus.BAD_REQUEST, "이미 존재하는 이메일입니다.");
         }
 
         String encodedPassword = passwordEncoder.encode(requestDto.getPassword());
-
         UserRole userRole = UserRole.ROLE_USER;
 
         User newUser = new User(
                 requestDto.getEmail(),
                 encodedPassword,
+                requestDto.getName(),
+                requestDto.getPhoneNumber(),
+                requestDto.getAddress(),
                 userRole
         );
 
@@ -50,8 +51,6 @@ public class AuthService {
                 savedUser.getEmail(),
                 savedUser.getUserRole()
         );
-
-
         String refreshToken = jwtUtil.createRefreshToken(
                 savedUser.getId(),
                 savedUser.getEmail(),
@@ -62,6 +61,9 @@ public class AuthService {
                 accessToken,
                 savedUser.getId(),
                 savedUser.getEmail(),
+                savedUser.getName(),
+                savedUser.getPhoneNumber(),
+                savedUser.getAddress(),
                 savedUser.getUserRole().name()
         );
     }
@@ -87,7 +89,6 @@ public class AuthService {
                 user.getUserRole()
         );
 
-
         refreshTokenRepository.findById(user.getId())
                 .ifPresentOrElse(
                         existing -> existing.updateToken(refreshToken),
@@ -96,5 +97,7 @@ public class AuthService {
 
         return new SigninResponseDto(accessToken, refreshToken);
     }
+
+
 
 }
