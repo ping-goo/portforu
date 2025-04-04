@@ -14,8 +14,8 @@ public class Membership {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private String name;  // 멤버십 이름
-    private int price;    // 가격
+    private String name; // 멤버십 이름
+    private int price; // 가격
 
     public Membership(String name, int price) {
         this.name = name;
