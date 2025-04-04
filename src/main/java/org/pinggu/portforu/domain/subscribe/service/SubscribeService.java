@@ -2,6 +2,8 @@ package org.pinggu.portforu.domain.subscribe.service;
 
 import lombok.RequiredArgsConstructor;
 import org.pinggu.portforu.common.exception.CustomException;
+import org.pinggu.portforu.domain.payment.entity.Payment;
+import org.pinggu.portforu.domain.payment.repository.PaymentRepository;
 import org.pinggu.portforu.domain.subscribe.dto.request.SubscribeRequestDto;
 import org.pinggu.portforu.domain.subscribe.dto.response.SubscribeResponseDto;
 import org.pinggu.portforu.domain.subscribe.entity.Subscribe;
@@ -12,6 +14,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
 
 @Service
 @RequiredArgsConstructor
@@ -23,17 +26,18 @@ public class SubscribeService {
     // 구독 생성
     @Transactional
     public SubscribeResponseDto createSubscribe(Long memberId, Long membershipId, SubscribeRequestDto requestDto) {
-
-        Payment payment = new Payment(requestDto.getPaymentMethod(), PaymentStatus.COMPLETED);
+        Payment payment = new Payment(requestDto.getPaymentMethod(), Payment.PaymentStatus.COMPLETED);
         Payment savedPayment = paymentRepository.save(payment);
 
-        // 요청 DTO에서 paymentMethod만 받아 사용
+        LocalDateTime startDate = LocalDateTime.now();
+        LocalDateTime endDate = startDate.plusMonths(1);
+
         Subscribe subscribe = new Subscribe(
                 memberId,
                 membershipId,
                 savedPayment,
-                requestDto.getStartDate(),
-                requestDto.getEndDate()
+                startDate,
+                endDate
         );
         Subscribe saved = subscribeRepository.save(subscribe);
         return SubscribeResponseDto.fromEntity(saved);
@@ -45,7 +49,6 @@ public class SubscribeService {
         Page<Subscribe> page = subscribeRepository.findAllByMemberId(memberId, pageable);
         return page.map(SubscribeResponseDto::fromEntity);
     }
-
 
     // 구독 취소
     @Transactional

@@ -25,7 +25,7 @@ public class SubscribeResponseDto {
                 .id(subscribe.getId())
                 .memberId(subscribe.getMemberId())
                 .membershipId(subscribe.getMembershipId())
-                .paymentMethod(subscribe.getPayment().getPaymentMethod())
+                .paymentMethod(subscribe.getPayment().getPaymentMethod().toString())
                 .paymentId(subscribe.getPayment().getId())
                 .startDate(subscribe.getStartDate())
                 .endDate(subscribe.getEndDate())
