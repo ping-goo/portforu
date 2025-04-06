@@ -44,6 +44,5 @@ public class MemberController {
         memberService.deleteMember(authMember, requestDto);
         return ResponseEntity.noContent().build();
     }
-
-
+    
 }

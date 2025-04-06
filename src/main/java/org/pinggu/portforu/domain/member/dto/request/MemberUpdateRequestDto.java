@@ -18,4 +18,5 @@ public class MemberUpdateRequestDto {
         this.phoneNumber = phoneNumber;
         this.address = address;
     }
+  
 }
