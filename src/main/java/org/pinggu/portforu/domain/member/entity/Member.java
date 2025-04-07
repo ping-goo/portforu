@@ -39,9 +39,6 @@ public class Member extends BaseEntity {
     @Enumerated(EnumType.STRING)
     private UserRole userRole;
 
-    @OneToMany(mappedBy = "member" , cascade = CascadeType.ALL,fetch = FetchType.LAZY)
-    private List<Portfolio> portfolios = new ArrayList<>();
-
     public Member(String email, String password, String name, String phoneNumber, String address, UserRole userRole) {
         this.email = email;
         this.password = password;

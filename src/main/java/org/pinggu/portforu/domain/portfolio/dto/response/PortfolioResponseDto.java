@@ -1,9 +1,11 @@
 package org.pinggu.portforu.domain.portfolio.dto.response;
 
 import lombok.Builder;
+import lombok.Data;
 
 import java.time.LocalDateTime;
 
+@Data
 @Builder
 public class PortfolioResponseDto {
 

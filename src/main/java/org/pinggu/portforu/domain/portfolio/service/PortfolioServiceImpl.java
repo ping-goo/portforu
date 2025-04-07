@@ -27,7 +27,7 @@ public class PortfolioServiceImpl implements PortfolioService {
 
     @Override
     @Transactional
-    public PortfolioResponseDto createPortfolio(PortfolioRequestDto request, Long memberId){
+    public PortfolioResponseDto savePortfolio(PortfolioRequestDto request, Long memberId){
         LocalDateTime now = LocalDateTime.now();
         Member member = memberRepository.findById(memberId)
                 .orElseThrow(() -> new CustomException(HttpStatus.NOT_FOUND, "존재하지 않는 사용자입니다."));
@@ -44,7 +44,7 @@ public class PortfolioServiceImpl implements PortfolioService {
 
     @Override
     @Transactional(readOnly = true)
-    public Page<PortfolioResponseDto> getPortfolios(Pagecond pagecond){
+    public Page<PortfolioResponseDto> findAllPortfolios(Pagecond pagecond){
         PageRequest pageRequest = PageRequest.of(pagecond.getPageNum()-1, pagecond.getPageSize());
         Page<Portfolio> portfolios = portfolioRepository.findAll(pageRequest);
         return portfolios.map(this::convertToDto);
@@ -52,12 +52,11 @@ public class PortfolioServiceImpl implements PortfolioService {
 
     @Override
     @Transactional(readOnly = true)
-    public PortfolioResponseDto getPortfolio(Long portfolioId){
+    public PortfolioResponseDto findPortfolio(Long portfolioId){
         Portfolio portfolio = portfolioRepository.findById(portfolioId)
                 .orElseThrow(() -> new CustomException(HttpStatus.NOT_FOUND,"게시물을 찾을 수 없습니다."));
 
         portfolio.setViews(portfolio.getViews() + 1);
-        portfolio.setUpdatedAt(LocalDateTime.now());
         portfolioRepository.save(portfolio);
 
         return convertToDto(portfolio);

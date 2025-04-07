@@ -1,6 +1,7 @@
 package org.pinggu.portforu.domain.portfolio.controller;
 
 import lombok.RequiredArgsConstructor;
+import org.pinggu.portforu.common.annotation.Member;
 import org.pinggu.portforu.common.domain.PageInfo;
 import org.pinggu.portforu.common.domain.Pagecond;
 import org.pinggu.portforu.common.dto.ApiResponse;
@@ -23,24 +24,21 @@ public class PortfolioController {
 
     @Member
     @PostMapping
-    public ResponseEntity<ApiResponse<PortfolioResponseDto>> createPortfolio(
+    public ResponseEntity<ApiResponse<PortfolioResponseDto>> savePortfolio(
             @AuthenticationPrincipal AuthMember authMember,
             @RequestBody PortfolioRequestDto requestDto
             ){
 
-        PortfolioResponseDto responseDto = portfolioService.createPortfolio(requestDto,authMember.getId());
+        PortfolioResponseDto responseDto = portfolioService.savePortfolio(requestDto,authMember.getId());
         return ResponseEntity.ok(ApiResponse.of(responseDto));
     }
 
     @Member
     @GetMapping
-    public ResponseEntity<ApiResponse<?>> getPortfolios(
-            @RequestParam(required = false) Integer pageNum,
-            @RequestParam(required = false) Integer pageSize
-    ){
+    public ResponseEntity<ApiResponse<?>> findAllPortfolios(
+            @ModelAttribute Pagecond pagecond) {
 
-        Pagecond pagecond = new Pagecond(pageNum, pageSize);
-        Page<PortfolioResponseDto> portfolios = portfolioService.getPortfolios(pagecond);
+        Page<PortfolioResponseDto> portfolios = portfolioService.findAllPortfolios(pagecond);
 
         PageInfo pageInfo = PageInfo.builder()
                 .pageNum(pagecond.getPageNum())
@@ -54,12 +52,10 @@ public class PortfolioController {
 
     @Member
     @GetMapping("/{portfolioId}")
-    public ResponseEntity<ApiResponse<PortfolioResponseDto>> getPortfolio(
-            @AuthenticationPrincipal AuthMember authMember,
-            @PathVariable Long portfolioId,
-            @RequestBody PortfolioRequestDto requestDto){
+    public ResponseEntity<ApiResponse<PortfolioResponseDto>> findPortfolio(
+            @PathVariable Long portfolioId){
 
-        PortfolioResponseDto responseDto = portfolioService.getPortfolio(portfolioId);
+        PortfolioResponseDto responseDto = portfolioService.findPortfolio(portfolioId);
         return ResponseEntity.ok(ApiResponse.of(responseDto));
     }
 
@@ -76,7 +72,7 @@ public class PortfolioController {
     }
 
     @Member
-    @DeleteMapping
+    @DeleteMapping("/{portfolioId}")
     public ResponseEntity<ApiResponse<Void>> deletePortfolio(
             @AuthenticationPrincipal AuthMember authMember,
             @PathVariable Long portfolioId

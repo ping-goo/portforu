@@ -7,9 +7,9 @@ import org.pinggu.portforu.domain.portfolio.dto.response.PortfolioResponseDto;
 import org.springframework.data.domain.Page;
 
 public interface PortfolioService {
-    PortfolioResponseDto createPortfolio(PortfolioRequestDto request, Long memberId);
-    Page<PortfolioResponseDto> getPortfolios(Pagecond page);
-    PortfolioResponseDto getPortfolio(Long portfolioId);
+    PortfolioResponseDto savePortfolio(PortfolioRequestDto request, Long memberId);
+    Page<PortfolioResponseDto> findAllPortfolios(Pagecond page);
+    PortfolioResponseDto findPortfolio(Long portfolioId);
     PortfolioResponseDto updatePortfolio(Long portfolioId, PortfolioUpdateRequestDto updateDto,Long memberId);
     void deletePortfolio(Long portfolioId,Long memberId);
 }
