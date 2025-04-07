@@ -1,8 +1,6 @@
 package org.pinggu.portforu.domain.subscribe.controller;
 
 import lombok.RequiredArgsConstructor;
-
-import org.pinggu.portforu.common.annotation.Admin;
 import org.pinggu.portforu.common.annotation.Member;
 import org.pinggu.portforu.common.domain.PageInfo;
 import org.pinggu.portforu.common.domain.Pagecond;
@@ -29,25 +27,25 @@ public class SubscribeController {
     // 구독 생성
     @Member
     @PostMapping("/memberships/{membershipId}/subscribes")
-    public ResponseEntity<ApiResponse<SubscribeResponseDto>> createSubscribe(
+    public ResponseEntity<ApiResponse<SubscribeResponseDto>> saveSubscribe(
             @PathVariable Long membershipId,
             @RequestBody SubscribeRequestDto requestDto,
             @AuthenticationPrincipal AuthMember member) {
         // PathVariable의 membershipId를 사용하고, 나머지 값은 요청 DTO에서 사용합니다.
         Long memberId = member.getId();
-        SubscribeResponseDto dto = subscribeService.createSubscribe(memberId, membershipId, requestDto);
+        SubscribeResponseDto dto = subscribeService.saveSubscribe(memberId, membershipId, requestDto);
         return ResponseEntity.ok(ApiResponse.of(dto));
     }
 
     // 구독 목록 조회 (페이징 적용)
     @Member
     @GetMapping("/my/subscribes")
-    public ResponseEntity<ApiResponse<List<SubscribeResponseDto>>> getAllSubscribes(
+    public ResponseEntity<ApiResponse<List<SubscribeResponseDto>>> findSubscribes(
             @ModelAttribute Pagecond pagecond,
             @AuthenticationPrincipal AuthMember member) {
 
         // member.getId()를 통해 인증된 사용자의 ID를 가져옵니다.
-        Page<SubscribeResponseDto> responses = subscribeService.getAllSubscribes(
+        Page<SubscribeResponseDto> responses = subscribeService.findSubscribes(
                 PageRequest.of(pagecond.getPageNum() - 1, pagecond.getPageSize()),
                 member.getId());
 

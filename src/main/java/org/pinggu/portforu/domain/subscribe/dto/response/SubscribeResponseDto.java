@@ -3,7 +3,6 @@ package org.pinggu.portforu.domain.subscribe.dto.response;
 import lombok.Builder;
 import lombok.Getter;
 import org.pinggu.portforu.domain.subscribe.entity.Subscribe;
-
 import java.time.LocalDateTime;
 
 @Getter

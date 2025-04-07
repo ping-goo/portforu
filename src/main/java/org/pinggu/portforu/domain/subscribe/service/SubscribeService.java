@@ -3,6 +3,7 @@ package org.pinggu.portforu.domain.subscribe.service;
 import lombok.RequiredArgsConstructor;
 import org.pinggu.portforu.common.exception.CustomException;
 import org.pinggu.portforu.domain.payment.entity.Payment;
+import org.pinggu.portforu.domain.payment.repository.PaymentRepository;
 import org.pinggu.portforu.domain.subscribe.dto.request.SubscribeRequestDto;
 import org.pinggu.portforu.domain.subscribe.dto.response.SubscribeResponseDto;
 import org.pinggu.portforu.domain.subscribe.entity.Subscribe;
@@ -24,7 +25,7 @@ public class SubscribeService {
 
     // 구독 생성
     @Transactional
-    public SubscribeResponseDto createSubscribe(Long memberId, Long membershipId, SubscribeRequestDto requestDto) {
+    public SubscribeResponseDto saveSubscribe(Long memberId, Long membershipId, SubscribeRequestDto requestDto) {
         Payment payment = new Payment(requestDto.getPaymentMethod(), Payment.PaymentStatus.COMPLETED);
         Payment savedPayment = paymentRepository.save(payment);
 
@@ -44,7 +45,7 @@ public class SubscribeService {
 
     // 구독 목록 조회
     @Transactional(readOnly = true)
-    public Page<SubscribeResponseDto> getAllSubscribes(Pageable pageable, Long memberId) {
+    public Page<SubscribeResponseDto> findSubscribes(Pageable pageable, Long memberId) {
         Page<Subscribe> page = subscribeRepository.findAllByMemberId(memberId, pageable);
         return page.map(SubscribeResponseDto::fromEntity);
     }

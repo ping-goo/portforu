@@ -6,7 +6,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.pinggu.portforu.common.domain.BaseEntity;
 import org.pinggu.portforu.domain.payment.entity.Payment;
-
 import java.time.LocalDateTime;
 
 @Getter

@@ -58,7 +58,7 @@ public class SubscribeControllerTest {
 
     @Test
     void 구독_생성_성공() throws Exception {
-        // Given: 구독 생성 요청 데이터 준비
+        // Given
         Long membershipId = 1L;
         SubscribeRequestDto requestDto = SubscribeRequestDto.builder()
                 .paymentMethod(Payment.PaymentMethod.CREDIT_CARD)
@@ -75,11 +75,18 @@ public class SubscribeControllerTest {
                 .active(true)
                 .build();
 
-        Mockito.when(subscribeService.createSubscribe(anyLong(), anyLong(), any(SubscribeRequestDto.class)))
+        Mockito.when(subscribeService.saveSubscribe(anyLong(), anyLong(), any(SubscribeRequestDto.class)))
                 .thenReturn(responseDto);
 
         // Given: 테스트용 AuthMember와 인증 토큰 생성
-        AuthMember authMember = new AuthMember(1L, "test@example.com", UserRole.ROLE_USER);
+        AuthMember authMember = new AuthMember(
+                1L,
+                "test@example.com",
+                "Test User",
+                "010-1234-5678",
+                "Some Address",
+                UserRole.ROLE_USER
+        );
         UsernamePasswordAuthenticationToken authToken =
                 new UsernamePasswordAuthenticationToken(authMember, null,
                         List.of(new SimpleGrantedAuthority("ROLE_USER")));
@@ -98,7 +105,14 @@ public class SubscribeControllerTest {
     @Test
     void 구독_목록_조회_성공() throws Exception {
         // Given
-        AuthMember authMember = new AuthMember(1L, "test@example.com", UserRole.ROLE_USER);
+        AuthMember authMember = new AuthMember(
+                1L,
+                "test@example.com",
+                "Test User",         // name
+                "010-1234-5678",      // phoneNumber
+                "Some Address",       // address
+                UserRole.ROLE_USER
+        );
         UsernamePasswordAuthenticationToken authToken =
                 new UsernamePasswordAuthenticationToken(authMember, null,
                         List.of(new SimpleGrantedAuthority("ROLE_USER")));
@@ -117,10 +131,10 @@ public class SubscribeControllerTest {
         List<SubscribeResponseDto> list = Collections.singletonList(responseDto);
         Page<SubscribeResponseDto> page = new PageImpl<>(list);
 
-        Mockito.when(subscribeService.getAllSubscribes(any(), anyLong()))
+        Mockito.when(subscribeService.findSubscribes(any(), anyLong()))
                 .thenReturn(page);
 
-        // When & Then
+        // When & Then: GET 요청에 인증 정보를 추가하고, 응답 JSON의 값 검증
         mockMvc.perform(get("/api/v1/my/subscribes")
                         .with(authentication(authToken))
                         .param("page", "1")
@@ -132,17 +146,23 @@ public class SubscribeControllerTest {
 
     @Test
     void 구독_삭제_성공() throws Exception {
-        // Given: 삭제할 구독 ID 지정
+        // Given
         Long subscribeId = 1L;
         Mockito.doNothing().when(subscribeService).deleteSubscribe(subscribeId);
 
-        // Given: 테스트용 AuthMember와 인증 토큰 생성
-        AuthMember authMember = new AuthMember(1L, "test@example.com", UserRole.ROLE_USER);
+        AuthMember authMember = new AuthMember(
+                1L,
+                "test@example.com",
+                "Test User",
+                "010-1234-5678",
+                "Some Address",
+                UserRole.ROLE_USER
+        );
         UsernamePasswordAuthenticationToken authToken =
                 new UsernamePasswordAuthenticationToken(authMember, null,
                         List.of(new SimpleGrantedAuthority("ROLE_USER")));
 
-        // When & Then
+        // When & Then: CSRF 토큰과 인증 정보를 추가하여 DELETE 요청을 보내고 응답 검증
         mockMvc.perform(delete("/api/v1/my/subscribes/{subscribeId}", subscribeId)
                         .with(csrf())
                         .with(authentication(authToken)))
