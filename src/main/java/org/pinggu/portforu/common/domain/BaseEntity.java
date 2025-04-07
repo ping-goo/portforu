@@ -33,4 +33,5 @@ public class BaseEntity {
     public void restore() {
         this.deletedAt = null;
     }
+
 }
