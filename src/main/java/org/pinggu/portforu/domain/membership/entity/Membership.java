@@ -1,6 +1,7 @@
 package org.pinggu.portforu.domain.membership.entity;
 
 import jakarta.persistence.*;
+import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -8,7 +9,7 @@ import org.pinggu.portforu.common.domain.BaseEntity;
 
 @Entity
 @Getter
-@NoArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Table(name = "memberships")
 public class Membership extends BaseEntity {
     @Id
