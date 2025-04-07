@@ -17,23 +17,23 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/v1")
+@RequestMapping("/api/v1/scraps")
 @RequiredArgsConstructor
 public class ScrapController {
 
     private final ScrapService scrapService;
 
     @Member
-    @PostMapping("/job-postings/{jobPostingId}/scraps")
+    @PostMapping("/job-postings/{jobPostingId}")
     public ResponseEntity<ApiResponse<ScrapResponseDto>> toggleScrap(
             @AuthenticationPrincipal AuthMember authMember,
-            @PathVariable Long jobPostingId
+            @PathVariable("jobPostingId") Long jobPostingId
     ) {
         return ResponseEntity.ok().body(ApiResponse.of(scrapService.toggleScrap(authMember, jobPostingId)));
     }
 
     @Member
-    @GetMapping("/my/scraps")
+    @GetMapping("/my")
     public ResponseEntity<ApiResponse<List<ScrapDetailResponseDto>>> findScraps(
             @AuthenticationPrincipal AuthMember authMember,
             @ModelAttribute Pagecond pagecond

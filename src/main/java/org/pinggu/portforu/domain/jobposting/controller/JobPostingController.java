@@ -49,7 +49,7 @@ public class JobPostingController {
 
     @GetMapping("/{jobPostingId}")
     public ResponseEntity<ApiResponse<JobPostingResponseDto>> findJobPosting(
-            @PathVariable Long jobPostingId
+            @PathVariable("jobPostingId") Long jobPostingId
     ) {
         return ResponseEntity.ok().body(ApiResponse.of(jobPostingService.findJobPosting(jobPostingId)));
     }
@@ -57,7 +57,7 @@ public class JobPostingController {
     @Admin
     @PutMapping("/{jobPostingId}")
     public ResponseEntity<ApiResponse<JobPostingUpdateResponseDto>> updateJobPosting(
-            @PathVariable Long jobPostingId,
+            @PathVariable("jobPostingId") Long jobPostingId,
             @RequestBody JobPostingUpdateRequestDto request
     ) {
         return ResponseEntity.ok().body(ApiResponse.of(jobPostingService.updateJobPosting(jobPostingId, request)));
@@ -66,7 +66,7 @@ public class JobPostingController {
     @Admin
     @DeleteMapping("/{jobPostingId}")
     public ResponseEntity<ApiResponse<Void>> deleteJobPosting(
-            @PathVariable Long jobPostingId
+            @PathVariable("jobPostingId") Long jobPostingId
     ) {
         jobPostingService.deleteJobPosting(jobPostingId);
 
