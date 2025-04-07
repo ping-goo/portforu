@@ -1,6 +1,7 @@
 package org.pinggu.portforu.domain.scrap.entity;
 
 import jakarta.persistence.*;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.pinggu.portforu.common.domain.BaseEntity;
@@ -24,6 +25,7 @@ public class Scrap extends BaseEntity {
     @JoinColumn(name = "jobposting_id", nullable = false)
     private JobPosting jobPosting;
 
+    @Builder
     public Scrap(Member member, JobPosting jobPosting) {
         this.member = member;
         this.jobPosting = jobPosting;
