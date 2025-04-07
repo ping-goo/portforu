@@ -117,7 +117,7 @@ class MembershipServiceTest {
         given(membershipRepository.findAll(pageable)).willReturn(membershipPage);
 
         // when
-        Page<MembershipResponseDto> response = membershipService.findByAllMemberships(authMember, pageable);
+        Page<MembershipResponseDto> response = membershipService.findAllMemberships(authMember, pageable);
 
         // then
         assertEquals(2, response.getTotalElements());
@@ -136,7 +136,7 @@ class MembershipServiceTest {
 
         // when, then
         RuntimeException exception = assertThrows(RuntimeException.class, () ->
-                membershipService.findByAllMemberships(authMember, pageable)
+                membershipService.findAllMemberships(authMember, pageable)
         );
 
         assertEquals("조회 실패", exception.getMessage());
@@ -166,7 +166,7 @@ class MembershipServiceTest {
         given(membershipRepository.findById(membershipId)).willReturn(Optional.of(membership));
 
         // when
-        MembershipResponseDto responseDto = membershipService.findByIdMemberships(authMember, membershipId);
+        MembershipResponseDto responseDto = membershipService.findByMembershipsId(authMember, membershipId);
 
         // then
         assertEquals(membershipId, responseDto.getId());
@@ -187,7 +187,7 @@ class MembershipServiceTest {
 
         // when, then
         CustomException exception = assertThrows(CustomException.class, () ->
-                membershipService.findByIdMemberships(authMember, membershipId)
+                membershipService.findByMembershipsId(authMember, membershipId)
         );
 
         assertEquals("아이디가 없습니다.", exception.getMessage());

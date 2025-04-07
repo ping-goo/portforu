@@ -33,51 +33,24 @@ public class MembershipService {
                 .build();
 
         Membership savedMembership = membershipRepository.save(membership);
-        return new MembershipResponseDto(
-                savedMembership.getId(),
-                savedMembership.getName(),
-                savedMembership.getPrice(),
-                savedMembership.getQuantity(),
-                savedMembership.getYear(),
-                savedMembership.getCreatedAt(),
-                savedMembership.getUpdatedAt(),
-                savedMembership.getDeletedAt()
-        );
+        return MembershipResponseDto.from(savedMembership);
     }
 
-    public Page<MembershipResponseDto> findByAllMemberships(
+    public Page<MembershipResponseDto> findAllMemberships(
             AuthMember authMember,
             Pageable pageable
     ) {
-        return membershipRepository.findAll(pageable).map(membership -> new MembershipResponseDto(
-                membership.getId(),
-                membership.getName(),
-                membership.getPrice(),
-                membership.getQuantity(),
-                membership.getYear(),
-                membership.getCreatedAt(),
-                membership.getUpdatedAt(),
-                membership.getDeletedAt()
-        ));
+        return membershipRepository.findAll(pageable).map(MembershipResponseDto::from);
     }
 
-    public MembershipResponseDto findByIdMemberships(
+    public MembershipResponseDto findByMembershipsId(
             AuthMember authMember,
             Long membershipId
     ) {
         Membership membership = membershipRepository.findById(membershipId)
                 .orElseThrow(() -> new CustomException(HttpStatus.BAD_REQUEST, "아이디가 없습니다."));
 
-        return new MembershipResponseDto(
-                membership.getId(),
-                membership.getName(),
-                membership.getPrice(),
-                membership.getQuantity(),
-                membership.getYear(),
-                membership.getCreatedAt(),
-                membership.getUpdatedAt(),
-                membership.getDeletedAt()
-        );
+        return MembershipResponseDto.from(membership);
     }
 
     public MembershipResponseDto updateMembership(
@@ -95,16 +68,7 @@ public class MembershipService {
 
         Membership updatedMembership = membershipRepository.save(membership);
 
-        return new MembershipResponseDto(
-                updatedMembership.getId(),
-                updatedMembership.getName(),
-                updatedMembership.getPrice(),
-                updatedMembership.getQuantity(),
-                updatedMembership.getYear(),
-                updatedMembership.getCreatedAt(),
-                updatedMembership.getUpdatedAt(),
-                updatedMembership.getDeletedAt()
-        );
+        return MembershipResponseDto.from(updatedMembership);
     }
 
     public MembershipResponseDto deleteMembership(AuthMember authMember, Long membershipId) {
@@ -114,15 +78,6 @@ public class MembershipService {
 //        membership.setDeletedAt(LocalDateTime.now());
         Membership deletedMembership = membershipRepository.save(membership);
 
-        return new MembershipResponseDto(
-                deletedMembership.getId(),
-                deletedMembership.getName(),
-                deletedMembership.getPrice(),
-                deletedMembership.getQuantity(),
-                deletedMembership.getYear(),
-                deletedMembership.getCreatedAt(),
-                deletedMembership.getUpdatedAt(),
-                deletedMembership.getDeletedAt()
-        );
+        return MembershipResponseDto.from(deletedMembership);
     }
 }

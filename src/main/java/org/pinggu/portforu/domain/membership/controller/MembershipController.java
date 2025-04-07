@@ -31,22 +31,22 @@ public class MembershipController {
     }
 
     @GetMapping
-    public ResponseEntity<ApiResponse<Page<MembershipResponseDto>>> findByAllMemberships(
+    public ResponseEntity<ApiResponse<Page<MembershipResponseDto>>> findAllMemberships(
             @AuthenticationPrincipal AuthMember authMember,
             @RequestParam(defaultValue = "1") int page,
             @RequestParam(defaultValue = "10") int size
     ) {
         Pageable pageable = PageRequest.of(page - 1, size);
-        Page<MembershipResponseDto> memberships = membershipService.findByAllMemberships(authMember, pageable);
+        Page<MembershipResponseDto> memberships = membershipService.findAllMemberships(authMember, pageable);
         return ResponseEntity.ok().body(ApiResponse.of(memberships));
     }
 
     @GetMapping("/{membershipId}")
-    public ResponseEntity<ApiResponse<MembershipResponseDto>> findByIdMemberships(
+    public ResponseEntity<ApiResponse<MembershipResponseDto>> findByMembershipsId(
             @AuthenticationPrincipal AuthMember authMember,
             @PathVariable Long membershipId
     ) {
-        MembershipResponseDto response = membershipService.findByIdMemberships(authMember, membershipId);
+        MembershipResponseDto response = membershipService.findByMembershipsId(authMember, membershipId);
         return ResponseEntity.ok().body(ApiResponse.of(response));
     }
 
