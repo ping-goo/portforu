@@ -4,18 +4,18 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.pinggu.portforu.common.annotation.Admin;
 import org.pinggu.portforu.common.annotation.Member;
+import org.pinggu.portforu.common.domain.PageInfo;
+import org.pinggu.portforu.common.domain.Pagecond;
 import org.pinggu.portforu.common.dto.ApiResponse;
-import org.pinggu.portforu.common.dto.AuthMember;
 import org.pinggu.portforu.domain.membership.dto.request.CreateMembershipRequestDto;
 import org.pinggu.portforu.domain.membership.dto.request.UpdateMembershipRequestDto;
 import org.pinggu.portforu.domain.membership.dto.response.MembershipResponseDto;
 import org.pinggu.portforu.domain.membership.service.MembershipService;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RequiredArgsConstructor
 @RestController
@@ -26,53 +26,52 @@ public class MembershipController {
     @Admin
     @PostMapping
     public ResponseEntity<ApiResponse<MembershipResponseDto>> saveMembership(
-            @AuthenticationPrincipal AuthMember authMember,
             @Valid @RequestBody CreateMembershipRequestDto request
     ) {
-        MembershipResponseDto response = membershipService.saveMembership(authMember, request);
+        MembershipResponseDto response = membershipService.saveMembership(request);
         return ResponseEntity.ok().body(ApiResponse.of(response));
     }
 
     @Member
     @GetMapping
-    public ResponseEntity<ApiResponse<Page<MembershipResponseDto>>> findAllMemberships(
-            @AuthenticationPrincipal AuthMember authMember,
-            @RequestParam(defaultValue = "1") int page,
-            @RequestParam(defaultValue = "10") int size
+    public ResponseEntity<ApiResponse<List<MembershipResponseDto>>> findAllMemberships(
+            @ModelAttribute Pagecond pagecond
     ) {
-        Pageable pageable = PageRequest.of(page - 1, size);
-        Page<MembershipResponseDto> memberships = membershipService.findAllMemberships(authMember, pageable);
-        return ResponseEntity.ok().body(ApiResponse.of(memberships));
+        Page<MembershipResponseDto> responses = membershipService.findAllMemberships(pagecond);
+        PageInfo pageInfo = PageInfo.builder()
+                .pageNum(pagecond.getPageNum())
+                .pageSize(pagecond.getPageSize())
+                .totalElement(responses.getTotalElements())
+                .totalPage(responses.getTotalPages())
+                .build();
+        return ResponseEntity.ok().body(ApiResponse.of(responses.getContent(),pageInfo));
     }
 
     @Member
     @GetMapping("/{membershipId}")
     public ResponseEntity<ApiResponse<MembershipResponseDto>> findByMembershipsId(
-            @AuthenticationPrincipal AuthMember authMember,
             @PathVariable Long membershipId
     ) {
-        MembershipResponseDto response = membershipService.findByMembershipsId(authMember, membershipId);
+        MembershipResponseDto response = membershipService.findByMembershipsId(membershipId);
         return ResponseEntity.ok().body(ApiResponse.of(response));
     }
 
     @Admin
     @PutMapping("/{membershipId}")
     public ResponseEntity<ApiResponse<MembershipResponseDto>> updateMembership(
-            @AuthenticationPrincipal AuthMember authMember,
             @PathVariable Long membershipId,
             @RequestBody UpdateMembershipRequestDto request
     ) {
-        MembershipResponseDto updatedMembership = membershipService.updateMembership(authMember, membershipId, request);
+        MembershipResponseDto updatedMembership = membershipService.updateMembership(membershipId, request);
         return ResponseEntity.ok(ApiResponse.of(updatedMembership));
     }
 
     @Admin
     @DeleteMapping("/{membershipId}")
     public ResponseEntity<ApiResponse<MembershipResponseDto>> deleteMembership(
-            @AuthenticationPrincipal AuthMember authMember,
             @PathVariable Long membershipId
     ) {
-        MembershipResponseDto response = membershipService.deleteMembership(authMember, membershipId);
+        MembershipResponseDto response = membershipService.deleteMembership( membershipId);
         return ResponseEntity.ok().body(ApiResponse.of(response));
     }
 }

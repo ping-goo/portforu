@@ -2,7 +2,7 @@ package org.pinggu.portforu.domain.membership.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
-import org.pinggu.portforu.common.dto.AuthMember;
+import org.pinggu.portforu.common.domain.Pagecond;
 import org.pinggu.portforu.config.JwtUtil;
 import org.pinggu.portforu.config.SecurityConfig;
 import org.pinggu.portforu.domain.membership.dto.request.CreateMembershipRequestDto;
@@ -15,7 +15,7 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.context.annotation.Import;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
@@ -28,8 +28,6 @@ import java.util.List;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.BDDMockito.given;
-
-
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -69,7 +67,7 @@ class MembershipControllerTest {
                 .deletedAt(null)
                 .build();
 
-        given(membershipService.saveMembership(any(AuthMember.class), any(CreateMembershipRequestDto.class)))
+        given(membershipService.saveMembership(any(CreateMembershipRequestDto.class)))
                 .willReturn(membershipResponse);
 
         // when & then
@@ -104,10 +102,11 @@ class MembershipControllerTest {
                 .updatedAt(LocalDateTime.now())
                 .deletedAt(null)
                 .build();
-        List<MembershipResponseDto> membershipsList = Arrays.asList(membership1, membership2);
-        Page<MembershipResponseDto> memberships = new PageImpl<>(membershipsList);
 
-        given(membershipService.findAllMemberships(any(AuthMember.class), any(Pageable.class)))
+        List<MembershipResponseDto> membershipsList = Arrays.asList(membership1, membership2);
+        Page<MembershipResponseDto> memberships = new PageImpl<>(membershipsList, PageRequest.of(0, 10), membershipsList.size());
+
+        given(membershipService.findAllMemberships(any(Pagecond.class)))
                 .willReturn(memberships);
 
         // when & then
@@ -134,7 +133,7 @@ class MembershipControllerTest {
                 .deletedAt(null)
                 .build();
 
-        given(membershipService.findByMembershipsId(any(AuthMember.class), eq(membershipId)))
+        given(membershipService.findByMembershipsId(eq(membershipId)))
                 .willReturn(membershipResponse);
 
         // when & then
@@ -160,7 +159,7 @@ class MembershipControllerTest {
                 .deletedAt(null)
                 .build();
 
-        given(membershipService.updateMembership(any(AuthMember.class), eq(membershipId), any(UpdateMembershipRequestDto.class)))
+        given(membershipService.updateMembership(eq(membershipId), any(UpdateMembershipRequestDto.class)))
                 .willReturn(updatedMembership);
 
         // when & then
@@ -186,7 +185,7 @@ class MembershipControllerTest {
                 .deletedAt(LocalDateTime.now())
                 .build();
 
-        given(membershipService.deleteMembership(any(AuthMember.class), eq(membershipId)))
+        given(membershipService.deleteMembership(eq(membershipId)))
                 .willReturn(deletedMembership);
 
         // when & then

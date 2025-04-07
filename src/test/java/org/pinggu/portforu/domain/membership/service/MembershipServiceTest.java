@@ -6,18 +6,14 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.pinggu.portforu.common.dto.AuthMember;
+import org.pinggu.portforu.common.domain.Pagecond;
 import org.pinggu.portforu.common.exception.CustomException;
-import org.pinggu.portforu.domain.member.enums.UserRole;
 import org.pinggu.portforu.domain.membership.dto.request.CreateMembershipRequestDto;
 import org.pinggu.portforu.domain.membership.dto.request.UpdateMembershipRequestDto;
 import org.pinggu.portforu.domain.membership.dto.response.MembershipResponseDto;
 import org.pinggu.portforu.domain.membership.entity.Membership;
 import org.pinggu.portforu.domain.membership.repository.MembershipRepository;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.*;
 import org.springframework.http.HttpStatus;
 
 import java.lang.reflect.Field;
@@ -48,7 +44,6 @@ class MembershipServiceTest {
                     10,
                     2020
             );
-            AuthMember authMember = new AuthMember(1L, "test@example.com", UserRole.ROLE_ADMIN);
 
             Membership savedMembership = new Membership(
                     "이름",
@@ -60,7 +55,7 @@ class MembershipServiceTest {
             given(membershipRepository.save(any(Membership.class))).willReturn(savedMembership);
 
             // when
-            MembershipResponseDto responseDto = membershipService.saveMembership(authMember, requestDto);
+            MembershipResponseDto responseDto = membershipService.saveMembership(requestDto);
 
             // then
             assertEquals("이름", responseDto.getName());
@@ -79,24 +74,22 @@ class MembershipServiceTest {
                 10,
                 2020
         );
-        AuthMember authMember = new AuthMember(1L, "test@example.com", UserRole.ROLE_ADMIN);
 
         // 예외
         given(membershipRepository.save(any(Membership.class))).willThrow(new RuntimeException("저장 실패"));
 
         // when, then
         RuntimeException exception = assertThrows(RuntimeException.class, () ->
-                membershipService.saveMembership(authMember, requestDto)
+                membershipService.saveMembership(requestDto)
         );
 
         assertEquals("저장 실패", exception.getMessage());
     }
 
-    @Test
     void 모든_맴버십_조회_성공() {
         // given
-        AuthMember authMember = new AuthMember(1L, "test@example.com", UserRole.ROLE_USER);
-        Pageable pageable = PageRequest.of(0, 10);
+        Pagecond pagecond = new Pagecond(1, 10);
+        Pageable pageable = PageRequest.of(pagecond.getPageNum() - 1, pagecond.getPageSize());
 
         List<Membership> memberships = List.of(
                 Membership.builder()
@@ -112,12 +105,13 @@ class MembershipServiceTest {
                         .year(2021)
                         .build()
         );
-        Page<Membership> membershipPage = new PageImpl<>(memberships);
+
+        Page<Membership> membershipPage = new PageImpl<>(memberships, pageable, memberships.size());
 
         given(membershipRepository.findAll(pageable)).willReturn(membershipPage);
 
         // when
-        Page<MembershipResponseDto> response = membershipService.findAllMemberships(authMember, pageable);
+        Page<MembershipResponseDto> response = membershipService.findAllMemberships(pagecond);
 
         // then
         assertEquals(2, response.getTotalElements());
@@ -128,15 +122,15 @@ class MembershipServiceTest {
     @Test
     void 모든_맴버십_조회_실패() {
         // given
-        AuthMember authMember = new AuthMember(1L, "test@example.com", UserRole.ROLE_USER);
-        Pageable pageable = PageRequest.of(0, 10);
+        Pagecond pagecond = new Pagecond(1, 10);
+        Pageable pageable = PageRequest.of(pagecond.getPageNum() - 1, pagecond.getPageSize(), Sort.by(Sort.Order.desc("createdAt")));
 
-        // 예외
+        // 예외 발생
         given(membershipRepository.findAll(pageable)).willThrow(new RuntimeException("조회 실패"));
 
         // when, then
         RuntimeException exception = assertThrows(RuntimeException.class, () ->
-                membershipService.findAllMemberships(authMember, pageable)
+                membershipService.findAllMemberships(pagecond)
         );
 
         assertEquals("조회 실패", exception.getMessage());
@@ -145,7 +139,6 @@ class MembershipServiceTest {
     @Test
     void 맴버십_단건_조회_성공() {
         // given
-        AuthMember authMember = new AuthMember(1L, "test@example.com", UserRole.ROLE_USER);
         Long membershipId = 1L;
 
         Membership membership = Membership.builder()
@@ -166,7 +159,7 @@ class MembershipServiceTest {
         given(membershipRepository.findById(membershipId)).willReturn(Optional.of(membership));
 
         // when
-        MembershipResponseDto responseDto = membershipService.findByMembershipsId(authMember, membershipId);
+        MembershipResponseDto responseDto = membershipService.findByMembershipsId(membershipId);
 
         // then
         assertEquals(membershipId, responseDto.getId());
@@ -179,7 +172,6 @@ class MembershipServiceTest {
     @Test
     void 맴버십_단건_조회_실패_아이디없음() {
         // given
-        AuthMember authMember = new AuthMember(1L, "test@example.com", UserRole.ROLE_USER);
         Long membershipId = 1L;
 
         // ID로 멤버십을 찾을 수 없을 때 예외
@@ -187,7 +179,7 @@ class MembershipServiceTest {
 
         // when, then
         CustomException exception = assertThrows(CustomException.class, () ->
-                membershipService.findByMembershipsId(authMember, membershipId)
+                membershipService.findByMembershipsId(membershipId)
         );
 
         assertEquals("아이디가 없습니다.", exception.getMessage());
@@ -197,7 +189,6 @@ class MembershipServiceTest {
     @Test
     void 맴버십_업데이트_성공() {
         // given
-        AuthMember authMember = new AuthMember(1L, "test@example.com", UserRole.ROLE_ADMIN);
         Long membershipId = 1L;
 
         Membership membership = Membership.builder()
@@ -221,7 +212,7 @@ class MembershipServiceTest {
         given(membershipRepository.save(any(Membership.class))).willReturn(membership);
 
         // when
-        MembershipResponseDto responseDto = membershipService.updateMembership(authMember, membershipId, request);
+        MembershipResponseDto responseDto = membershipService.updateMembership(membershipId, request);
 
         // then
         assertEquals(membershipId, responseDto.getId());
@@ -234,7 +225,6 @@ class MembershipServiceTest {
     @Test
     void 맴버십_업데이트_실패_아이디없음() {
         // given
-        AuthMember authMember = new AuthMember(1L, "test@example.com", UserRole.ROLE_ADMIN);
         Long membershipId = 1L;
         UpdateMembershipRequestDto request = new UpdateMembershipRequestDto("새로운 이름", 2500, 15, 2021);
 
@@ -243,7 +233,7 @@ class MembershipServiceTest {
 
         // when, then
         CustomException exception = assertThrows(CustomException.class, () ->
-                membershipService.updateMembership(authMember, membershipId, request)
+                membershipService.updateMembership(membershipId, request)
         );
 
         assertEquals("아이디가 없습니다.", exception.getMessage());
@@ -253,7 +243,6 @@ class MembershipServiceTest {
     @Test
     void 맴버십_삭제_성공() {
         // given
-        AuthMember authMember = new AuthMember(1L, "test@example.com", UserRole.ROLE_ADMIN);
         Long membershipId = 1L;
 
         Membership membership = Membership.builder()
@@ -275,7 +264,7 @@ class MembershipServiceTest {
         given(membershipRepository.save(any(Membership.class))).willReturn(membership);
 
         // when
-        MembershipResponseDto responseDto = membershipService.deleteMembership(authMember, membershipId);
+        MembershipResponseDto responseDto = membershipService.deleteMembership(membershipId);
 
         // then
         assertEquals(membershipId, responseDto.getId());
@@ -285,7 +274,6 @@ class MembershipServiceTest {
     @Test
     void 맴버십_삭제_실패_아이디없음() {
         // given
-        AuthMember authMember = new AuthMember(1L, "test@example.com", UserRole.ROLE_ADMIN);
         Long membershipId = 1L;
 
         // ID로 멤버십을 찾을 수 없을 때 예외
@@ -293,7 +281,7 @@ class MembershipServiceTest {
 
         // when, then
         CustomException exception = assertThrows(CustomException.class, () ->
-                membershipService.deleteMembership(authMember, membershipId)
+                membershipService.deleteMembership(membershipId)
         );
 
         assertEquals("아이디가 없습니다.", exception.getMessage());

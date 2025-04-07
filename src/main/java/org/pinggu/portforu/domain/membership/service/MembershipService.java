@@ -2,7 +2,7 @@ package org.pinggu.portforu.domain.membership.service;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.pinggu.portforu.common.dto.AuthMember;
+import org.pinggu.portforu.common.domain.Pagecond;
 import org.pinggu.portforu.common.exception.CustomException;
 import org.pinggu.portforu.domain.membership.dto.request.CreateMembershipRequestDto;
 import org.pinggu.portforu.domain.membership.dto.request.UpdateMembershipRequestDto;
@@ -10,7 +10,9 @@ import org.pinggu.portforu.domain.membership.dto.response.MembershipResponseDto;
 import org.pinggu.portforu.domain.membership.entity.Membership;
 import org.pinggu.portforu.domain.membership.repository.MembershipRepository;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -23,7 +25,6 @@ public class MembershipService {
 
     @Transactional
     public MembershipResponseDto saveMembership(
-            AuthMember authMember,
             @Valid CreateMembershipRequestDto request
     ) {
 
@@ -40,15 +41,14 @@ public class MembershipService {
 
     @Transactional(readOnly = true)
     public Page<MembershipResponseDto> findAllMemberships(
-            AuthMember authMember,
-            Pageable pageable
+            Pagecond pagecond
     ) {
+        Pageable pageable = PageRequest.of(pagecond.getPageNum() - 1, pagecond.getPageSize(), Sort.by(Sort.Order.desc("createdAt")));
         return membershipRepository.findAll(pageable).map(MembershipResponseDto::from);
     }
 
     @Transactional(readOnly = true)
     public MembershipResponseDto findByMembershipsId(
-            AuthMember authMember,
             Long membershipId
     ) {
         Membership membership = membershipRepository.findById(membershipId)
@@ -59,7 +59,6 @@ public class MembershipService {
 
     @Transactional
     public MembershipResponseDto updateMembership(
-            AuthMember authMember,
             Long membershipId,
             UpdateMembershipRequestDto request
     ) {
@@ -77,11 +76,11 @@ public class MembershipService {
     }
 
     @Transactional
-    public MembershipResponseDto deleteMembership(AuthMember authMember, Long membershipId) {
+    public MembershipResponseDto deleteMembership(Long membershipId) {
         Membership membership = membershipRepository.findById(membershipId)
                 .orElseThrow(() -> new CustomException(HttpStatus.BAD_REQUEST, "아이디가 없습니다."));
 
-//        membership.setDeletedAt(LocalDateTime.now());
+        membership.delete();
         Membership deletedMembership = membershipRepository.save(membership);
 
         return MembershipResponseDto.from(deletedMembership);
