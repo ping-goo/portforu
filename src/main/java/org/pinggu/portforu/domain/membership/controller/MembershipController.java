@@ -3,7 +3,6 @@ package org.pinggu.portforu.domain.membership.controller;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.pinggu.portforu.common.annotation.Admin;
-import org.pinggu.portforu.common.annotation.Member;
 import org.pinggu.portforu.common.domain.PageInfo;
 import org.pinggu.portforu.common.domain.Pagecond;
 import org.pinggu.portforu.common.dto.ApiResponse;
@@ -32,7 +31,6 @@ public class MembershipController {
         return ResponseEntity.ok().body(ApiResponse.of(response));
     }
 
-    @Member
     @GetMapping
     public ResponseEntity<ApiResponse<List<MembershipResponseDto>>> findAllMemberships(
             @ModelAttribute Pagecond pagecond
@@ -47,7 +45,6 @@ public class MembershipController {
         return ResponseEntity.ok().body(ApiResponse.of(responses.getContent(), pageInfo));
     }
 
-    @Member
     @GetMapping("/{membershipId}")
     public ResponseEntity<ApiResponse<MembershipResponseDto>> findByMembershipsId(
             @PathVariable Long membershipId
