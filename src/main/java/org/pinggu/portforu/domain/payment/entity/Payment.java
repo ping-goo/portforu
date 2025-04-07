@@ -1,6 +1,7 @@
 package org.pinggu.portforu.domain.payment.entity;
 
 import jakarta.persistence.*;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -20,6 +21,7 @@ public class Payment {
     @Enumerated(EnumType.STRING)
     private PaymentStatus status; // 결제 상태
 
+    @Builder
     public Payment(PaymentMethod paymentMethod, PaymentStatus status) {
         this.paymentMethod = paymentMethod;
         this.status = status;
