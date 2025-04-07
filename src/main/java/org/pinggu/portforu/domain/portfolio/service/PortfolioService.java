@@ -31,21 +31,19 @@ public class PortfolioService {
         LocalDateTime now = LocalDateTime.now();
         Member member = memberRepository.findById(memberId)
                 .orElseThrow(() -> new CustomException(HttpStatus.NOT_FOUND, "존재하지 않는 사용자입니다."));
-        Portfolio portfolio = Portfolio.builder()
-                .member(member)
-                .title(request.getTitle())
-                .description(request.getDescription())
-                .fileUrl(request.getFileUrl())
-                .views(0)
-                .build();
+
+        Portfolio portfolio = Portfolio.createPortfolio(member, request.getTitle(), request.getDescription(), request.getFileUrl());
         Portfolio savedPortfolio = portfolioRepository.save(portfolio);
+
         return convertToDto(savedPortfolio);
     }
 
 
     @Transactional(readOnly = true)
     public Page<PortfolioResponseDto> findAllPortfolios(Pagecond pagecond){
+
         PageRequest pageRequest = PageRequest.of(pagecond.getPageNum()-1, pagecond.getPageSize());
+
         Page<Portfolio> portfolios = portfolioRepository.findAll(pageRequest);
         return portfolios.map(this::convertToDto);
     }
@@ -53,18 +51,19 @@ public class PortfolioService {
 
     @Transactional(readOnly = true)
     public PortfolioResponseDto findPortfolio(Long portfolioId){
+
         Portfolio portfolio = portfolioRepository.findById(portfolioId)
-                .orElseThrow(() -> new CustomException(HttpStatus.NOT_FOUND,"게시물을 찾을 수 없습니다."));
+                .orElseThrow(() -> new CustomException(HttpStatus.NOT_FOUND, "Portfolio not found"));
 
-        portfolio.setViews(portfolio.getViews() + 1);
+        portfolio.incrementViews();
         portfolioRepository.save(portfolio);
-
         return convertToDto(portfolio);
     }
 
 
     @Transactional
     public PortfolioResponseDto updatePortfolio(Long portfolioId, PortfolioUpdateRequestDto updateDto, Long memberId){
+
         Portfolio portfolio = portfolioRepository.findById(portfolioId)
                 .orElseThrow(() -> new CustomException(HttpStatus.NOT_FOUND,"게시물을 찾을 수 없습니다."));
 
@@ -72,18 +71,10 @@ public class PortfolioService {
             throw new CustomException(HttpStatus.UNAUTHORIZED,"수정 권한이 없습니다.");
         }
 
-        // 수정사항이 null 값이 아닌경우에만 수정
-        if (updateDto.getTitle() != null) {
-            portfolio.setTitle(updateDto.getTitle());
-        }
-        if (updateDto.getDescription() != null) {
-            portfolio.setDescription(updateDto.getDescription());
-        }
-        if (updateDto.getFileUrl() != null) {
-            portfolio.setFileUrl(updateDto.getFileUrl());
-        }
+        portfolio.update(updateDto.getTitle(), updateDto.getDescription(), updateDto.getFileUrl());
 
         Portfolio updatedPortfolio = portfolioRepository.save(portfolio);
+
         return convertToDto(updatedPortfolio);
     }
 
