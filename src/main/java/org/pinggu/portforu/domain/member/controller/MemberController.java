@@ -2,7 +2,6 @@ package org.pinggu.portforu.domain.member.controller;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.pinggu.portforu.common.annotation.Admin;
 import org.pinggu.portforu.common.annotation.Member;
 import org.pinggu.portforu.common.dto.ApiResponse;
 import org.pinggu.portforu.common.dto.AuthMember;
