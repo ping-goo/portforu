@@ -6,10 +6,6 @@ import lombok.NoArgsConstructor;
 import org.pinggu.portforu.common.domain.BaseEntity;
 import org.pinggu.portforu.common.dto.AuthMember;
 import org.pinggu.portforu.domain.member.enums.UserRole;
-import org.pinggu.portforu.domain.portfolio.entity.Portfolio;
-
-import java.util.ArrayList;
-import java.util.List;
 
 @Getter
 @Entity
