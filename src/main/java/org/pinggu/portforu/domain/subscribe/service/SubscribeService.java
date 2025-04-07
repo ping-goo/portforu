@@ -3,7 +3,6 @@ package org.pinggu.portforu.domain.subscribe.service;
 import lombok.RequiredArgsConstructor;
 import org.pinggu.portforu.common.exception.CustomException;
 import org.pinggu.portforu.domain.payment.entity.Payment;
-import org.pinggu.portforu.domain.payment.repository.PaymentRepository;
 import org.pinggu.portforu.domain.subscribe.dto.request.SubscribeRequestDto;
 import org.pinggu.portforu.domain.subscribe.dto.response.SubscribeResponseDto;
 import org.pinggu.portforu.domain.subscribe.entity.Subscribe;
