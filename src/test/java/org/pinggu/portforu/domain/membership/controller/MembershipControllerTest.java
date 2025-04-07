@@ -5,8 +5,8 @@ import org.junit.jupiter.api.Test;
 import org.pinggu.portforu.common.domain.Pagecond;
 import org.pinggu.portforu.config.JwtUtil;
 import org.pinggu.portforu.config.SecurityConfig;
-import org.pinggu.portforu.domain.membership.dto.request.CreateMembershipRequestDto;
-import org.pinggu.portforu.domain.membership.dto.request.UpdateMembershipRequestDto;
+import org.pinggu.portforu.domain.membership.dto.request.MembershipSaveRequestDto;
+import org.pinggu.portforu.domain.membership.dto.request.MembershipUpdateRequestDto;
 import org.pinggu.portforu.domain.membership.dto.response.MembershipResponseDto;
 import org.pinggu.portforu.domain.membership.repository.MembershipRepository;
 import org.pinggu.portforu.domain.membership.service.MembershipService;
@@ -55,7 +55,7 @@ class MembershipControllerTest {
     @Test
     public void 맴버쉽_생성_컨트롤러_테스트() throws Exception {
         // given
-        CreateMembershipRequestDto request = new CreateMembershipRequestDto("테스트", 10000, 2000, 2024);
+        MembershipSaveRequestDto request = new MembershipSaveRequestDto("테스트", 10000, 2000, 2024);
         MembershipResponseDto membershipResponse = MembershipResponseDto.builder()
                 .id(1L)
                 .name("테스트")
@@ -67,7 +67,7 @@ class MembershipControllerTest {
                 .deletedAt(null)
                 .build();
 
-        given(membershipService.saveMembership(any(CreateMembershipRequestDto.class)))
+        given(membershipService.saveMembership(any(MembershipSaveRequestDto.class)))
                 .willReturn(membershipResponse);
 
         // when & then
@@ -147,7 +147,7 @@ class MembershipControllerTest {
     public void 회원정보_업데이트_컨트롤러_테스트() throws Exception {
         // given
         Long membershipId = 1L;
-        UpdateMembershipRequestDto request = new UpdateMembershipRequestDto("업데이트된 회원", 12000, 2500, 2025);
+        MembershipUpdateRequestDto request = new MembershipUpdateRequestDto("업데이트된 회원", 12000, 2500, 2025);
         MembershipResponseDto updatedMembership = MembershipResponseDto.builder()
                 .id(membershipId)
                 .name("업데이트된 회원")
@@ -159,7 +159,7 @@ class MembershipControllerTest {
                 .deletedAt(null)
                 .build();
 
-        given(membershipService.updateMembership(eq(membershipId), any(UpdateMembershipRequestDto.class)))
+        given(membershipService.updateMembership(eq(membershipId), any(MembershipUpdateRequestDto.class)))
                 .willReturn(updatedMembership);
 
         // when & then

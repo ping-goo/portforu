@@ -8,8 +8,8 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.pinggu.portforu.common.domain.Pagecond;
 import org.pinggu.portforu.common.exception.CustomException;
-import org.pinggu.portforu.domain.membership.dto.request.CreateMembershipRequestDto;
-import org.pinggu.portforu.domain.membership.dto.request.UpdateMembershipRequestDto;
+import org.pinggu.portforu.domain.membership.dto.request.MembershipSaveRequestDto;
+import org.pinggu.portforu.domain.membership.dto.request.MembershipUpdateRequestDto;
 import org.pinggu.portforu.domain.membership.dto.response.MembershipResponseDto;
 import org.pinggu.portforu.domain.membership.entity.Membership;
 import org.pinggu.portforu.domain.membership.repository.MembershipRepository;
@@ -38,7 +38,7 @@ class MembershipServiceTest {
         @Test
         void 맴버십_생성_성공() {
             // given
-            CreateMembershipRequestDto requestDto = new CreateMembershipRequestDto(
+            MembershipSaveRequestDto requestDto = new MembershipSaveRequestDto(
                     "이름",
                     2000,
                     10,
@@ -68,7 +68,7 @@ class MembershipServiceTest {
     @Test
     void 맴버십_생성_실패() {
         // given
-        CreateMembershipRequestDto requestDto = new CreateMembershipRequestDto(
+        MembershipSaveRequestDto requestDto = new MembershipSaveRequestDto(
                 "이름",
                 2000,
                 10,
@@ -206,7 +206,7 @@ class MembershipServiceTest {
             e.printStackTrace();
         }
 
-        UpdateMembershipRequestDto request = new UpdateMembershipRequestDto("새로운 이름", 2500, 15, 2021);
+        MembershipUpdateRequestDto request = new MembershipUpdateRequestDto("새로운 이름", 2500, 15, 2021);
 
         given(membershipRepository.findById(membershipId)).willReturn(Optional.of(membership));
         given(membershipRepository.save(any(Membership.class))).willReturn(membership);
@@ -226,7 +226,7 @@ class MembershipServiceTest {
     void 맴버십_업데이트_실패_아이디없음() {
         // given
         Long membershipId = 1L;
-        UpdateMembershipRequestDto request = new UpdateMembershipRequestDto("새로운 이름", 2500, 15, 2021);
+        MembershipUpdateRequestDto request = new MembershipUpdateRequestDto("새로운 이름", 2500, 15, 2021);
 
         // ID로 멤버십을 찾을 수 없을 때 예외
         given(membershipRepository.findById(membershipId)).willReturn(Optional.empty());

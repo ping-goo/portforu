@@ -5,7 +5,7 @@ import lombok.Getter;
 
 @Getter
 @AllArgsConstructor
-public class UpdateMembershipRequestDto {
+public class MembershipUpdateRequestDto {
     private String name;
     private Integer price;
     private Integer quantity;

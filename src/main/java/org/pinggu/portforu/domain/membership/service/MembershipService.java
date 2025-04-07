@@ -3,8 +3,8 @@ package org.pinggu.portforu.domain.membership.service;
 import lombok.RequiredArgsConstructor;
 import org.pinggu.portforu.common.domain.Pagecond;
 import org.pinggu.portforu.common.exception.CustomException;
-import org.pinggu.portforu.domain.membership.dto.request.CreateMembershipRequestDto;
-import org.pinggu.portforu.domain.membership.dto.request.UpdateMembershipRequestDto;
+import org.pinggu.portforu.domain.membership.dto.request.MembershipSaveRequestDto;
+import org.pinggu.portforu.domain.membership.dto.request.MembershipUpdateRequestDto;
 import org.pinggu.portforu.domain.membership.dto.response.MembershipResponseDto;
 import org.pinggu.portforu.domain.membership.entity.Membership;
 import org.pinggu.portforu.domain.membership.repository.MembershipRepository;
@@ -24,7 +24,7 @@ public class MembershipService {
 
     @Transactional
     public MembershipResponseDto saveMembership(
-            CreateMembershipRequestDto request
+            MembershipSaveRequestDto request
     ) {
 
         Membership membership = Membership.builder()
@@ -59,7 +59,7 @@ public class MembershipService {
     @Transactional
     public MembershipResponseDto updateMembership(
             Long membershipId,
-            UpdateMembershipRequestDto request
+            MembershipUpdateRequestDto request
     ) {
         Membership membership = membershipRepository.findById(membershipId)
                 .orElseThrow(() -> new CustomException(HttpStatus.BAD_REQUEST, "아이디가 없습니다."));

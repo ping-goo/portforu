@@ -6,8 +6,8 @@ import org.pinggu.portforu.common.annotation.Admin;
 import org.pinggu.portforu.common.domain.PageInfo;
 import org.pinggu.portforu.common.domain.Pagecond;
 import org.pinggu.portforu.common.dto.ApiResponse;
-import org.pinggu.portforu.domain.membership.dto.request.CreateMembershipRequestDto;
-import org.pinggu.portforu.domain.membership.dto.request.UpdateMembershipRequestDto;
+import org.pinggu.portforu.domain.membership.dto.request.MembershipSaveRequestDto;
+import org.pinggu.portforu.domain.membership.dto.request.MembershipUpdateRequestDto;
 import org.pinggu.portforu.domain.membership.dto.response.MembershipResponseDto;
 import org.pinggu.portforu.domain.membership.service.MembershipService;
 import org.springframework.data.domain.Page;
@@ -25,7 +25,7 @@ public class MembershipController {
     @Admin
     @PostMapping
     public ResponseEntity<ApiResponse<MembershipResponseDto>> saveMembership(
-            @Valid @RequestBody CreateMembershipRequestDto request
+            @Valid @RequestBody MembershipSaveRequestDto request
     ) {
         MembershipResponseDto response = membershipService.saveMembership(request);
         return ResponseEntity.ok().body(ApiResponse.of(response));
@@ -57,7 +57,7 @@ public class MembershipController {
     @PutMapping("/{membershipId}")
     public ResponseEntity<ApiResponse<MembershipResponseDto>> updateMembership(
             @PathVariable Long membershipId,
-            @RequestBody UpdateMembershipRequestDto request
+            @RequestBody MembershipUpdateRequestDto request
     ) {
         MembershipResponseDto updatedMembership = membershipService.updateMembership(membershipId, request);
         return ResponseEntity.ok(ApiResponse.of(updatedMembership));
