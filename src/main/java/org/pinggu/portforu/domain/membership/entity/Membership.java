@@ -15,9 +15,13 @@ public class Membership extends BaseEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "membership_id")
     private Long id;
+    @Column(nullable = false)
     private String name;
+    @Column(nullable = false)
     private Integer price;
+    @Column(nullable = false)
     private Integer quantity;
+    @Column(nullable = false)
     private Integer year;
 
     @Builder
