@@ -159,7 +159,7 @@ class MembershipServiceTest {
         given(membershipRepository.findById(membershipId)).willReturn(Optional.of(membership));
 
         // when
-        MembershipResponseDto responseDto = membershipService.findByMembershipsId(membershipId);
+        MembershipResponseDto responseDto = membershipService.findMembershipById(membershipId);
 
         // then
         assertEquals(membershipId, responseDto.getId());
@@ -179,7 +179,7 @@ class MembershipServiceTest {
 
         // when, then
         CustomException exception = assertThrows(CustomException.class, () ->
-                membershipService.findByMembershipsId(membershipId)
+                membershipService.findMembershipById(membershipId)
         );
 
         assertEquals("아이디가 없습니다.", exception.getMessage());

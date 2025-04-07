@@ -133,7 +133,7 @@ class MembershipControllerTest {
                 .deletedAt(null)
                 .build();
 
-        given(membershipService.findByMembershipsId(eq(membershipId)))
+        given(membershipService.findMembershipById(eq(membershipId)))
                 .willReturn(membershipResponse);
 
         // when & then

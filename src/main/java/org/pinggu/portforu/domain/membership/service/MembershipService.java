@@ -48,7 +48,7 @@ public class MembershipService {
     }
 
     @Transactional(readOnly = true)
-    public MembershipResponseDto findByMembershipsId(
+    public MembershipResponseDto findMembershipById(
             Long membershipId
     ) {
         Membership membership = membershipRepository.findById(membershipId)
