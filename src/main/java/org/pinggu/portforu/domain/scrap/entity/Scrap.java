@@ -1,6 +1,7 @@
 package org.pinggu.portforu.domain.scrap.entity;
 
 import jakarta.persistence.*;
+import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -10,7 +11,7 @@ import org.pinggu.portforu.domain.member.entity.Member;
 
 @Getter
 @Entity
-@NoArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Table(name = "scraps")
 public class Scrap extends BaseEntity {
 

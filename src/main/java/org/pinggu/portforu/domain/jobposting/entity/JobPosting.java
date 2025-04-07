@@ -1,6 +1,7 @@
 package org.pinggu.portforu.domain.jobposting.entity;
 
 import jakarta.persistence.*;
+import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -8,7 +9,7 @@ import org.pinggu.portforu.common.domain.BaseEntity;
 
 @Getter
 @Entity
-@NoArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Table(name = "job_postings")
 public class JobPosting extends BaseEntity {
 
