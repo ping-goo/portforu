@@ -53,7 +53,7 @@ public class PortfolioController {
     @Member
     @GetMapping("/{portfolioId}")
     public ResponseEntity<ApiResponse<PortfolioResponseDto>> findPortfolio(
-            @PathVariable Long portfolioId){
+            @PathVariable("portfolioId") Long portfolioId){
 
         PortfolioResponseDto responseDto = portfolioService.findPortfolio(portfolioId);
         return ResponseEntity.ok(ApiResponse.of(responseDto));
@@ -75,7 +75,7 @@ public class PortfolioController {
     @DeleteMapping("/{portfolioId}")
     public ResponseEntity<ApiResponse<Void>> deletePortfolio(
             @AuthenticationPrincipal AuthMember authMember,
-            @PathVariable Long portfolioId
+            @PathVariable("portfolioId") Long portfolioId
     ){
 
         portfolioService.deletePortfolio(portfolioId,authMember.getId());
