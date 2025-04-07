@@ -29,45 +29,46 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 
 @ExtendWith(MockitoExtension.class)
-    class MembershipServiceTest {
-        @Mock
-        private MembershipRepository membershipRepository;
+class MembershipServiceTest {
 
-        @InjectMocks
-        private MembershipService membershipService;
+    @Mock
+    private MembershipRepository membershipRepository;
 
-        @Nested
-        class CreateMembershipTest {
-            @Test
-            void 맴버십_생성_성공(){
-                // given
-                CreateMembershipRequestDto requestDto = new CreateMembershipRequestDto(
-                        "이름",
-                        2000,
-                        10,
-                        2020
-                );
-                AuthMember authMember = new AuthMember(1L, "test@example.com", UserRole.ROLE_ADMIN);
+    @InjectMocks
+    private MembershipService membershipService;
 
-                Membership savedMembership = new Membership(
-                        "이름",
-                        2000,
-                        10,
-                        2020
-                );
+    @Nested
+    class CreateMembershipTest {
+        @Test
+        void 맴버십_생성_성공() {
+            // given
+            CreateMembershipRequestDto requestDto = new CreateMembershipRequestDto(
+                    "이름",
+                    2000,
+                    10,
+                    2020
+            );
+            AuthMember authMember = new AuthMember(1L, "test@example.com", UserRole.ROLE_ADMIN);
 
-                given(membershipRepository.save(any(Membership.class))).willReturn(savedMembership);
+            Membership savedMembership = new Membership(
+                    "이름",
+                    2000,
+                    10,
+                    2020
+            );
 
-                // when
-                MembershipResponseDto responseDto = membershipService.saveMembership(authMember, requestDto);
+            given(membershipRepository.save(any(Membership.class))).willReturn(savedMembership);
 
-                // then
-                assertEquals("이름", responseDto.getName());
-                assertEquals(2000, responseDto.getPrice());
-                assertEquals(10, responseDto.getQuantity());
-                assertEquals(2020, responseDto.getYear());
-            }
+            // when
+            MembershipResponseDto responseDto = membershipService.saveMembership(authMember, requestDto);
+
+            // then
+            assertEquals("이름", responseDto.getName());
+            assertEquals(2000, responseDto.getPrice());
+            assertEquals(10, responseDto.getQuantity());
+            assertEquals(2020, responseDto.getYear());
         }
+    }
 
     @Test
     void 맴버십_생성_실패() {
