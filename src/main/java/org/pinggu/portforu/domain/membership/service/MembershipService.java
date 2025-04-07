@@ -39,19 +39,15 @@ public class MembershipService {
     }
 
     @Transactional(readOnly = true)
-    public Page<MembershipResponseDto> findAllMemberships(
-            Pagecond pagecond
-    ) {
+    public Page<MembershipResponseDto> findAllMemberships(Pagecond pagecond) {
         Pageable pageable = PageRequest.of(pagecond.getPageNum() - 1, pagecond.getPageSize(), Sort.by(Sort.Order.desc("createdAt")));
-        return membershipRepository.findAll(pageable).map(MembershipResponseDto::from);
+        return membershipRepository.findAllActiveMemberships(pageable).map(MembershipResponseDto::from);
     }
 
     @Transactional(readOnly = true)
-    public MembershipResponseDto findMembershipById(
-            Long membershipId
-    ) {
-        Membership membership = membershipRepository.findById(membershipId)
-                .orElseThrow(() -> new CustomException(HttpStatus.BAD_REQUEST, "아이디가 없습니다."));
+    public MembershipResponseDto findMembershipById(Long membershipId) {
+        Membership membership = membershipRepository.findByIdAndDeletedAtIsNull(membershipId)
+                .orElseThrow(() -> new CustomException(HttpStatus.BAD_REQUEST, "아이디가 없거나 삭제된 멤버십입니다."));
 
         return MembershipResponseDto.from(membership);
     }
@@ -61,8 +57,8 @@ public class MembershipService {
             Long membershipId,
             MembershipUpdateRequestDto request
     ) {
-        Membership membership = membershipRepository.findById(membershipId)
-                .orElseThrow(() -> new CustomException(HttpStatus.BAD_REQUEST, "아이디가 없습니다."));
+        Membership membership = membershipRepository.findByIdAndDeletedAtIsNull(membershipId)
+                .orElseThrow(() -> new CustomException(HttpStatus.BAD_REQUEST, "아이디가 없거나 삭제된 멤버십입니다."));
 
         membership.update(request.getName(), request.getPrice(), request.getQuantity(), request.getYear());
 
@@ -73,8 +69,8 @@ public class MembershipService {
 
     @Transactional
     public MembershipResponseDto deleteMembership(Long membershipId) {
-        Membership membership = membershipRepository.findById(membershipId)
-                .orElseThrow(() -> new CustomException(HttpStatus.BAD_REQUEST, "아이디가 없습니다."));
+        Membership membership = membershipRepository.findByIdAndDeletedAtIsNull(membershipId)
+                .orElseThrow(() -> new CustomException(HttpStatus.BAD_REQUEST, "아이디가 없거나 삭제된 멤버십입니다."));
 
         membership.delete();
         Membership deletedMembership = membershipRepository.save(membership);
