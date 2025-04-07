@@ -30,17 +30,14 @@ public class Portfolio extends BaseEntity {
     @Column(nullable = false)
     private Integer views;
 
+
+    @Builder
     public Portfolio(Member member, String title, String description, String fileUrl, Integer views) {
         this.member = member;
         this.title = title;
         this.description = description;
         this.fileUrl = fileUrl;
         this.views = views;
-    }
-
-
-    public static Portfolio savePortfolio(Member member, String title, String description, String fileUrl) {
-        return new Portfolio(member, title, description, fileUrl, 0);
     }
 
     public void update(String title, String description, String fileUrl) {
