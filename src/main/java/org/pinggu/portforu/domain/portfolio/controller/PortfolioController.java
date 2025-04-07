@@ -1,5 +1,6 @@
 package org.pinggu.portforu.domain.portfolio.controller;
 
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.pinggu.portforu.common.annotation.Member;
 import org.pinggu.portforu.common.domain.PageInfo;
@@ -26,7 +27,7 @@ public class PortfolioController {
     @PostMapping
     public ResponseEntity<ApiResponse<PortfolioResponseDto>> savePortfolio(
             @AuthenticationPrincipal AuthMember authMember,
-            @RequestBody PortfolioRequestDto requestDto
+            @Valid @RequestBody PortfolioRequestDto requestDto
             ){
 
         PortfolioResponseDto responseDto = portfolioService.savePortfolio(requestDto,authMember.getId());
@@ -64,7 +65,7 @@ public class PortfolioController {
     public ResponseEntity<ApiResponse<PortfolioResponseDto>> updatePortfolio(
             @AuthenticationPrincipal AuthMember authMember,
             @PathVariable Long portfolioId,
-            @RequestBody PortfolioUpdateRequestDto requestDto
+            @Valid @RequestBody PortfolioUpdateRequestDto requestDto
     ){
 
         PortfolioResponseDto responseDto = portfolioService.updatePortfolio(portfolioId,requestDto,authMember.getId());
