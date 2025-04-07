@@ -44,7 +44,7 @@ public class MembershipController {
                 .totalElement(responses.getTotalElements())
                 .totalPage(responses.getTotalPages())
                 .build();
-        return ResponseEntity.ok().body(ApiResponse.of(responses.getContent(),pageInfo));
+        return ResponseEntity.ok().body(ApiResponse.of(responses.getContent(), pageInfo));
     }
 
     @Member
@@ -71,7 +71,7 @@ public class MembershipController {
     public ResponseEntity<ApiResponse<MembershipResponseDto>> deleteMembership(
             @PathVariable Long membershipId
     ) {
-        MembershipResponseDto response = membershipService.deleteMembership( membershipId);
+        MembershipResponseDto response = membershipService.deleteMembership(membershipId);
         return ResponseEntity.ok().body(ApiResponse.of(response));
     }
 }
