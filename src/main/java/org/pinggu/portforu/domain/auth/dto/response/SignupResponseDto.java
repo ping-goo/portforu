@@ -25,4 +25,5 @@ public class SignupResponseDto {
         this.address = address;
         this.userRole = userRole;
     }
+
 }
