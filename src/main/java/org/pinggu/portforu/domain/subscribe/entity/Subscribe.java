@@ -5,7 +5,6 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.pinggu.portforu.common.domain.BaseEntity;
-import org.pinggu.portforu.domain.payment.entity.Payment;
 import java.time.LocalDateTime;
 
 @Getter
@@ -32,14 +31,14 @@ public class Subscribe extends BaseEntity {
 
     // 생성자
     @Builder
-    public Subscribe(Long memberId, Long membershipId, Payment payment, LocalDateTime startDate, LocalDateTime endDate) {
+    public Subscribe(Long memberId, Long membershipId, LocalDateTime startDate, LocalDateTime endDate) {
         this.memberId = memberId;
         this.membershipId = membershipId;
         this.startDate = startDate;
         this.endDate = endDate;
     }
 
-    public Subscribe update(Long membershipId, Payment payment, LocalDateTime startDate, LocalDateTime endDate) {
+    public Subscribe update(Long membershipId, LocalDateTime startDate, LocalDateTime endDate) {
         return Subscribe.builder()
                 .memberId(this.memberId)
                 .membershipId(membershipId)

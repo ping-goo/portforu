@@ -15,6 +15,7 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.MediaType;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -131,7 +132,7 @@ public class SubscribeControllerTest {
         List<SubscribeResponseDto> list = Collections.singletonList(responseDto);
         Page<SubscribeResponseDto> page = new PageImpl<>(list);
 
-        Mockito.when(subscribeService.findSubscribes(any(), anyLong()))
+        Mockito.when(subscribeService.findSubscribes(anyLong(), any(Pageable.class)))
                 .thenReturn(page);
 
         // When & Then: GET 요청에 인증 정보를 추가하고, 응답 JSON의 값 검증
@@ -147,8 +148,9 @@ public class SubscribeControllerTest {
     @Test
     void 구독_삭제_성공() throws Exception {
         // Given
+        Long memberId = 1L;
         Long subscribeId = 1L;
-        Mockito.doNothing().when(subscribeService).deleteSubscribe(subscribeId);
+        Mockito.doNothing().when(subscribeService).deleteSubscribe(memberId,subscribeId);
 
         AuthMember authMember = new AuthMember(
                 1L,

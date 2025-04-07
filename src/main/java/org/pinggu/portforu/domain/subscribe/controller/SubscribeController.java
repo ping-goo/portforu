@@ -11,6 +11,7 @@ import org.pinggu.portforu.domain.subscribe.dto.response.SubscribeResponseDto;
 import org.pinggu.portforu.domain.subscribe.service.SubscribeService;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
@@ -44,10 +45,12 @@ public class SubscribeController {
             @ModelAttribute Pagecond pagecond,
             @AuthenticationPrincipal AuthMember member) {
 
+        Long memberId = member.getId();
+        Pageable pageable = PageRequest.of(pagecond.getPageNum() - 1, pagecond.getPageSize());
+
+
         // member.getId()를 통해 인증된 사용자의 ID를 가져옵니다.
-        Page<SubscribeResponseDto> responses = subscribeService.findSubscribes(
-                PageRequest.of(pagecond.getPageNum() - 1, pagecond.getPageSize()),
-                member.getId());
+        Page<SubscribeResponseDto> responses = subscribeService.findSubscribes(memberId, pageable);
 
         PageInfo pageInfo = PageInfo.builder()
                 .pageNum(pagecond.getPageNum())
@@ -63,8 +66,11 @@ public class SubscribeController {
     // 구독 취소
     @Member
     @DeleteMapping("/my/subscribes/{subscribeId}")
-    public ResponseEntity<ApiResponse<String>> deleteSubscribe(@PathVariable Long subscribeId) {
-        subscribeService.deleteSubscribe(subscribeId);
+    public ResponseEntity<ApiResponse<String>> deleteSubscribe(
+            @PathVariable Long subscribeId,
+            @AuthenticationPrincipal AuthMember member
+    ) {
+        subscribeService.deleteSubscribe(member.getId(), subscribeId);
         return ResponseEntity.ok(ApiResponse.of("구독이 취소되었습니다."));
     }
 }
