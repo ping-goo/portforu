@@ -57,7 +57,7 @@ public class MembershipController {
     @PutMapping("/{membershipId}")
     public ResponseEntity<ApiResponse<MembershipResponseDto>> updateMembership(
             @PathVariable Long membershipId,
-            @RequestBody MembershipUpdateRequestDto request
+            @Valid @RequestBody MembershipUpdateRequestDto request
     ) {
         MembershipResponseDto updatedMembership = membershipService.updateMembership(membershipId, request);
         return ResponseEntity.ok(ApiResponse.of(updatedMembership));
