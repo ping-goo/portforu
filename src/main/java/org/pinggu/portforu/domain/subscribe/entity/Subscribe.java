@@ -1,6 +1,7 @@
 package org.pinggu.portforu.domain.subscribe.entity;
 
 import jakarta.persistence.*;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.pinggu.portforu.common.domain.BaseEntity;
@@ -35,6 +36,7 @@ public class Subscribe extends BaseEntity {
     private LocalDateTime endDate; // 구독 종료일
 
     // 생성자
+    @Builder
     public Subscribe(Long memberId, Long membershipId, Payment payment, LocalDateTime startDate, LocalDateTime endDate) {
         this.memberId = memberId;
         this.membershipId = membershipId;
@@ -43,8 +45,13 @@ public class Subscribe extends BaseEntity {
         this.endDate = endDate;
     }
 
-    // 업데이트할시 객체의 불변성을 위해 만든 메서드(기존 memberId는 그대로 유지하면서 나머지 필드를 새 값으로 설정)
     public Subscribe update(Long membershipId, Payment payment, LocalDateTime startDate, LocalDateTime endDate) {
-        return new Subscribe(this.memberId, membershipId, payment, startDate, endDate);
+        return Subscribe.builder()
+                .memberId(this.memberId)
+                .membershipId(membershipId)
+                .payment(payment)
+                .startDate(startDate)
+                .endDate(endDate)
+                .build();
     }
 }
