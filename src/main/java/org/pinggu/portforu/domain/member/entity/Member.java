@@ -1,7 +1,7 @@
 package org.pinggu.portforu.domain.member.entity;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.pinggu.portforu.common.domain.BaseEntity;
@@ -12,7 +12,6 @@ import org.pinggu.portforu.domain.member.enums.UserRole;
 @Entity
 @Table(name = "members")
 @NoArgsConstructor
-@AllArgsConstructor
 public class Member extends BaseEntity {
 
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -37,6 +36,7 @@ public class Member extends BaseEntity {
     @Enumerated(EnumType.STRING)
     private UserRole userRole;
 
+    @Builder
     public Member(String email, String password, String name, String phoneNumber, String address, UserRole userRole) {
         this.email = email;
         this.password = password;
