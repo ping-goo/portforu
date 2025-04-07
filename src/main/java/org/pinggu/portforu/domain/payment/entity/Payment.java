@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.pinggu.portforu.domain.subscribe.entity.Subscribe;
 
 @Getter
 @NoArgsConstructor
@@ -21,10 +22,15 @@ public class Payment {
     @Enumerated(EnumType.STRING)
     private PaymentStatus status; // 결제 상태
 
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "subscribe_id", nullable = false)
+    private Subscribe subscribe;
+
     @Builder
-    public Payment(PaymentMethod paymentMethod, PaymentStatus status) {
+    public Payment(PaymentMethod paymentMethod,PaymentStatus status,Subscribe subscribe) {
         this.paymentMethod = paymentMethod;
         this.status = status;
+        this.subscribe = subscribe;
     }
 
     public enum PaymentMethod {

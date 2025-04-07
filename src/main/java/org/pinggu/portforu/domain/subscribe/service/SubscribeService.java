@@ -26,12 +26,6 @@ public class SubscribeService {
     // 구독 생성
     @Transactional
     public SubscribeResponseDto saveSubscribe(Long memberId, Long membershipId, SubscribeRequestDto requestDto) {
-        // Payment도 builder 사용
-        Payment payment = Payment.builder()
-                .paymentMethod(requestDto.getPaymentMethod())
-                .status(Payment.PaymentStatus.COMPLETED)
-                .build();
-        Payment savedPayment = paymentRepository.save(payment);
 
         LocalDateTime startDate = LocalDateTime.now();
         LocalDateTime endDate = startDate.plusMonths(1);
@@ -40,13 +34,19 @@ public class SubscribeService {
         Subscribe subscribe = Subscribe.builder()
                 .memberId(memberId)
                 .membershipId(membershipId)
-                .payment(savedPayment)
                 .startDate(startDate)
                 .endDate(endDate)
                 .build();
-        Subscribe saved = subscribeRepository.save(subscribe);
+        Subscribe savedSub = subscribeRepository.save(subscribe);
 
-        return SubscribeResponseDto.fromEntity(saved);
+        Payment payment = Payment.builder()
+                .paymentMethod(requestDto.getPaymentMethod())
+                .status(Payment.PaymentStatus.COMPLETED)
+                .subscribe(savedSub)
+                .build();
+        paymentRepository.save(payment);
+
+        return SubscribeResponseDto.fromEntity(savedSub);
     }
 
     // 구독 목록 조회

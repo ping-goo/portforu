@@ -24,10 +24,6 @@ public class Subscribe extends BaseEntity {
     @Column(nullable = false)
     private Long membershipId; // 멤버십 ID
 
-    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    @JoinColumn(name = "payment_id", nullable = false)
-    private Payment payment; // 결제 entity
-
     @Column(nullable = false)
     private LocalDateTime startDate; // 구독 시작일
 
@@ -39,7 +35,6 @@ public class Subscribe extends BaseEntity {
     public Subscribe(Long memberId, Long membershipId, Payment payment, LocalDateTime startDate, LocalDateTime endDate) {
         this.memberId = memberId;
         this.membershipId = membershipId;
-        this.payment = payment;
         this.startDate = startDate;
         this.endDate = endDate;
     }
@@ -48,7 +43,6 @@ public class Subscribe extends BaseEntity {
         return Subscribe.builder()
                 .memberId(this.memberId)
                 .membershipId(membershipId)
-                .payment(payment)
                 .startDate(startDate)
                 .endDate(endDate)
                 .build();
