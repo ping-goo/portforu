@@ -39,7 +39,7 @@ public class Portfolio extends BaseEntity {
     }
 
 
-    public static Portfolio createPortfolio(Member member, String title, String description, String fileUrl) {
+    public static Portfolio savePortfolio(Member member, String title, String description, String fileUrl) {
         return new Portfolio(member, title, description, fileUrl, 0);
     }
 

@@ -32,7 +32,7 @@ public class PortfolioService {
         Member member = memberRepository.findById(memberId)
                 .orElseThrow(() -> new CustomException(HttpStatus.NOT_FOUND, "존재하지 않는 사용자입니다."));
 
-        Portfolio portfolio = Portfolio.createPortfolio(member, request.getTitle(), request.getDescription(), request.getFileUrl());
+        Portfolio portfolio = Portfolio.savePortfolio(member, request.getTitle(), request.getDescription(), request.getFileUrl());
         Portfolio savedPortfolio = portfolioRepository.save(portfolio);
 
         return convertToDto(savedPortfolio);
