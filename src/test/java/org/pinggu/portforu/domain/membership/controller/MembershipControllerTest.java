@@ -55,13 +55,13 @@ class MembershipControllerTest {
     @Test
     public void 맴버쉽_생성_컨트롤러_테스트() throws Exception {
         // given
-        MembershipSaveRequestDto request = new MembershipSaveRequestDto("테스트", 10000, 2000, 2024);
+        MembershipSaveRequestDto request = new MembershipSaveRequestDto("테스트", 10000, 2000, 2025);
         MembershipResponseDto membershipResponse = MembershipResponseDto.builder()
                 .id(1L)
                 .name("테스트")
                 .price(10000)
                 .quantity(2000)
-                .year(2024)
+                .year(2025)
                 .createdAt(LocalDateTime.now())
                 .updatedAt(LocalDateTime.now())
                 .deletedAt(null)
@@ -86,7 +86,7 @@ class MembershipControllerTest {
                 .name("회원1")
                 .price(10000)
                 .quantity(2000)
-                .year(2024)
+                .year(2025)
                 .createdAt(LocalDateTime.now())
                 .updatedAt(LocalDateTime.now())
                 .deletedAt(null)
