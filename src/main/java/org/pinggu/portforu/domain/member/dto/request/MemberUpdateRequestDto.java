@@ -3,8 +3,10 @@ package org.pinggu.portforu.domain.member.dto.request;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 @Getter
+@NoArgsConstructor
 public class MemberUpdateRequestDto {
 
     private String oldPassword;
@@ -31,5 +33,5 @@ public class MemberUpdateRequestDto {
         this.phoneNumber = phoneNumber;
         this.address = address;
     }
-  
+
 }
