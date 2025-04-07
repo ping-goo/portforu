@@ -1,6 +1,5 @@
 package org.pinggu.portforu.domain.membership.service;
 
-import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.pinggu.portforu.common.domain.Pagecond;
 import org.pinggu.portforu.common.exception.CustomException;
@@ -25,7 +24,7 @@ public class MembershipService {
 
     @Transactional
     public MembershipResponseDto saveMembership(
-            @Valid CreateMembershipRequestDto request
+            CreateMembershipRequestDto request
     ) {
 
         Membership membership = Membership.builder()
@@ -65,10 +64,7 @@ public class MembershipService {
         Membership membership = membershipRepository.findById(membershipId)
                 .orElseThrow(() -> new CustomException(HttpStatus.BAD_REQUEST, "아이디가 없습니다."));
 
-        membership.setName(request.getName());
-        membership.setPrice(request.getPrice());
-        membership.setQuantity(request.getQuantity());
-        membership.setYear(request.getYear());
+        membership.update(request.getName(), request.getPrice(), request.getQuantity(), request.getYear());
 
         Membership updatedMembership = membershipRepository.save(membership);
 
