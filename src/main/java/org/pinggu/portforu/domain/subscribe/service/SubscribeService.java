@@ -26,20 +26,26 @@ public class SubscribeService {
     // 구독 생성
     @Transactional
     public SubscribeResponseDto saveSubscribe(Long memberId, Long membershipId, SubscribeRequestDto requestDto) {
-        Payment payment = new Payment(requestDto.getPaymentMethod(), Payment.PaymentStatus.COMPLETED);
+        // Payment도 builder 사용
+        Payment payment = Payment.builder()
+                .paymentMethod(requestDto.getPaymentMethod())
+                .status(Payment.PaymentStatus.COMPLETED)
+                .build();
         Payment savedPayment = paymentRepository.save(payment);
 
         LocalDateTime startDate = LocalDateTime.now();
         LocalDateTime endDate = startDate.plusMonths(1);
 
-        Subscribe subscribe = new Subscribe(
-                memberId,
-                membershipId,
-                savedPayment,
-                startDate,
-                endDate
-        );
+        // Subscribe도 builder 사용
+        Subscribe subscribe = Subscribe.builder()
+                .memberId(memberId)
+                .membershipId(membershipId)
+                .payment(savedPayment)
+                .startDate(startDate)
+                .endDate(endDate)
+                .build();
         Subscribe saved = subscribeRepository.save(subscribe);
+
         return SubscribeResponseDto.fromEntity(saved);
     }
 
@@ -59,3 +65,4 @@ public class SubscribeService {
         subscribeRepository.deleteById(id);
     }
 }
+
