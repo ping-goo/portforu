@@ -5,6 +5,7 @@ import lombok.RequiredArgsConstructor;
 import org.pinggu.portforu.common.annotation.Admin;
 import org.pinggu.portforu.common.annotation.Member;
 import org.pinggu.portforu.common.domain.PageInfo;
+import org.pinggu.portforu.common.domain.Pagecond;
 import org.pinggu.portforu.common.dto.ApiResponse;
 import org.pinggu.portforu.common.dto.AuthMember;
 import org.pinggu.portforu.domain.subscribe.dto.request.SubscribeRequestDto;
@@ -26,7 +27,7 @@ public class SubscribeController {
     private final SubscribeService subscribeService;
 
     // 구독 생성
-    @Admin
+    @Member
     @PostMapping("/memberships/{membershipId}/subscribes")
     public ResponseEntity<ApiResponse<SubscribeResponseDto>> createSubscribe(
             @PathVariable Long membershipId,
@@ -42,23 +43,24 @@ public class SubscribeController {
     @Member
     @GetMapping("/my/subscribes")
     public ResponseEntity<ApiResponse<List<SubscribeResponseDto>>> getAllSubscribes(
-            @RequestParam(defaultValue = "1") int page,
-            @RequestParam(defaultValue = "10") int size,
+            @ModelAttribute Pagecond pagecond,
             @AuthenticationPrincipal AuthMember member) {
 
-        Long memberId = member.getId();
-        PageRequest pageable = PageRequest.of(page - 1, size);
-        Page<SubscribeResponseDto> subscribePage = subscribeService.getAllSubscribes(pageable, memberId);
+        // member.getId()를 통해 인증된 사용자의 ID를 가져옵니다.
+        Page<SubscribeResponseDto> responses = subscribeService.getAllSubscribes(
+                PageRequest.of(pagecond.getPageNum() - 1, pagecond.getPageSize()),
+                member.getId());
 
         PageInfo pageInfo = PageInfo.builder()
-                .pageNum(page)
-                .pageSize(size)
-                .totalElement(subscribePage.getTotalElements())
-                .totalPage(subscribePage.getTotalPages())
+                .pageNum(pagecond.getPageNum())
+                .pageSize(pagecond.getPageSize())
+                .totalElement(responses.getTotalElements())
+                .totalPage(responses.getTotalPages())
                 .build();
 
-        return ResponseEntity.ok(ApiResponse.of(subscribePage.getContent(), pageInfo));
+        return ResponseEntity.ok(ApiResponse.of(responses.getContent(), pageInfo));
     }
+
 
     // 구독 취소
     @Member
