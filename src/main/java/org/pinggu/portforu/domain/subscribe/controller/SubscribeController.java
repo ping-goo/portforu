@@ -2,6 +2,8 @@ package org.pinggu.portforu.domain.subscribe.controller;
 
 import lombok.RequiredArgsConstructor;
 
+import org.pinggu.portforu.common.annotation.Admin;
+import org.pinggu.portforu.common.annotation.Member;
 import org.pinggu.portforu.common.domain.PageInfo;
 import org.pinggu.portforu.common.dto.ApiResponse;
 import org.pinggu.portforu.common.dto.AuthMember;
@@ -24,6 +26,7 @@ public class SubscribeController {
     private final SubscribeService subscribeService;
 
     // 구독 생성
+    @Admin
     @PostMapping("/memberships/{membershipId}/subscribes")
     public ResponseEntity<ApiResponse<SubscribeResponseDto>> createSubscribe(
             @PathVariable Long membershipId,
@@ -36,6 +39,7 @@ public class SubscribeController {
     }
 
     // 구독 목록 조회 (페이징 적용)
+    @Member
     @GetMapping("/my/subscribes")
     public ResponseEntity<ApiResponse<List<SubscribeResponseDto>>> getAllSubscribes(
             @RequestParam(defaultValue = "1") int page,
@@ -57,6 +61,7 @@ public class SubscribeController {
     }
 
     // 구독 취소
+    @Member
     @DeleteMapping("/my/subscribes/{subscribeId}")
     public ResponseEntity<ApiResponse<String>> deleteSubscribe(@PathVariable Long subscribeId) {
         subscribeService.deleteSubscribe(subscribeId);
