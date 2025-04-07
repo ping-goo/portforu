@@ -39,10 +39,10 @@ public class MemberController {
     @DeleteMapping
     public ResponseEntity<Void> deleteMember(
             @AuthenticationPrincipal AuthMember authMember,
-            @RequestBody MemberDeleteRequestDto requestDto
+            @Valid @RequestBody MemberDeleteRequestDto requestDto
             ) {
         memberService.deleteMember(authMember, requestDto);
         return ResponseEntity.noContent().build();
     }
-    
+
 }
