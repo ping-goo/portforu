@@ -13,6 +13,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @RequiredArgsConstructor
 @Service
@@ -20,6 +21,7 @@ public class MembershipService {
 
     private final MembershipRepository membershipRepository;
 
+    @Transactional
     public MembershipResponseDto saveMembership(
             AuthMember authMember,
             @Valid CreateMembershipRequestDto request
@@ -36,6 +38,7 @@ public class MembershipService {
         return MembershipResponseDto.from(savedMembership);
     }
 
+    @Transactional(readOnly = true)
     public Page<MembershipResponseDto> findAllMemberships(
             AuthMember authMember,
             Pageable pageable
@@ -43,6 +46,7 @@ public class MembershipService {
         return membershipRepository.findAll(pageable).map(MembershipResponseDto::from);
     }
 
+    @Transactional(readOnly = true)
     public MembershipResponseDto findByMembershipsId(
             AuthMember authMember,
             Long membershipId
@@ -53,6 +57,7 @@ public class MembershipService {
         return MembershipResponseDto.from(membership);
     }
 
+    @Transactional
     public MembershipResponseDto updateMembership(
             AuthMember authMember,
             Long membershipId,
@@ -71,6 +76,7 @@ public class MembershipService {
         return MembershipResponseDto.from(updatedMembership);
     }
 
+    @Transactional
     public MembershipResponseDto deleteMembership(AuthMember authMember, Long membershipId) {
         Membership membership = membershipRepository.findById(membershipId)
                 .orElseThrow(() -> new CustomException(HttpStatus.BAD_REQUEST, "아이디가 없습니다."));

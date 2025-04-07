@@ -2,6 +2,8 @@ package org.pinggu.portforu.domain.membership.controller;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.pinggu.portforu.common.annotation.Admin;
+import org.pinggu.portforu.common.annotation.Member;
 import org.pinggu.portforu.common.dto.ApiResponse;
 import org.pinggu.portforu.common.dto.AuthMember;
 import org.pinggu.portforu.domain.membership.dto.request.CreateMembershipRequestDto;
@@ -21,6 +23,7 @@ import org.springframework.web.bind.annotation.*;
 public class MembershipController {
     private final MembershipService membershipService;
 
+    @Admin
     @PostMapping
     public ResponseEntity<ApiResponse<MembershipResponseDto>> saveMembership(
             @AuthenticationPrincipal AuthMember authMember,
@@ -30,6 +33,7 @@ public class MembershipController {
         return ResponseEntity.ok().body(ApiResponse.of(response));
     }
 
+    @Member
     @GetMapping
     public ResponseEntity<ApiResponse<Page<MembershipResponseDto>>> findAllMemberships(
             @AuthenticationPrincipal AuthMember authMember,
@@ -41,6 +45,7 @@ public class MembershipController {
         return ResponseEntity.ok().body(ApiResponse.of(memberships));
     }
 
+    @Member
     @GetMapping("/{membershipId}")
     public ResponseEntity<ApiResponse<MembershipResponseDto>> findByMembershipsId(
             @AuthenticationPrincipal AuthMember authMember,
@@ -50,6 +55,7 @@ public class MembershipController {
         return ResponseEntity.ok().body(ApiResponse.of(response));
     }
 
+    @Admin
     @PutMapping("/{membershipId}")
     public ResponseEntity<ApiResponse<MembershipResponseDto>> updateMembership(
             @AuthenticationPrincipal AuthMember authMember,
@@ -60,6 +66,7 @@ public class MembershipController {
         return ResponseEntity.ok(ApiResponse.of(updatedMembership));
     }
 
+    @Admin
     @DeleteMapping("/{membershipId}")
     public ResponseEntity<ApiResponse<MembershipResponseDto>> deleteMembership(
             @AuthenticationPrincipal AuthMember authMember,
