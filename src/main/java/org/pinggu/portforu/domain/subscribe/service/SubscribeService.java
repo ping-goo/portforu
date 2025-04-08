@@ -52,9 +52,9 @@ public class SubscribeService {
                 .status(Payment.PaymentStatus.COMPLETED)
                 .subscribe(savedSub)
                 .build();
-        paymentRepository.save(payment);
+        Payment savedPayment = paymentRepository.save(payment);
 
-        return SubscribeResponseDto.fromEntity(savedSub, paymentRepository);
+        return SubscribeResponseDto.from(savedSub, savedPayment);
     }
 
     // 구독 조회
@@ -62,10 +62,15 @@ public class SubscribeService {
     public Page<SubscribeResponseDto> findSubscribes(Long memberId, Pageable pageable) {
         Member member = memberRepository.findById(memberId)
                 .orElseThrow(() -> new CustomException(HttpStatus.NOT_FOUND, "해당 회원이 존재하지 않습니다."));
-        return subscribeRepository.findAllByMember(member, pageable)
-                .map(subscribe -> SubscribeResponseDto.fromEntity(subscribe, paymentRepository));
-    }
 
+        return subscribeRepository.findAllByMember(member, pageable)
+                .map(subscribe -> {
+                    Payment payment = paymentRepository.findBySubscribe(subscribe)
+                            .orElseThrow(() -> new CustomException(HttpStatus.NOT_FOUND, "결제 정보가 없습니다."));
+
+                    return SubscribeResponseDto.from(subscribe, payment);
+                });
+    }
     // 구독 취소
     @Transactional
     public Long deleteSubscribe(Long memberId, Long subscribeId) {

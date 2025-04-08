@@ -51,4 +51,8 @@ public class Subscribe extends BaseEntity {
                 .endDate(endDate)
                 .build();
     }
+
+    public boolean isActive() {
+        return LocalDateTime.now().isBefore(this.endDate);
+    }
 }
