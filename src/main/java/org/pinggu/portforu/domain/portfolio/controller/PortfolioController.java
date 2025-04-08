@@ -28,14 +28,16 @@ public class PortfolioController {
     @PostMapping
     public ResponseEntity<ApiResponse<PortfolioResponseDto>> savePortfolio(
             @AuthenticationPrincipal AuthMember authMember,
-            @Valid @RequestBody PortfolioRequestDto requestDto) {
+            @Valid @RequestBody PortfolioRequestDto requestDto
+    ) {
         return ResponseEntity.ok().body(ApiResponse.of(
                 portfolioService.savePortfolio(requestDto, authMember.getId())));
     }
 
     @GetMapping
     public ResponseEntity<ApiResponse<?>> findAllPortfolios(
-            @ModelAttribute Pagecond pagecond) {
+            @ModelAttribute Pagecond pagecond
+    ) {
         Page<PortfolioResponseDto> portfolios = portfolioService.findAllPortfolios(pagecond);
 
         PageInfo pageInfo = PageInfo.builder()
@@ -51,7 +53,8 @@ public class PortfolioController {
 
     @GetMapping("/{portfolioId}")
     public ResponseEntity<ApiResponse<PortfolioDetailResponseDto>> findPortfolio(
-            @PathVariable("portfolioId") Long portfolioId) {
+            @PathVariable("portfolioId") Long portfolioId
+    ) {
         return ResponseEntity.ok().body(ApiResponse.of(
                 portfolioService.findPortfolio(portfolioId)));
     }
@@ -61,7 +64,8 @@ public class PortfolioController {
     public ResponseEntity<ApiResponse<PortfolioResponseDto>> updatePortfolio(
             @AuthenticationPrincipal AuthMember authMember,
             @PathVariable Long portfolioId,
-            @Valid @RequestBody PortfolioUpdateRequestDto requestDto) {
+            @Valid @RequestBody PortfolioUpdateRequestDto requestDto
+    ) {
         return ResponseEntity.ok().body(ApiResponse.of(
                 portfolioService.updatePortfolio(portfolioId, requestDto, authMember.getId())));
     }
@@ -70,7 +74,8 @@ public class PortfolioController {
     @DeleteMapping("/{portfolioId}")
     public ResponseEntity<ApiResponse<Void>> deletePortfolio(
             @AuthenticationPrincipal AuthMember authMember,
-            @PathVariable("portfolioId") Long portfolioId) {
+            @PathVariable("portfolioId") Long portfolioId
+    ) {
         portfolioService.deletePortfolio(portfolioId, authMember.getId());
         return ResponseEntity.ok(ApiResponse.of(null));
     }
