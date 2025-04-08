@@ -27,7 +27,7 @@ public class AuthService {
     private final RefreshTokenRepository refreshTokenRepository;
 
     @Transactional
-    public SignupResponseDto signup(SignupRequestDto requestDto) {
+    public SignupResponseDto signUp(SignupRequestDto requestDto) {
         if (memberRepository.existsByEmail(requestDto.getEmail())) {
             throw new CustomException(HttpStatus.BAD_REQUEST, "이미 존재하는 이메일입니다.");
         }
@@ -75,7 +75,7 @@ public class AuthService {
     }
 
     @Transactional(readOnly = true)
-    public SigninResponseDto signin(SigninRequestDto requestDto) {
+    public SigninResponseDto signIn(SigninRequestDto requestDto) {
         Member member = memberRepository.findByEmail(requestDto.getEmail()).orElseThrow(
                 () -> new CustomException(HttpStatus.BAD_REQUEST, "가입되지 않은 유저입니다.")
         );

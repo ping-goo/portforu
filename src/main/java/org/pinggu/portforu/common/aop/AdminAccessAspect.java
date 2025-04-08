@@ -14,6 +14,7 @@ import org.springframework.stereotype.Component;
 @Component
 public class AdminAccessAspect {
 
+    //TODO Admin AOP 와 Member AOP가 동일한 로직을 가지고 있습니다. 하나로 합치는게 유지보수 면에서 좋아요
     @Before("@annotation(org.pinggu.portforu.common.annotation.Admin)")
     public void adminApiAccess(JoinPoint joinPoint) {
         AuthMember authMember = (AuthMember) SecurityContextHolder.getContext().getAuthentication().getPrincipal();

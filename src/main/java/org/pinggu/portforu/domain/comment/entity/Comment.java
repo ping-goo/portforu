@@ -23,7 +23,8 @@ public class Comment extends BaseEntity {
     @JoinColumn(name = "portfolio_id", nullable = false)
     private Portfolio portfolio;
 
-    @Lob
+    @Lob //?
+//    @Column(columnDefinition = "TEXT", nullable = false)
     @Column(nullable = false)
     private String content;
 

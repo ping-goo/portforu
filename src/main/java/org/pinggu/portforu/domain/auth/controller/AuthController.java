@@ -21,17 +21,17 @@ public class AuthController {
     private final RefreshTokenService refreshTokenService;
 
     @PostMapping("/signup")
-    public ResponseEntity<ApiResponse<SignupResponseDto>> signup(
+    public ResponseEntity<ApiResponse<SignupResponseDto>> signUp(
             @Valid @RequestBody SignupRequestDto requestDto
     ) {
-        return ResponseEntity.ok().body(ApiResponse.of(authService.signup(requestDto)));
+        return ResponseEntity.ok().body(ApiResponse.of(authService.signUp(requestDto)));
     }
 
     @PostMapping("/signin")
-    public ResponseEntity<ApiResponse<SigninResponseDto>> signin(
+    public ResponseEntity<ApiResponse<SigninResponseDto>> signIn(
             @Valid @RequestBody SigninRequestDto requestDto
     ) {
-        return ResponseEntity.ok().body(ApiResponse.of(authService.signin(requestDto)));
+        return ResponseEntity.ok().body(ApiResponse.of(authService.signIn(requestDto)));
     }
 
     @PostMapping("/refresh")

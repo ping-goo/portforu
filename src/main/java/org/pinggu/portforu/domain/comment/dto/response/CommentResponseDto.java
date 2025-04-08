@@ -6,6 +6,8 @@ import org.pinggu.portforu.domain.comment.entity.Comment;
 
 import java.time.LocalDateTime;
 
+
+//TODO LocalDateTime -> Instant로 다 바꾸세요 이유는 찾아보셈
 @Getter
 @Builder
 public class CommentResponseDto {

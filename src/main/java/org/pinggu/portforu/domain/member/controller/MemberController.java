@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequiredArgsConstructor
+//TODO 근데 본인꺼만 본다는게, 이거 남들 프로필 보거나 이럴 가능성이 없는지
 @RequestMapping("/api/v1/members/my")
 public class MemberController {
 
