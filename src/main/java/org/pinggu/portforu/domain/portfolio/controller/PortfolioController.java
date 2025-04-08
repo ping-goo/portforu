@@ -29,16 +29,13 @@ public class PortfolioController {
     public ResponseEntity<ApiResponse<PortfolioResponseDto>> savePortfolio(
             @AuthenticationPrincipal AuthMember authMember,
             @Valid @RequestBody PortfolioRequestDto requestDto) {
-
-        PortfolioResponseDto responseDto = portfolioService.savePortfolio(requestDto, authMember.getId());
-        return ResponseEntity.ok(ApiResponse.of(responseDto));
+        return ResponseEntity.ok().body(ApiResponse.of(
+                portfolioService.savePortfolio(requestDto, authMember.getId())));
     }
 
-    @Member
     @GetMapping
     public ResponseEntity<ApiResponse<?>> findAllPortfolios(
             @ModelAttribute Pagecond pagecond) {
-
         Page<PortfolioResponseDto> portfolios = portfolioService.findAllPortfolios(pagecond);
 
         PageInfo pageInfo = PageInfo.builder()
@@ -48,17 +45,15 @@ public class PortfolioController {
                 .totalPage(portfolios.getTotalPages())
                 .build();
 
-        return ResponseEntity.ok(ApiResponse.of(portfolios.getContent(), pageInfo));
+        return ResponseEntity.ok().body(ApiResponse.of(portfolios.getContent(), pageInfo));
     }
 
 
-    @Member
     @GetMapping("/{portfolioId}")
     public ResponseEntity<ApiResponse<PortfolioDetailResponseDto>> findPortfolio(
             @PathVariable("portfolioId") Long portfolioId) {
-
-        PortfolioDetailResponseDto responseDto = portfolioService.findPortfolio(portfolioId);
-        return ResponseEntity.ok(ApiResponse.of(responseDto));
+        return ResponseEntity.ok().body(ApiResponse.of(
+                portfolioService.findPortfolio(portfolioId)));
     }
 
     @Member
@@ -67,9 +62,8 @@ public class PortfolioController {
             @AuthenticationPrincipal AuthMember authMember,
             @PathVariable Long portfolioId,
             @Valid @RequestBody PortfolioUpdateRequestDto requestDto) {
-
-        PortfolioResponseDto responseDto = portfolioService.updatePortfolio(portfolioId, requestDto, authMember.getId());
-        return ResponseEntity.ok(ApiResponse.of(responseDto));
+        return ResponseEntity.ok().body(ApiResponse.of(
+                portfolioService.updatePortfolio(portfolioId, requestDto, authMember.getId())));
     }
 
     @Member
@@ -77,7 +71,6 @@ public class PortfolioController {
     public ResponseEntity<ApiResponse<Void>> deletePortfolio(
             @AuthenticationPrincipal AuthMember authMember,
             @PathVariable("portfolioId") Long portfolioId) {
-
         portfolioService.deletePortfolio(portfolioId, authMember.getId());
         return ResponseEntity.ok(ApiResponse.of(null));
     }

@@ -27,7 +27,6 @@ public class CommentService {
 
     @Transactional
     public CommentResponseDto saveComment(Long portfolioId, Long memberId, CommentRequestDto requestDto) {
-
         Portfolio portfolio = portfolioRepository.findByIdAndDeletedAtIsNull(portfolioId)
                 .orElseThrow(() -> new CustomException(HttpStatus.NOT_FOUND, "게시물을 찾을 수 없습니다."));
 
@@ -45,7 +44,6 @@ public class CommentService {
 
     @Transactional(readOnly = true)
     public List<CommentResponseDto> findAllComments(Long portfolioId) {
-
         portfolioRepository.findByIdAndDeletedAtIsNull(portfolioId)
                 .orElseThrow(() -> new CustomException(HttpStatus.NOT_FOUND, "게시물을 찾을 수 없습니다."));
 
@@ -58,7 +56,6 @@ public class CommentService {
 
     @Transactional
     public CommentResponseDto updateComment(Long portfolioId, Long commentId, Long memberId, CommentRequestDto requestDto) {
-
         portfolioRepository.findByIdAndDeletedAtIsNull(portfolioId)
                 .orElseThrow(() -> new CustomException(HttpStatus.NOT_FOUND, "게시물을 찾을 수 없습니다."));
 
@@ -76,7 +73,6 @@ public class CommentService {
 
     @Transactional
     public void deleteComment(Long portfolioId, Long commentId, Long memberId) {
-
         portfolioRepository.findByIdAndDeletedAtIsNull(portfolioId)
                 .orElseThrow(() -> new CustomException(HttpStatus.NOT_FOUND, "게시물을 찾을 수 없습니다."));
 

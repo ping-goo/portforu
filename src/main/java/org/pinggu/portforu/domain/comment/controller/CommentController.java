@@ -26,9 +26,8 @@ public class CommentController {
             @PathVariable("portfolioId") Long portfolioId,
             @AuthenticationPrincipal AuthMember authMember,
             @Valid @RequestBody CommentRequestDto requestDto) {
-
-        CommentResponseDto responseDto = commentService.saveComment(portfolioId, authMember.getId(), requestDto);
-        return ResponseEntity.ok(ApiResponse.of(responseDto));
+        return ResponseEntity.ok().body(ApiResponse.of(
+                commentService.saveComment(portfolioId, authMember.getId(), requestDto)));
     }
 
     @Member
@@ -38,9 +37,8 @@ public class CommentController {
             @PathVariable("commentId") Long commentId,
             @AuthenticationPrincipal AuthMember authMember,
             @Valid @RequestBody CommentRequestDto requestDto) {
-
-        CommentResponseDto responseDto = commentService.updateComment(portfolioId, commentId, authMember.getId(), requestDto);
-        return ResponseEntity.ok(ApiResponse.of(responseDto));
+        return ResponseEntity.ok().body(ApiResponse.of(
+                commentService.updateComment(portfolioId, commentId, authMember.getId(), requestDto)));
     }
 
     @Member
@@ -49,7 +47,6 @@ public class CommentController {
             @PathVariable("portfolioId") Long portfolioId,
             @PathVariable("commentId") Long commentId,
             @AuthenticationPrincipal AuthMember authMember) {
-
         commentService.deleteComment(portfolioId, commentId, authMember.getId());
         return ResponseEntity.ok(ApiResponse.of("댓글이 삭제되었습니다."));
     }
