@@ -11,9 +11,6 @@ import org.pinggu.portforu.domain.member.entity.Member;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Portfolio extends BaseEntity {
 
-    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "member_id" , nullable = false)
     private Member member;
@@ -29,7 +26,6 @@ public class Portfolio extends BaseEntity {
 
     @Column(nullable = false)
     private Integer views;
-
 
     @Builder
     public Portfolio(Member member, String title, String description, String fileUrl, Integer views) {

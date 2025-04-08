@@ -41,7 +41,8 @@ public class PortfolioService {
                 .build();
 
         Portfolio savedPortfolio = portfolioRepository.save(portfolio);
-        return convertToDto(savedPortfolio);
+
+        return PortfolioResponseDto.from(savedPortfolio);
     }
 
 
@@ -51,7 +52,8 @@ public class PortfolioService {
         PageRequest pageRequest = PageRequest.of(pagecond.getPageNum()-1, pagecond.getPageSize());
 
         Page<Portfolio> portfolios = portfolioRepository.findAll(pageRequest);
-        return portfolios.map(this::convertToDto);
+
+        return portfolios.map(PortfolioResponseDto::from);
     }
 
 
@@ -63,7 +65,8 @@ public class PortfolioService {
 
         portfolio.incrementViews();
         portfolioRepository.save(portfolio);
-        return convertToDto(portfolio);
+
+        return PortfolioResponseDto.from(portfolio);
     }
 
 
@@ -81,12 +84,12 @@ public class PortfolioService {
 
         Portfolio updatedPortfolio = portfolioRepository.save(portfolio);
 
-        return convertToDto(updatedPortfolio);
+        return PortfolioResponseDto.from(updatedPortfolio);
     }
 
 
     @Transactional
-    public void deletePortfolio(Long portfolioId, Long memberId){
+    public Long deletePortfolio(Long portfolioId, Long memberId){
         Portfolio portfolio = portfolioRepository.findById(portfolioId)
                 .orElseThrow(() -> new CustomException(HttpStatus.NOT_FOUND,"게시물을 찾을 수 없습니다."));
 
@@ -94,22 +97,7 @@ public class PortfolioService {
             throw new CustomException(HttpStatus.UNAUTHORIZED,"수정 권한이 없습니다.");
         }
 
-        // 소프트 삭제 방식 -> deletedAt으로 삭제를 관리함
-        portfolio.delete();
-        portfolioRepository.save(portfolio);
+        return portfolio.delete();
     }
 
-    private PortfolioResponseDto convertToDto(Portfolio portfolio){
-        return PortfolioResponseDto.builder()
-                .id(portfolio.getId())
-                .memberId(portfolio.getMember().getId())
-                .title(portfolio.getTitle())
-                .description(portfolio.getDescription())
-                .fileUrl(portfolio.getFileUrl())
-                .views(portfolio.getViews())
-                .createdAt(portfolio.getCreatedAt())
-                .updatedAt(portfolio.getUpdatedAt())
-                .deletedAt(portfolio.getDeletedAt())
-                .build();
-    }
 }
