@@ -9,13 +9,13 @@ import java.time.LocalDateTime;
 @Getter
 @Builder
 public class CommentResponseDto {
-    private Long id;
-    private Long memberId;
-    private Long portfolioId;
-    private String content;
-    private LocalDateTime createdAt;
-    private LocalDateTime updatedAt;
-    private LocalDateTime deletedAt;
+    private final Long id;
+    private final Long memberId;
+    private final Long portfolioId;
+    private final String content;
+    private final LocalDateTime createdAt;
+    private final LocalDateTime updatedAt;
+    private final LocalDateTime deletedAt;
 
     public static CommentResponseDto from(Comment comment) {
         return CommentResponseDto.builder()

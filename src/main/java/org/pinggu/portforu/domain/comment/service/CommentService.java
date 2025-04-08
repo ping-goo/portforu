@@ -27,8 +27,10 @@ public class CommentService {
 
     @Transactional
     public CommentResponseDto saveComment(Long portfolioId, Long memberId, CommentRequestDto requestDto) {
-        Portfolio portfolio = portfolioRepository.findById(portfolioId)
+
+        Portfolio portfolio = portfolioRepository.findByIdAndDeletedAtIsNull(portfolioId)
                 .orElseThrow(() -> new CustomException(HttpStatus.NOT_FOUND, "게시물을 찾을 수 없습니다."));
+
         Member member = memberRepository.getReferenceById(memberId);
 
         Comment comment = Comment.builder()
@@ -43,10 +45,11 @@ public class CommentService {
 
     @Transactional(readOnly = true)
     public List<CommentResponseDto> findAllComments(Long portfolioId) {
-        portfolioRepository.findById(portfolioId)
+
+        portfolioRepository.findByIdAndDeletedAtIsNull(portfolioId)
                 .orElseThrow(() -> new CustomException(HttpStatus.NOT_FOUND, "게시물을 찾을 수 없습니다."));
 
-        List<Comment> comments = commentRepository.findByPortfolioId(portfolioId);
+        List<Comment> comments = commentRepository.findAllByPortfolioIdAndDeletedAtIsNull(portfolioId);
 
         return comments.stream()
                 .map(CommentResponseDto::from)
@@ -56,10 +59,10 @@ public class CommentService {
     @Transactional
     public CommentResponseDto updateComment(Long portfolioId, Long commentId, Long memberId, CommentRequestDto requestDto) {
 
-        portfolioRepository.findById(portfolioId)
+        portfolioRepository.findByIdAndDeletedAtIsNull(portfolioId)
                 .orElseThrow(() -> new CustomException(HttpStatus.NOT_FOUND, "게시물을 찾을 수 없습니다."));
 
-        Comment comment = commentRepository.findById(commentId)
+        Comment comment = commentRepository.findByIdAndDeletedAtIsNull(commentId)
                 .orElseThrow(() -> new CustomException(HttpStatus.NOT_FOUND, "댓글을 찾을 수 없습니다."));
 
         if (!comment.getMember().getId().equals(memberId)) {
@@ -74,10 +77,10 @@ public class CommentService {
     @Transactional
     public void deleteComment(Long portfolioId, Long commentId, Long memberId) {
 
-        portfolioRepository.findById(portfolioId)
+        portfolioRepository.findByIdAndDeletedAtIsNull(portfolioId)
                 .orElseThrow(() -> new CustomException(HttpStatus.NOT_FOUND, "게시물을 찾을 수 없습니다."));
 
-        Comment comment = commentRepository.findById(commentId)
+        Comment comment = commentRepository.findByIdAndDeletedAtIsNull(commentId)
                 .orElseThrow(() -> new CustomException(HttpStatus.NOT_FOUND, "댓글을 찾을 수 없습니다."));
 
         if (!comment.getMember().getId().equals(memberId)) {

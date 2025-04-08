@@ -11,15 +11,15 @@ import java.time.LocalDateTime;
 @Builder
 public class PortfolioResponseDto {
 
-    private Long id;
-    private Long memberId;
-    private String title;
-    private String description;
-    private String fileUrl;
-    private Integer views;
-    private LocalDateTime createdAt;
-    private LocalDateTime updatedAt;
-    private LocalDateTime deletedAt;
+    private final Long id;
+    private final Long memberId;
+    private final String title;
+    private final String description;
+    private final String fileUrl;
+    private final Integer views;
+    private final LocalDateTime createdAt;
+    private final LocalDateTime updatedAt;
+    private final LocalDateTime deletedAt;
 
     public static PortfolioResponseDto from(Portfolio portfolio) {
         return PortfolioResponseDto.builder()

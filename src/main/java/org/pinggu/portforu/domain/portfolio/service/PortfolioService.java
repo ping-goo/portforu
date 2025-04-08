@@ -50,14 +50,14 @@ public class PortfolioService {
     @Transactional(readOnly = true)
     public Page<PortfolioResponseDto> findAllPortfolios(Pagecond pagecond) {
         PageRequest pageRequest = PageRequest.of(pagecond.getPageNum() - 1, pagecond.getPageSize());
-        Page<Portfolio> portfolios = portfolioRepository.findAll(pageRequest);
+        Page<Portfolio> portfolios = portfolioRepository.findAllByDeletedAtIsNull(pageRequest);
         return portfolios.map(PortfolioResponseDto::from);
     }
 
 
     @Transactional
     public PortfolioDetailResponseDto findPortfolio(Long portfolioId) {
-        Portfolio portfolio = portfolioRepository.findById(portfolioId)
+        Portfolio portfolio = portfolioRepository.findByIdAndDeletedAtIsNull(portfolioId)
                 .orElseThrow(() -> new CustomException(HttpStatus.NOT_FOUND, "게시물을 찾을 수 없습니다."));
 
         portfolio.incrementViews();
@@ -69,7 +69,8 @@ public class PortfolioService {
 
     @Transactional
     public PortfolioResponseDto updatePortfolio(Long portfolioId, PortfolioUpdateRequestDto updateDto, Long memberId) {
-        Portfolio portfolio = portfolioRepository.findById(portfolioId)
+
+        Portfolio portfolio = portfolioRepository.findByIdAndDeletedAtIsNull(portfolioId)
                 .orElseThrow(() -> new CustomException(HttpStatus.NOT_FOUND, "게시물을 찾을 수 없습니다."));
 
         if (!portfolio.getMember().getId().equals(memberId)) {
@@ -83,7 +84,7 @@ public class PortfolioService {
 
     @Transactional
     public void deletePortfolio(Long portfolioId, Long memberId) {
-        Portfolio portfolio = portfolioRepository.findById(portfolioId)
+        Portfolio portfolio = portfolioRepository.findByIdAndDeletedAtIsNull(portfolioId)
                 .orElseThrow(() -> new CustomException(HttpStatus.NOT_FOUND, "게시물을 찾을 수 없습니다."));
 
         if (!portfolio.getMember().getId().equals(memberId)) {
