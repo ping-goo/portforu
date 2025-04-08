@@ -29,7 +29,7 @@ public class SubscribeController {
     @Member
     @PostMapping("/memberships/{membershipId}")
     public ResponseEntity<ApiResponse<SubscribeResponseDto>> saveSubscribe(
-            @PathVariable Long membershipId,
+            @PathVariable("membershipId") Long membershipId,
             @Valid @RequestBody SubscribeRequestDto requestDto,
             @AuthenticationPrincipal AuthMember member
     ) {
@@ -60,7 +60,7 @@ public class SubscribeController {
     @Member
     @DeleteMapping("/my/{subscribeId}")
     public ResponseEntity<ApiResponse<Long>> deleteSubscribe(
-            @PathVariable Long subscribeId,
+            @PathVariable("subscribeId") Long subscribeId,
             @AuthenticationPrincipal AuthMember member
     ) {
         Long deletedSubscribeId = subscribeService.deleteSubscribe(member.getId(), subscribeId);

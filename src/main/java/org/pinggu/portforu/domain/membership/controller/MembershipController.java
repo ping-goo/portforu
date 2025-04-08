@@ -47,7 +47,7 @@ public class MembershipController {
 
     @GetMapping("/{membershipId}")
     public ResponseEntity<ApiResponse<MembershipResponseDto>> findMembershipById(
-            @PathVariable Long membershipId
+            @PathVariable("membershipId") Long membershipId
     ) {
         return ResponseEntity.ok().body(ApiResponse.of(membershipService.findMembershipById(membershipId)));
     }
@@ -55,7 +55,7 @@ public class MembershipController {
     @Admin
     @PutMapping("/{membershipId}")
     public ResponseEntity<ApiResponse<MembershipResponseDto>> updateMembership(
-            @PathVariable Long membershipId,
+            @PathVariable("membershipId") Long membershipId,
             @Valid @RequestBody MembershipUpdateRequestDto request
     ) {
         return ResponseEntity.ok(ApiResponse.of(membershipService.updateMembership(membershipId, request)));
@@ -64,7 +64,7 @@ public class MembershipController {
     @Admin
     @DeleteMapping("/{membershipId}")
     public ResponseEntity<ApiResponse<Long>> deleteMembership(
-            @PathVariable Long membershipId
+            @PathVariable("membershipId") Long membershipId
     ) {
         Long deletedMembershipId = membershipService.deleteMembership(membershipId);
 
