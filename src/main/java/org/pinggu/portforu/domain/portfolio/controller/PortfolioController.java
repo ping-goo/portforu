@@ -9,6 +9,7 @@ import org.pinggu.portforu.common.dto.ApiResponse;
 import org.pinggu.portforu.common.dto.AuthMember;
 import org.pinggu.portforu.domain.portfolio.dto.request.PortfolioRequestDto;
 import org.pinggu.portforu.domain.portfolio.dto.request.PortfolioUpdateRequestDto;
+import org.pinggu.portforu.domain.portfolio.dto.response.PortfolioDetailResponseDto;
 import org.pinggu.portforu.domain.portfolio.dto.response.PortfolioResponseDto;
 import org.pinggu.portforu.domain.portfolio.service.PortfolioService;
 import org.springframework.data.domain.Page;
@@ -27,10 +28,9 @@ public class PortfolioController {
     @PostMapping
     public ResponseEntity<ApiResponse<PortfolioResponseDto>> savePortfolio(
             @AuthenticationPrincipal AuthMember authMember,
-            @Valid @RequestBody PortfolioRequestDto requestDto
-            ){
+            @Valid @RequestBody PortfolioRequestDto requestDto) {
 
-        PortfolioResponseDto responseDto = portfolioService.savePortfolio(requestDto,authMember.getId());
+        PortfolioResponseDto responseDto = portfolioService.savePortfolio(requestDto, authMember.getId());
         return ResponseEntity.ok(ApiResponse.of(responseDto));
     }
 
@@ -51,12 +51,13 @@ public class PortfolioController {
         return ResponseEntity.ok(ApiResponse.of(portfolios.getContent(), pageInfo));
     }
 
+
     @Member
     @GetMapping("/{portfolioId}")
-    public ResponseEntity<ApiResponse<PortfolioResponseDto>> findPortfolio(
-            @PathVariable("portfolioId") Long portfolioId){
+    public ResponseEntity<ApiResponse<PortfolioDetailResponseDto>> findPortfolio(
+            @PathVariable("portfolioId") Long portfolioId) {
 
-        PortfolioResponseDto responseDto = portfolioService.findPortfolio(portfolioId);
+        PortfolioDetailResponseDto responseDto = portfolioService.findPortfolio(portfolioId);
         return ResponseEntity.ok(ApiResponse.of(responseDto));
     }
 
@@ -65,10 +66,9 @@ public class PortfolioController {
     public ResponseEntity<ApiResponse<PortfolioResponseDto>> updatePortfolio(
             @AuthenticationPrincipal AuthMember authMember,
             @PathVariable Long portfolioId,
-            @Valid @RequestBody PortfolioUpdateRequestDto requestDto
-    ){
+            @Valid @RequestBody PortfolioUpdateRequestDto requestDto) {
 
-        PortfolioResponseDto responseDto = portfolioService.updatePortfolio(portfolioId,requestDto,authMember.getId());
+        PortfolioResponseDto responseDto = portfolioService.updatePortfolio(portfolioId, requestDto, authMember.getId());
         return ResponseEntity.ok(ApiResponse.of(responseDto));
     }
 
@@ -76,10 +76,10 @@ public class PortfolioController {
     @DeleteMapping("/{portfolioId}")
     public ResponseEntity<ApiResponse<Void>> deletePortfolio(
             @AuthenticationPrincipal AuthMember authMember,
-            @PathVariable("portfolioId") Long portfolioId
-    ){
+            @PathVariable("portfolioId") Long portfolioId) {
 
-        portfolioService.deletePortfolio(portfolioId,authMember.getId());
+        portfolioService.deletePortfolio(portfolioId, authMember.getId());
         return ResponseEntity.ok(ApiResponse.of(null));
     }
 }
+
