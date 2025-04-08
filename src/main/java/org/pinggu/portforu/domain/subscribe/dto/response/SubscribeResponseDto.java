@@ -32,8 +32,8 @@ public class SubscribeResponseDto {
 
         return SubscribeResponseDto.builder()
                 .id(subscribe.getId())
-                .memberId(subscribe.getMemberId())
-                .membershipId(subscribe.getMembershipId())
+                .memberId(subscribe.getMember().getId())
+                .membershipId(subscribe.getMembership().getId())
                 .paymentMethod(payment.getPaymentMethod().name())
                 .paymentId(payment.getId())
                 .startDate(subscribe.getStartDate())
@@ -41,5 +41,4 @@ public class SubscribeResponseDto {
                 .active(isActive)
                 .build();
     }
-
 }

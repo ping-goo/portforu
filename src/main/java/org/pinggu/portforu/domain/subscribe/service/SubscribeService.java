@@ -2,6 +2,10 @@ package org.pinggu.portforu.domain.subscribe.service;
 
 import lombok.RequiredArgsConstructor;
 import org.pinggu.portforu.common.exception.CustomException;
+import org.pinggu.portforu.domain.member.entity.Member;
+import org.pinggu.portforu.domain.member.repository.MemberRepository;
+import org.pinggu.portforu.domain.membership.entity.Membership;
+import org.pinggu.portforu.domain.membership.repository.MembershipRepository;
 import org.pinggu.portforu.domain.payment.entity.Payment;
 import org.pinggu.portforu.domain.payment.repository.PaymentRepository;
 import org.pinggu.portforu.domain.subscribe.dto.request.SubscribeRequestDto;
@@ -21,18 +25,23 @@ public class SubscribeService {
 
     private final SubscribeRepository subscribeRepository;
     private final PaymentRepository paymentRepository;
+    private final MemberRepository memberRepository;
+    private final MembershipRepository membershipRepository;
 
     // 구독 생성
     @Transactional
     public SubscribeResponseDto saveSubscribe(Long memberId, Long membershipId, SubscribeRequestDto requestDto) {
+        Member member = memberRepository.findById(memberId)
+                .orElseThrow(() -> new CustomException(HttpStatus.NOT_FOUND, "해당 회원이 존재하지 않습니다."));
+        Membership membership = membershipRepository.findById(membershipId)
+                .orElseThrow(() -> new CustomException(HttpStatus.NOT_FOUND, "해당 멤버십이 존재하지 않습니다."));
 
         LocalDateTime startDate = LocalDateTime.now();
         LocalDateTime endDate = startDate.plusMonths(1);
 
-        // Subscribe도 builder 사용
         Subscribe subscribe = Subscribe.builder()
-                .memberId(memberId)
-                .membershipId(membershipId)
+                .member(member)
+                .membership(membership)
                 .startDate(startDate)
                 .endDate(endDate)
                 .build();
@@ -48,26 +57,27 @@ public class SubscribeService {
         return SubscribeResponseDto.fromEntity(savedSub, paymentRepository);
     }
 
-    // 구독 목록 조회
+    // 구독 조회
     @Transactional(readOnly = true)
     public Page<SubscribeResponseDto> findSubscribes(Long memberId, Pageable pageable) {
-        return subscribeRepository
-                .findAllByMemberId(memberId, pageable)
-                .map(sub -> SubscribeResponseDto.fromEntity(sub, paymentRepository));
+        Member member = memberRepository.findById(memberId)
+                .orElseThrow(() -> new CustomException(HttpStatus.NOT_FOUND, "해당 회원이 존재하지 않습니다."));
+        return subscribeRepository.findAllByMember(member, pageable)
+                .map(subscribe -> SubscribeResponseDto.fromEntity(subscribe, paymentRepository));
     }
 
     // 구독 취소
     @Transactional
-    public void deleteSubscribe(Long memberId, Long subscribeId) {
-        Subscribe sub = subscribeRepository.findById(subscribeId)
+    public Long deleteSubscribe(Long memberId, Long subscribeId) {
+        Subscribe subscribe = subscribeRepository.findById(subscribeId)
                 .orElseThrow(() -> new CustomException(HttpStatus.NOT_FOUND, "해당 구독이 존재하지 않습니다."));
-        if (!sub.getMemberId().equals(memberId)) {
+        if (!subscribe.getMember().getId().equals(memberId)) {
             throw new CustomException(HttpStatus.FORBIDDEN, "내 구독만 취소할 수 있습니다.");
         }
-        paymentRepository.findBySubscribe(sub)
+        paymentRepository.findBySubscribe(subscribe)
                 .ifPresent(paymentRepository::delete);
 
-        subscribeRepository.delete(sub);
+        subscribeRepository.delete(subscribe);
+        return subscribeId;
     }
-
 }
