@@ -10,12 +10,13 @@ import java.time.LocalDateTime;
 @Getter
 @Builder
 public class SubscribeResponseDto {
-    private final Long id; // 구독 ID
-    private final Long memberId; // 사용자 ID
-    private final Long membershipId; // 멤버십 ID
-    private final String paymentMethod; // 결제 수단
-    private final LocalDateTime startDate; // 구독 시작일
-    private final LocalDateTime endDate; // 구독 종료일
+    private final Long id;
+    private final Long memberId;
+    private final Long membershipId;
+    private final String paymentMethod;
+    private final Long paymentId;
+    private final LocalDateTime startDate;
+    private final LocalDateTime endDate;
     private final boolean active;
 
     public static SubscribeResponseDto from(Subscribe subscribe, Payment payment) {
@@ -24,9 +25,11 @@ public class SubscribeResponseDto {
                 .memberId(subscribe.getMember().getId())
                 .membershipId(subscribe.getMembership().getId())
                 .paymentMethod(payment.getPaymentMethod().name())
+                .paymentId(payment.getId())
                 .startDate(subscribe.getStartDate())
                 .endDate(subscribe.getEndDate())
                 .active(subscribe.isActive())
                 .build();
     }
+
 }

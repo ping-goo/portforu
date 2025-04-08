@@ -16,25 +16,20 @@ import java.time.LocalDateTime;
 @Table(name = "subscribes")
 public class Subscribe extends BaseEntity {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "member_id", nullable = false)
-    private Member member; // 사용자 ID
+    private Member member;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "membership_id", nullable = false)
-    private Membership membership; // 멤버십 ID
+    private Membership membership;
 
     @Column(nullable = false)
-    private LocalDateTime startDate; // 구독 시작일
+    private LocalDateTime startDate;
 
     @Column(nullable = false)
-    private LocalDateTime endDate; // 구독 종료일
+    private LocalDateTime endDate;
 
-    // 생성자
     @Builder
     public Subscribe(Member member, Membership membership, LocalDateTime startDate, LocalDateTime endDate) {
         this.member = member;
@@ -55,4 +50,5 @@ public class Subscribe extends BaseEntity {
     public boolean isActive() {
         return LocalDateTime.now().isBefore(this.endDate);
     }
+
 }
