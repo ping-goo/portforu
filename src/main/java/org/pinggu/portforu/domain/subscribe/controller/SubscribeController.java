@@ -20,14 +20,14 @@ import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/v1")
+@RequestMapping("/api/v1/subscribes")
 public class SubscribeController {
 
     private final SubscribeService subscribeService;
 
     // 구독 생성
     @Member
-    @PostMapping("/memberships/{membershipId}/subscribes")
+    @PostMapping("/memberships/{membershipId}")
     public ResponseEntity<ApiResponse<SubscribeResponseDto>> saveSubscribe(
             @PathVariable Long membershipId,
             @RequestBody SubscribeRequestDto requestDto,
@@ -40,7 +40,7 @@ public class SubscribeController {
 
     // 구독 목록 조회 (페이징 적용)
     @Member
-    @GetMapping("/my/subscribes")
+    @GetMapping("/my")
     public ResponseEntity<ApiResponse<List<SubscribeResponseDto>>> findSubscribes(
             @ModelAttribute Pagecond pagecond,
             @AuthenticationPrincipal AuthMember member) {
@@ -65,7 +65,7 @@ public class SubscribeController {
 
     // 구독 취소
     @Member
-    @DeleteMapping("/my/subscribes/{subscribeId}")
+    @DeleteMapping("/my/{subscribeId}")
     public ResponseEntity<ApiResponse<String>> deleteSubscribe(
             @PathVariable Long subscribeId,
             @AuthenticationPrincipal AuthMember member
