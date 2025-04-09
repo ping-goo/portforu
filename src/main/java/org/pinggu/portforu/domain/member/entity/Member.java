@@ -15,19 +15,19 @@ import org.pinggu.portforu.domain.member.enums.UserRole;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Member extends BaseEntity {
 
-    @Column(columnDefinition = "varchar(100)", unique = true, nullable = false)
+    @Column(length = 100, unique = true, nullable = false)
     private String email;
 
-    @Column(columnDefinition = "varchar(20)", nullable = false)
+    @Column(length = 60, nullable = false)
     private String password;
 
-    @Column(columnDefinition = "varchar(50)", nullable = false)
+    @Column(length = 50, nullable = false)
     private String name;
 
-    @Column(columnDefinition = "varchar(30)", nullable = false)
+    @Column(length = 30, nullable = false)
     private String phoneNumber;
 
-    @Column(columnDefinition = "varchar(255)", nullable = false)
+    @Column(nullable = false)
     private String address;
 
     @Column(nullable = false)
