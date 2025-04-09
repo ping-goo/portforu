@@ -6,6 +6,7 @@ import org.pinggu.portforu.common.annotation.Member;
 import org.pinggu.portforu.common.dto.ApiResponse;
 import org.pinggu.portforu.common.dto.AuthMember;
 import org.pinggu.portforu.domain.member.dto.request.MemberDeleteRequestDto;
+import org.pinggu.portforu.domain.member.dto.request.PasswordUpdateRequestDto;
 import org.pinggu.portforu.domain.member.dto.response.MemberResponseDto;
 import org.pinggu.portforu.domain.member.dto.request.MemberUpdateRequestDto;
 import org.pinggu.portforu.domain.member.service.MemberService;
@@ -15,35 +16,48 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequiredArgsConstructor
-//TODO 근데 본인꺼만 본다는게, 이거 남들 프로필 보거나 이럴 가능성이 없는지
-@RequestMapping("/api/v1/members/my")
+@RequestMapping("/api/v1/members/{id}")
 public class MemberController {
 
     private final MemberService memberService;
 
+    @Member
     @GetMapping
     public ResponseEntity<ApiResponse<MemberResponseDto>> findMember(
-            @AuthenticationPrincipal AuthMember authMember
+            @AuthenticationPrincipal AuthMember authMember,
+            @PathVariable Long id
     ) {
-        return ResponseEntity.ok().body(ApiResponse.of(memberService.findMember(authMember)));
+        return ResponseEntity.ok().body(ApiResponse.of(memberService.findMember(authMember, id)));
     }
 
     @Member
     @PutMapping
     public ResponseEntity<ApiResponse<MemberResponseDto>> updateMember(
             @AuthenticationPrincipal AuthMember authMember,
+            @PathVariable Long id,
             @Valid @RequestBody MemberUpdateRequestDto requestDto
     ) {
-        return ResponseEntity.ok().body(ApiResponse.of(memberService.updateMember(authMember, requestDto)));
+        return ResponseEntity.ok().body(ApiResponse.of(memberService.updateMember(authMember, id, requestDto)));
+    }
+
+    @Member
+    @PutMapping("/password")
+    public ResponseEntity<ApiResponse<MemberResponseDto>> updatePassword(
+            @AuthenticationPrincipal AuthMember authMember,
+            @PathVariable Long id,
+            @Valid @RequestBody PasswordUpdateRequestDto requestDto
+    ) {
+        return ResponseEntity.ok().body(ApiResponse.of(memberService.updatePassword(authMember, id, requestDto)));
     }
 
     @Member
     @DeleteMapping
     public ResponseEntity<ApiResponse<Long>> deleteMember(
             @AuthenticationPrincipal AuthMember authMember,
+            @PathVariable Long id,
             @Valid @RequestBody MemberDeleteRequestDto requestDto
     ) {
-        Long deletedMemberId = memberService.deleteMember(authMember, requestDto);
+        Long deletedMemberId = memberService.deleteMember(authMember, id, requestDto);
 
         return ResponseEntity.ok(ApiResponse.of(deletedMemberId));
     }
