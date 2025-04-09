@@ -1,14 +1,10 @@
 package org.pinggu.portforu.domain.jobposting.controller;
 
 import lombok.RequiredArgsConstructor;
-import org.pinggu.portforu.common.annotation.Admin;
 import org.pinggu.portforu.common.domain.PageInfo;
 import org.pinggu.portforu.common.domain.Pagecond;
 import org.pinggu.portforu.common.dto.ApiResponse;
-import org.pinggu.portforu.domain.jobposting.dto.request.JobPostingSaveRequestDto;
-import org.pinggu.portforu.domain.jobposting.dto.request.JobPostingUpdateRequestDto;
 import org.pinggu.portforu.domain.jobposting.dto.response.JobPostingResponseDto;
-import org.pinggu.portforu.domain.jobposting.dto.response.JobPostingUpdateResponseDto;
 import org.pinggu.portforu.domain.jobposting.service.JobPostingService;
 import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
@@ -16,22 +12,12 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-//TODO 이거 ADMIN이랑 혼합되어있는 Controller인데, 이런식이면 나중에 멀티모듈로 데몬 띄울때 서버 관리하기 좀 힘들어요
-//ADMIN & Normal User Controller로 나누는게 좋음
 @RestController
 @RequestMapping("/api/v1/job-postings")
 @RequiredArgsConstructor
 public class JobPostingController {
 
     private final JobPostingService jobPostingService;
-
-    @Admin
-    @PostMapping
-    public ResponseEntity<ApiResponse<JobPostingResponseDto>> saveJobPosting(
-            @RequestBody JobPostingSaveRequestDto request
-    ) {
-        return ResponseEntity.ok().body(ApiResponse.of(jobPostingService.saveJobPosting(request)));
-    }
 
     @GetMapping
     public ResponseEntity<ApiResponse<List<JobPostingResponseDto>>> findJobPostings(
@@ -53,25 +39,6 @@ public class JobPostingController {
             @PathVariable("jobPostingId") Long jobPostingId
     ) {
         return ResponseEntity.ok().body(ApiResponse.of(jobPostingService.findJobPosting(jobPostingId)));
-    }
-
-    @Admin
-    @PutMapping("/{jobPostingId}")
-    public ResponseEntity<ApiResponse<JobPostingUpdateResponseDto>> updateJobPosting(
-            @PathVariable("jobPostingId") Long jobPostingId,
-            @RequestBody JobPostingUpdateRequestDto request
-    ) {
-        return ResponseEntity.ok().body(ApiResponse.of(jobPostingService.updateJobPosting(jobPostingId, request)));
-    }
-
-    @Admin
-    @DeleteMapping("/{jobPostingId}")
-    public ResponseEntity<ApiResponse<Long>> deleteJobPosting(
-            @PathVariable("jobPostingId") Long jobPostingId
-    ) {
-        Long deletedJobPostingId = jobPostingService.deleteJobPosting(jobPostingId);
-
-        return ResponseEntity.ok(ApiResponse.of(deletedJobPostingId));
     }
 
 }
