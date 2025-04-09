@@ -18,7 +18,11 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.time.Instant;
 import java.time.LocalDateTime;
+import java.time.Year;
+import java.time.ZoneId;
 
 @Service
 @RequiredArgsConstructor
@@ -30,21 +34,34 @@ public class SubscribeService {
     private final PaymentRepository paymentRepository;
 
     @Transactional
-    public SubscribeResponseDto saveSubscribe(
-            Long memberId, Long membershipId, SubscribeRequestDto requestDto
-    ) {
+    public SubscribeResponseDto saveSubscribe(Long memberId, Long membershipId, SubscribeRequestDto requestDto) {
         Member member = memberRepository.findById(memberId)
                 .orElseThrow(() -> new CustomException(HttpStatus.NOT_FOUND, "해당 회원이 존재하지 않습니다."));
-        Membership membership = membershipRepository.findById(membershipId)
+        Membership membership = membershipRepository.findByIdAndDeletedAtIsNull(membershipId)
                 .orElseThrow(() -> new CustomException(HttpStatus.NOT_FOUND, "해당 멤버십이 존재하지 않습니다."));
 
-        LocalDateTime startDate = LocalDateTime.now();
+        int currentYear = Year.now().getValue();
+
+        if (membership.getYear() != currentYear) {
+            throw new CustomException(HttpStatus.BAD_REQUEST, "해당 멤버십은 " + membership.getYear() + "년 전용입니다.");
+        }
+
+        if (subscribeRepository.existsByMemberIdAndMembershipId(memberId, membershipId)) {
+            throw new CustomException(HttpStatus.BAD_REQUEST, "이미 구독중인 멤버십입니다.");
+        }
+
+        Instant startDate = Instant.now();
+        Instant endDate = LocalDateTime.of(currentYear, 12, 31, 23, 59, 59)
+                .atZone(ZoneId.of("Asia/Seoul"))
+                .toInstant();
+
         Subscribe subscribe = Subscribe.builder()
                 .member(member)
                 .membership(membership)
                 .startDate(startDate)
-                .endDate(startDate.plusMonths(1))
+                .endDate(endDate)
                 .build();
+
         Subscribe savedSub = subscribeRepository.save(subscribe);
 
         Payment payment = Payment.builder()
@@ -52,6 +69,7 @@ public class SubscribeService {
                 .status(PaymentStatus.COMPLETED)
                 .subscribe(savedSub)
                 .build();
+
         paymentRepository.save(payment);
 
         return SubscribeResponseDto.from(savedSub, payment);
@@ -62,11 +80,10 @@ public class SubscribeService {
         Member member = memberRepository.findById(memberId)
                 .orElseThrow(() -> new CustomException(HttpStatus.NOT_FOUND, "해당 회원이 존재하지 않습니다."));
 
-        return subscribeRepository.findAllByMember(member, pageable)
+        return subscribeRepository.findAllByMemberAndDeletedAtIsNull(member, pageable)
                 .map(subscribe -> {
                     Payment payment = paymentRepository.findBySubscribe(subscribe)
                             .orElseThrow(() -> new CustomException(HttpStatus.NOT_FOUND, "결제 정보가 없습니다."));
-
                     return SubscribeResponseDto.from(subscribe, payment);
                 });
     }
@@ -75,6 +92,10 @@ public class SubscribeService {
     public Long deleteSubscribe(Long memberId, Long subscribeId) {
         Subscribe subscribe = subscribeRepository.findById(subscribeId)
                 .orElseThrow(() -> new CustomException(HttpStatus.NOT_FOUND, "해당 구독이 존재하지 않습니다."));
+
+        if (subscribe.isDeleted()) {
+            throw new CustomException(HttpStatus.BAD_REQUEST, "이미 삭제된 구독입니다.");
+        }
 
         if (!subscribe.getMember().getId().equals(memberId)) {
             throw new CustomException(HttpStatus.FORBIDDEN, "내 구독만 취소할 수 있습니다.");
@@ -85,5 +106,4 @@ public class SubscribeService {
 
         return subscribe.delete();
     }
-
 }
