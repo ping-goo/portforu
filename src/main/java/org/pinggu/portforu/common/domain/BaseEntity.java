@@ -6,7 +6,7 @@ import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
-import java.time.LocalDateTime;
+import java.time.Instant;
 
 @Getter
 @MappedSuperclass
@@ -18,20 +18,21 @@ public class BaseEntity {
 
     @CreatedDate
     @Column(updatable = false)
-    @Temporal(TemporalType.TIMESTAMP)
-    private LocalDateTime createdAt;
+    private Instant createdAt;
 
     @LastModifiedDate
     @Column
-    @Temporal(TemporalType.TIMESTAMP)
-    private LocalDateTime updatedAt;
+    private Instant updatedAt;
 
     @Column
-    private LocalDateTime deletedAt;
+    private Instant deletedAt;
 
-    //TODO softdelete하는거 어노테이션으로 delete날리면 deleteAt 추가해주는거 있습니다 @SQL~~ 찾아보세요
+    public boolean isDeleted() {
+        return deletedAt != null;
+    }
+
     public Long delete() {
-        this.deletedAt = LocalDateTime.now();
+        this.deletedAt = Instant.now();
         return this.id;
     }
 

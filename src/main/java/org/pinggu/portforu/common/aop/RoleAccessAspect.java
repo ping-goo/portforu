@@ -12,16 +12,24 @@ import org.springframework.stereotype.Component;
 
 @Aspect
 @Component
-public class AdminAccessAspect {
+public class RoleAccessAspect {
 
-    //TODO Admin AOP 와 Member AOP가 동일한 로직을 가지고 있습니다. 하나로 합치는게 유지보수 면에서 좋아요
     @Before("@annotation(org.pinggu.portforu.common.annotation.Admin)")
-    public void adminApiAccess(JoinPoint joinPoint) {
+    public void checkAdminAccess(JoinPoint joinPoint) {
+        checkRole(UserRole.ROLE_ADMIN, "관리자 권한이 필요합니다.");
+    }
+
+    @Before("@annotation(org.pinggu.portforu.common.annotation.Member)")
+    public void checkMemberAccess(JoinPoint joinPoint) {
+        checkRole(UserRole.ROLE_USER, "일반 사용자 권한이 필요합니다.");
+    }
+
+    private void checkRole(UserRole requiredRole, String errorMessage) {
         AuthMember authMember = (AuthMember) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         UserRole role = authMember.getUserRole();
 
-        if (role != UserRole.ROLE_ADMIN) {
-            throw new CustomException(HttpStatus.FORBIDDEN, "관리자 권한이 필요합니다.");
+        if (role != requiredRole) {
+            throw new CustomException(HttpStatus.FORBIDDEN, errorMessage);
         }
     }
 

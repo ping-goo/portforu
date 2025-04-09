@@ -80,11 +80,10 @@ public class SubscribeService {
         Member member = memberRepository.findById(memberId)
                 .orElseThrow(() -> new CustomException(HttpStatus.NOT_FOUND, "해당 회원이 존재하지 않습니다."));
 
-        return subscribeRepository.findAllByMember(member, pageable)
+        return subscribeRepository.findAllByMemberAndDeletedAtIsNull(member, pageable)
                 .map(subscribe -> {
                     Payment payment = paymentRepository.findBySubscribe(subscribe)
                             .orElseThrow(() -> new CustomException(HttpStatus.NOT_FOUND, "결제 정보가 없습니다."));
-
                     return SubscribeResponseDto.from(subscribe, payment);
                 });
     }
@@ -103,5 +102,4 @@ public class SubscribeService {
 
         return subscribe.delete();
     }
-
 }

@@ -15,22 +15,18 @@ import org.pinggu.portforu.domain.member.enums.UserRole;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Member extends BaseEntity {
 
-    @Column(unique = true, nullable = false)
+    @Column(length = 100, unique = true, nullable = false)
     private String email;
 
-    @Column(nullable = false)
+    @Column(length = 60, nullable = false)
     private String password;
 
-//    @Column(columnDefinition = "varchar(50)", nullable = false)
-    @Column(nullable = false)
+    @Column(length = 50, nullable = false)
     private String name;
 
-    //TODO 다 설정하셈 String은, mysql은 기본으로 varchar255인가? postgresql은 255에요, 근데 나중에 DB 바뀔 경우를..
-    //DTO단의 Validation이랑 DB의 컬럼 속성 설정은 다른거에요
-    @Column(nullable = false)
+    @Column(length = 30, nullable = false)
     private String phoneNumber;
 
-//    @Column(columnDefinition = "varchar(1000)", nullable = false)
     @Column(nullable = false)
     private String address;
 
@@ -57,11 +53,14 @@ public class Member extends BaseEntity {
         this.userRole = userRole;
     }
 
-    public void update(String password, String name, String phoneNumber, String address) {
-        if (password != null) this.password = password;
+    public void updateInfo(String name, String phoneNumber, String address) {
         if (name != null) this.name = name;
         if (phoneNumber != null) this.phoneNumber = phoneNumber;
         if (address != null) this.address = address;
+    }
+
+    public void updatePassword(String newPassword) {
+        if (newPassword != null) this.password = newPassword;
     }
 
     public static Member fromAuthMember(AuthMember authMember) {

@@ -18,8 +18,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-
-
 @RequiredArgsConstructor
 @Service
 public class MembershipService {
@@ -68,17 +66,11 @@ public class MembershipService {
         Membership membership = membershipRepository.findByIdAndDeletedAtIsNull(membershipId)
                 .orElseThrow(() -> new CustomException(HttpStatus.BAD_REQUEST, "아이디가 없거나 삭제된 멤버십입니다."));
 
-        Membership updateMembership = Membership.builder()
-                .name(request.getName())
-                .price(request.getPrice())
-                .quantity(request.getQuantity())
-                .year(request.getYear())
-                .build();
+        membership.update(request.getName(), request.getPrice(), request.getQuantity(), request.getYear());
 
-        membershipRepository.delete(membership);
-        Membership saveMembership = membershipRepository.save(updateMembership);
+        Membership updatedMembership = membershipRepository.save(membership);
 
-        return MembershipResponseDto.from(saveMembership);
+        return MembershipResponseDto.from(updatedMembership);
     }
 
     @Transactional

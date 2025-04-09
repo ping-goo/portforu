@@ -16,7 +16,7 @@ public interface SubscribeRepository extends JpaRepository<Subscribe, Long> {
     @EntityGraph(attributePaths = {"member", "membership"})
     boolean existsByMemberIdAndMembershipId(Long memberId, Long membershipId);
 
-    Page<Subscribe> findAllByMember(Member member, Pageable pageable);
+    Page<Subscribe> findAllByMemberAndDeletedAtIsNull(Member member, Pageable pageable);
 
     Optional<Subscribe> findByIdAndDeletedAtIsNull(Long subscribeId);
 
