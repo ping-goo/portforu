@@ -47,8 +47,6 @@ public class SubscribeController {
         Long memberId = member.getId();
         Pageable pageable = PageRequest.of(pagecond.getPageNum() - 1, pagecond.getPageSize());
 
-
-        // member.getId()를 통해 인증된 사용자의 ID를 가져옵니다.
         Page<SubscribeResponseDto> responses = subscribeService.findSubscribes(memberId, pageable);
 
         PageInfo pageInfo = PageInfo.builder()

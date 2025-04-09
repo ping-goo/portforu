@@ -10,7 +10,6 @@ import org.pinggu.portforu.domain.membership.entity.Membership;
 
 import java.time.Instant;
 
-//TODO 이거 매달 결제는 어떤 플랫폼으로 할건지?
 @Getter
 @NoArgsConstructor
 @Entity
