@@ -31,5 +31,4 @@ public class SubscribeResponseDto {
                 .active(subscribe.isActive())
                 .build();
     }
-
 }
