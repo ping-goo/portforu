@@ -68,11 +68,17 @@ public class MembershipService {
         Membership membership = membershipRepository.findByIdAndDeletedAtIsNull(membershipId)
                 .orElseThrow(() -> new CustomException(HttpStatus.BAD_REQUEST, "아이디가 없거나 삭제된 멤버십입니다."));
 
-        membership.update(request.getName(), request.getPrice(), request.getQuantity(), request.getYear());
+        Membership updateMembership = Membership.builder()
+                .name(request.getName())
+                .price(request.getPrice())
+                .quantity(request.getQuantity())
+                .year(request.getYear())
+                .build();
 
-        Membership updatedMembership = membershipRepository.save(membership);
+        membershipRepository.delete(membership);
+        Membership saveMembership = membershipRepository.save(updateMembership);
 
-        return MembershipResponseDto.from(updatedMembership);
+        return MembershipResponseDto.from(saveMembership);
     }
 
     @Transactional
