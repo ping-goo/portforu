@@ -39,4 +39,5 @@ public class MembershipController {
     ) {
         return ResponseEntity.ok().body(ApiResponse.of(membershipService.findMembershipById(membershipId)));
     }
+
 }

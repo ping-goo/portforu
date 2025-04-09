@@ -8,9 +8,6 @@ import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
-import java.nio.channels.FileChannel;
-import java.util.Optional;
-
 @Repository
 public interface SubscribeRepository extends JpaRepository<Subscribe, Long> {
 
@@ -18,7 +15,5 @@ public interface SubscribeRepository extends JpaRepository<Subscribe, Long> {
     boolean existsByMemberIdAndMembershipId(Long memberId, Long membershipId);
 
     Page<Subscribe> findAllByMemberAndDeletedAtIsNull(Member member, Pageable pageable);
-
-    Optional<Subscribe> findById(Long id);
 
 }

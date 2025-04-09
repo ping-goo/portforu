@@ -57,9 +57,7 @@ public class MemberController {
             @PathVariable Long id,
             @Valid @RequestBody MemberDeleteRequestDto requestDto
     ) {
-        Long deletedMemberId = memberService.deleteMember(authMember, id, requestDto);
-
-        return ResponseEntity.ok(ApiResponse.of(deletedMemberId));
+        return ResponseEntity.ok(ApiResponse.of(memberService.deleteMember(authMember, id, requestDto)));
     }
 
 }

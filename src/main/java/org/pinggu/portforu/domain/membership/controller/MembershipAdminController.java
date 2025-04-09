@@ -40,8 +40,7 @@ public class MembershipAdminController {
     public ResponseEntity<ApiResponse<Long>> deleteMembership(
             @PathVariable("membershipId") Long membershipId
     ) {
-        Long deletedMembershipId = membershipService.deleteMembership(membershipId);
-
-        return ResponseEntity.ok().body(ApiResponse.of(deletedMembershipId));
+        return ResponseEntity.ok().body(ApiResponse.of(membershipService.deleteMembership(membershipId)));
     }
+
 }

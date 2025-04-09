@@ -40,9 +40,7 @@ public class JobPostingAdminController {
     public ResponseEntity<ApiResponse<Long>> deleteJobPosting(
             @PathVariable("jobPostingId") Long jobPostingId
     ) {
-        Long deletedJobPostingId = jobPostingService.deleteJobPosting(jobPostingId);
-
-        return ResponseEntity.ok(ApiResponse.of(deletedJobPostingId));
+        return ResponseEntity.ok(ApiResponse.of(jobPostingService.deleteJobPosting(jobPostingId)));
     }
 
 }
