@@ -9,9 +9,11 @@ import java.util.Optional;
 
 @Repository
 public interface CommentRepository extends JpaRepository<Comment, Long> {
+
     List<Comment> findByPortfolioId(Long portfolioId);
 
     Optional<Comment> findByIdAndDeletedAtIsNull(Long id);
 
     List<Comment> findAllByPortfolioIdAndDeletedAtIsNull(Long portfolioId);
+
 }

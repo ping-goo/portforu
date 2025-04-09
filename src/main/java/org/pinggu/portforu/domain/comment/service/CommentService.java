@@ -30,8 +30,8 @@ public class CommentService {
         Portfolio portfolio = portfolioRepository.findByIdAndDeletedAtIsNull(portfolioId)
                 .orElseThrow(() -> new CustomException(HttpStatus.NOT_FOUND, "게시물을 찾을 수 없습니다."));
 
-        //TODO find쓰세요
-        Member member = memberRepository.getReferenceById(memberId);
+        Member member = memberRepository.findById(memberId)
+                .orElseThrow(() -> new CustomException(HttpStatus.NOT_FOUND, "회원을 찾을 수 없습니다."));
 
         Comment comment = Comment.builder()
                 .member(member)
@@ -73,7 +73,7 @@ public class CommentService {
     }
 
     @Transactional
-    public void deleteComment(Long portfolioId, Long commentId, Long memberId) {
+    public Long deleteComment(Long portfolioId, Long commentId, Long memberId) {
         portfolioRepository.findByIdAndDeletedAtIsNull(portfolioId)
                 .orElseThrow(() -> new CustomException(HttpStatus.NOT_FOUND, "게시물을 찾을 수 없습니다."));
 
@@ -85,8 +85,7 @@ public class CommentService {
         }
 
         // 소프트 삭제 처리
-        comment.delete();
-        commentRepository.save(comment);
+        return comment.delete();
     }
 }
 
