@@ -21,6 +21,7 @@ import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 
+import java.time.Instant;
 import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
@@ -128,12 +129,12 @@ class MembershipControllerTest {
                 .price(10000)
                 .quantity(2000)
                 .year(2024)
-                .createdAt(LocalDateTime.now())
-                .updatedAt(LocalDateTime.now())
+                .createdAt(Instant.now())
+                .updatedAt(Instant.now())
                 .deletedAt(null)
                 .build();
 
-        given(membershipService.findMembershipById(eq(membershipId)))
+        given(membershipService.findMembershipId(eq(membershipId)))
                 .willReturn(membershipResponse);
 
         // when & then

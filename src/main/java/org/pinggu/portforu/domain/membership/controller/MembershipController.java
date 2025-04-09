@@ -34,9 +34,9 @@ public class MembershipController {
     }
 
     @GetMapping("/{membershipId}")
-    public ResponseEntity<ApiResponse<MembershipResponseDto>> findMembershipById(
+    public ResponseEntity<ApiResponse<MembershipResponseDto>> findMembershipId(
             @PathVariable("membershipId") Long membershipId
     ) {
-        return ResponseEntity.ok().body(ApiResponse.of(membershipService.findMembershipById(membershipId)));
+        return ResponseEntity.ok().body(ApiResponse.of(membershipService.findMembershipId(membershipId)));
     }
 }

@@ -159,7 +159,7 @@ class MembershipServiceTest {
         given(membershipRepository.findById(membershipId)).willReturn(Optional.of(membership));
 
         // when
-        MembershipResponseDto responseDto = membershipService.findMembershipById(membershipId);
+        MembershipResponseDto responseDto = membershipService.findMembershipId(membershipId);
 
         // then
         assertEquals(membershipId, responseDto.getId());

@@ -30,7 +30,7 @@ public class MembershipService {
             MembershipSaveRequestDto request
     ) {
         logger.info("MembershipService :: saveMembership ~~");
-        //Log 이거 어떤 계층으로 하고 계시는지 AOP? SLF4J?
+
         Membership membership = Membership.builder()
                 .name(request.getName())
                 .price(request.getPrice())
@@ -51,7 +51,7 @@ public class MembershipService {
     }
 
     @Transactional(readOnly = true)
-    public MembershipResponseDto findMembershipById(Long membershipId) {
+    public MembershipResponseDto findMembershipId(Long membershipId) {
         Membership membership = membershipRepository.findByIdAndDeletedAtIsNull(membershipId)
                 .orElseThrow(() -> new CustomException(HttpStatus.BAD_REQUEST, "아이디가 없거나 삭제된 멤버십입니다."));
 
@@ -75,9 +75,19 @@ public class MembershipService {
 
     @Transactional
     public Long deleteMembership(Long membershipId) {
-        Membership membership = membershipRepository.findByIdAndDeletedAtIsNull(membershipId)
-                .orElseThrow(() -> new CustomException(HttpStatus.BAD_REQUEST, "아이디가 없거나 삭제된 멤버십입니다."));
+        Membership membership = findMembershipById(membershipId);
 
         return membership.delete();
+    }
+
+    public Membership findMembershipById(Long id) {
+        Membership membership = membershipRepository.findById(id)
+                .orElseThrow(() -> new CustomException(HttpStatus.NOT_FOUND, "멤버쉽이 존재하지 않습니다."));
+
+        if (membership.isDeleted()) {
+            throw new CustomException(HttpStatus.BAD_REQUEST, "이미 삭제된 멤버쉽입니다.");
+        }
+
+        return membership;
     }
 }
