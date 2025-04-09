@@ -89,7 +89,7 @@ public class AuthServiceTest {
                     .willReturn(ACCESS_TOKEN);
 
             // when
-            SignupResponseDto response = authService.signup(request);
+            SignupResponseDto response = authService.signUp(request);
 
             // then
             assertThat(response)
@@ -112,7 +112,7 @@ public class AuthServiceTest {
             given(memberRepository.existsByEmail(EMAIL)).willReturn(true);
 
             // when & then
-            assertThatThrownBy(() -> authService.signup(request))
+            assertThatThrownBy(() -> authService.signUp(request))
                     .isInstanceOf(CustomException.class)
                     .hasFieldOrPropertyWithValue("status", HttpStatus.BAD_REQUEST)
                     .hasMessage("이미 존재하는 이메일입니다.");
@@ -135,7 +135,7 @@ public class AuthServiceTest {
             given(refreshTokenRepository.findById(anyLong())).willReturn(Optional.empty());
 
             // when
-            SigninResponseDto response = authService.signin(request);
+            SigninResponseDto response = authService.signIn(request);
 
             // then
             assertThat(response)
@@ -158,7 +158,7 @@ public class AuthServiceTest {
             given(memberRepository.findByEmail("email")).willReturn(Optional.empty());
 
             // when & then
-            assertThatThrownBy(() -> authService.signin(request))
+            assertThatThrownBy(() -> authService.signIn(request))
                     .isInstanceOf(CustomException.class)
                     .hasFieldOrPropertyWithValue("status", HttpStatus.BAD_REQUEST)
                     .hasMessage("가입되지 않은 유저입니다.");
@@ -173,7 +173,7 @@ public class AuthServiceTest {
             given(passwordEncoder.matches("wrongPassword", ENCODED_PASSWORD)).willReturn(false);
 
             // when & then
-            assertThatThrownBy(() -> authService.signin(request))
+            assertThatThrownBy(() -> authService.signIn(request))
                     .isInstanceOf(CustomException.class)
                     .hasFieldOrPropertyWithValue("status", HttpStatus.UNAUTHORIZED)
                     .hasMessage("잘못된 비밀번호입니다.");

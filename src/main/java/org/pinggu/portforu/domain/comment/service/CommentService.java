@@ -30,6 +30,7 @@ public class CommentService {
         Portfolio portfolio = portfolioRepository.findByIdAndDeletedAtIsNull(portfolioId)
                 .orElseThrow(() -> new CustomException(HttpStatus.NOT_FOUND, "게시물을 찾을 수 없습니다."));
 
+        //TODO find쓰세요
         Member member = memberRepository.getReferenceById(memberId);
 
         Comment comment = Comment.builder()
@@ -38,8 +39,8 @@ public class CommentService {
                 .content(requestDto.getContent())
                 .build();
 
-        Comment saved = commentRepository.save(comment);
-        return CommentResponseDto.from(saved);
+        Comment savedComment = commentRepository.save(comment);
+        return CommentResponseDto.from(savedComment);
     }
 
     @Transactional(readOnly = true)

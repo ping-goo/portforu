@@ -16,6 +16,8 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+//TODO 이거 ADMIN이랑 혼합되어있는 Controller인데, 이런식이면 나중에 멀티모듈로 데몬 띄울때 서버 관리하기 좀 힘들어요
+//ADMIN & Normal User Controller로 나누는게 좋음
 @RestController
 @RequestMapping("/api/v1/job-postings")
 @RequiredArgsConstructor

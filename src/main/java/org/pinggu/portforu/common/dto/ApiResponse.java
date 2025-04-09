@@ -7,7 +7,7 @@ import lombok.NoArgsConstructor;
 import org.pinggu.portforu.common.domain.PageInfo;
 
 @Getter
-@JsonInclude(JsonInclude.Include.NON_NULL)
+@JsonInclude(JsonInclude.Include.NON_NULL) //이런거 왜써요 자꾸 혜원님??
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class ApiResponse<T> {
     private T data;

@@ -15,11 +15,14 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/v1/portfolios/{portfolioId}/comments")
+//TODO 댓글 전체 조회는 어디서 이뤄지나요
+//@RequestMapping("/api/v1/portfolios/{portfolioId}/comments")
+@RequestMapping("/api/v1/comments")
 public class CommentController {
 
     private final CommentService commentService;
 
+    //TODO path 추가
     @Member
     @PostMapping
     public ResponseEntity<ApiResponse<CommentResponseDto>> saveComment(
@@ -31,7 +34,11 @@ public class CommentController {
                 commentService.saveComment(portfolioId, authMember.getId(), requestDto)));
     }
 
+
+    //TODO CommentId는 고유값이라 portfolioId 필요없어요
+    //정확하게 비교하고 싶으면 넣어도 상관없는데 맘대로 하세요
     @Member
+//    @PutMapping("/{por~Id}/{commentId}") 만약 넣고싶으면 요렇게, 순서 바뀌어도 크게 상관없어요
     @PutMapping("/{commentId}")
     public ResponseEntity<ApiResponse<CommentResponseDto>> updateComment(
             @PathVariable("portfolioId") Long portfolioId,

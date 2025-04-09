@@ -265,6 +265,7 @@ class MembershipServiceTest {
 
         // when
         MembershipResponseDto responseDto = membershipService.deleteMembership(membershipId);
+        //머임?
 
         // then
         assertEquals(membershipId, responseDto.getId());

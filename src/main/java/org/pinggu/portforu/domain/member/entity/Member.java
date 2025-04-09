@@ -21,12 +21,16 @@ public class Member extends BaseEntity {
     @Column(nullable = false)
     private String password;
 
+//    @Column(columnDefinition = "varchar(50)", nullable = false)
     @Column(nullable = false)
     private String name;
 
+    //TODO 다 설정하셈 String은, mysql은 기본으로 varchar255인가? postgresql은 255에요, 근데 나중에 DB 바뀔 경우를..
+    //DTO단의 Validation이랑 DB의 컬럼 속성 설정은 다른거에요
     @Column(nullable = false)
     private String phoneNumber;
 
+//    @Column(columnDefinition = "varchar(1000)", nullable = false)
     @Column(nullable = false)
     private String address;
 

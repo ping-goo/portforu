@@ -29,6 +29,7 @@ public class BaseEntity {
     @Column
     private LocalDateTime deletedAt;
 
+    //TODO softdelete하는거 어노테이션으로 delete날리면 deleteAt 추가해주는거 있습니다 @SQL~~ 찾아보세요
     public Long delete() {
         this.deletedAt = LocalDateTime.now();
         return this.id;

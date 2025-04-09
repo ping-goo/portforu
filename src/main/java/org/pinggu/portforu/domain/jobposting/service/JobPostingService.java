@@ -73,6 +73,8 @@ public class JobPostingService {
         return jobPosting.delete();
     }
 
+    //TODO null은 SQL 안티패턴입니다 null만든사람도 만들어서 미안하다고 사과함
+    //이런건 isDeleted -> true/false로 관리하는게 좋아요
     public JobPosting findJobPostingById(Long id) {
         return jobPostingRepository.findByIdAndDeletedAtIsNull(id)
                 .orElseThrow(() -> new CustomException(HttpStatus.NOT_FOUND, "채용 공고가 존재하지 않습니다."));

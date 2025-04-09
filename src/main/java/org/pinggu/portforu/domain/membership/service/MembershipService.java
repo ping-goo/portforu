@@ -8,6 +8,8 @@ import org.pinggu.portforu.domain.membership.dto.request.MembershipUpdateRequest
 import org.pinggu.portforu.domain.membership.dto.response.MembershipResponseDto;
 import org.pinggu.portforu.domain.membership.entity.Membership;
 import org.pinggu.portforu.domain.membership.repository.MembershipRepository;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -16,9 +18,12 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+
+
 @RequiredArgsConstructor
 @Service
 public class MembershipService {
+    private static final Logger logger = LoggerFactory.getLogger(MembershipService.class);
 
     private final MembershipRepository membershipRepository;
 
@@ -26,6 +31,8 @@ public class MembershipService {
     public MembershipResponseDto saveMembership(
             MembershipSaveRequestDto request
     ) {
+        logger.info("MembershipService :: saveMembership ~~");
+        //Log 이거 어떤 계층으로 하고 계시는지 AOP? SLF4J?
         Membership membership = Membership.builder()
                 .name(request.getName())
                 .price(request.getPrice())
