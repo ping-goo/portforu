@@ -34,9 +34,7 @@ public class SubscribeService {
     private final PaymentRepository paymentRepository;
 
     @Transactional
-    public SubscribeResponseDto saveSubscribe(
-            Long memberId, Long membershipId, SubscribeRequestDto requestDto
-    ) {
+    public SubscribeResponseDto saveSubscribe(Long memberId, Long membershipId, SubscribeRequestDto requestDto) {
         Member member = memberRepository.findById(memberId)
                 .orElseThrow(() -> new CustomException(HttpStatus.NOT_FOUND, "해당 회원이 존재하지 않습니다."));
         Membership membership = membershipRepository.findByIdAndDeletedAtIsNull(membershipId)
@@ -63,6 +61,7 @@ public class SubscribeService {
                 .startDate(startDate)
                 .endDate(endDate)
                 .build();
+
         Subscribe savedSub = subscribeRepository.save(subscribe);
 
         Payment payment = Payment.builder()
@@ -70,6 +69,7 @@ public class SubscribeService {
                 .status(PaymentStatus.COMPLETED)
                 .subscribe(savedSub)
                 .build();
+
         paymentRepository.save(payment);
 
         return SubscribeResponseDto.from(savedSub, payment);
@@ -90,8 +90,12 @@ public class SubscribeService {
 
     @Transactional
     public Long deleteSubscribe(Long memberId, Long subscribeId) {
-        Subscribe subscribe = subscribeRepository.findByIdAndDeletedAtIsNull(subscribeId)
+        Subscribe subscribe = subscribeRepository.findById(subscribeId)
                 .orElseThrow(() -> new CustomException(HttpStatus.NOT_FOUND, "해당 구독이 존재하지 않습니다."));
+
+        if (subscribe.isDeleted()) {
+            throw new CustomException(HttpStatus.BAD_REQUEST, "이미 삭제된 구독입니다.");
+        }
 
         if (!subscribe.getMember().getId().equals(memberId)) {
             throw new CustomException(HttpStatus.FORBIDDEN, "내 구독만 취소할 수 있습니다.");
