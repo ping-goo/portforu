@@ -12,19 +12,18 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 
 @RestController
 @RequiredArgsConstructor
-//TODO 댓글 전체 조회는 어디서 이뤄지나요
-//@RequestMapping("/api/v1/portfolios/{portfolioId}/comments")
 @RequestMapping("/api/v1/comments")
 public class CommentController {
 
     private final CommentService commentService;
 
-    //TODO path 추가
     @Member
-    @PostMapping
+    @PostMapping("/{portfolioId}")
     public ResponseEntity<ApiResponse<CommentResponseDto>> saveComment(
             @PathVariable("portfolioId") Long portfolioId,
             @AuthenticationPrincipal AuthMember authMember,
@@ -34,12 +33,15 @@ public class CommentController {
                 commentService.saveComment(portfolioId, authMember.getId(), requestDto)));
     }
 
-
-    //TODO CommentId는 고유값이라 portfolioId 필요없어요
-    //정확하게 비교하고 싶으면 넣어도 상관없는데 맘대로 하세요
     @Member
-//    @PutMapping("/{por~Id}/{commentId}") 만약 넣고싶으면 요렇게, 순서 바뀌어도 크게 상관없어요
-    @PutMapping("/{commentId}")
+    @GetMapping("/{portfolioId}")
+    public ResponseEntity<ApiResponse<List<CommentResponseDto>>> findAllComments(
+            @PathVariable("portfolioId") Long portfolioId) {
+        return ResponseEntity.ok(ApiResponse.of(commentService.findAllComments(portfolioId)));
+    }
+
+    @Member
+    @PutMapping("/{portfolioId}/{commentId}")
     public ResponseEntity<ApiResponse<CommentResponseDto>> updateComment(
             @PathVariable("portfolioId") Long portfolioId,
             @PathVariable("commentId") Long commentId,
@@ -51,13 +53,13 @@ public class CommentController {
     }
 
     @Member
-    @DeleteMapping("/{commentId}")
-    public ResponseEntity<ApiResponse<String>> deleteComment(
+    @DeleteMapping("/{portfolioId}/{commentId}")
+    public ResponseEntity<ApiResponse<Long>> deleteComment(
             @PathVariable("portfolioId") Long portfolioId,
             @PathVariable("commentId") Long commentId,
             @AuthenticationPrincipal AuthMember authMember
     ) {
-        commentService.deleteComment(portfolioId, commentId, authMember.getId());
-        return ResponseEntity.ok(ApiResponse.of("댓글이 삭제되었습니다."));
+        return ResponseEntity.ok(ApiResponse.of
+                (commentService.deleteComment(portfolioId, commentId, authMember.getId())));
     }
 }
