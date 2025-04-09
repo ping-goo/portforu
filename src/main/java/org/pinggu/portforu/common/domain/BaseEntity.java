@@ -27,6 +27,9 @@ public class BaseEntity {
     @Column
     private Instant deletedAt;
 
+    public boolean isDeleted() {
+        return deletedAt != null;
+    }
 
     public Long delete() {
         this.deletedAt = Instant.now();
