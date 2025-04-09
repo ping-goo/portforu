@@ -18,8 +18,11 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.Year;
+import java.time.ZoneId;
 
 @Service
 @RequiredArgsConstructor
@@ -49,8 +52,10 @@ public class SubscribeService {
             throw new CustomException(HttpStatus.BAD_REQUEST, "이미 구독중인 멤버십입니다.");
         }
 
-        LocalDateTime startDate = LocalDateTime.now();
-        LocalDateTime endDate = LocalDateTime.of(currentYear, 12, 31, 23, 59, 59);
+        Instant startDate = Instant.now();
+        Instant endDate = LocalDateTime.of(currentYear, 12, 31, 23, 59, 59)
+                .atZone(ZoneId.of("Asia/Seoul"))
+                .toInstant();
 
         Subscribe subscribe = Subscribe.builder()
                 .member(member)
