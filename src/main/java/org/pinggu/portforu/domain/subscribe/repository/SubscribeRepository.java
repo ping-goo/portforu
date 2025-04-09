@@ -1,6 +1,7 @@
 package org.pinggu.portforu.domain.subscribe.repository;
 
 import org.pinggu.portforu.domain.member.entity.Member;
+import org.pinggu.portforu.domain.membership.entity.Membership;
 import org.pinggu.portforu.domain.subscribe.entity.Subscribe;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -20,4 +21,5 @@ public interface SubscribeRepository extends JpaRepository<Subscribe, Long> {
 
     Optional<Subscribe> findByIdAndDeletedAtIsNull(Long subscribeId);
 
+    long countByMembership(Membership membership);
 }
