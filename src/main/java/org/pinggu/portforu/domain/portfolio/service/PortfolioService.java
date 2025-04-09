@@ -44,17 +44,20 @@ public class PortfolioService {
     @Transactional(readOnly = true)
     public Page<PortfolioResponseDto> findAllPortfolios(Pagecond pagecond) {
         PageRequest pageRequest = PageRequest.of(pagecond.getPageNum() - 1, pagecond.getPageSize());
-        Page<Portfolio> portfolios = portfolioRepository.findAllByDeletedAtIsNull(pageRequest);
 
-        return portfolios.map(PortfolioResponseDto::from);
+        Page<Portfolio> portfolioPage = portfolioRepository.findAllByDeletedAtIsNull(pageRequest);
+        return portfolioPage.map(PortfolioResponseDto::from);
     }
 
 
     @Transactional
     public PortfolioResponseDto findPortfolio(Long portfolioId) {
-        Portfolio portfolio = portfolioRepository.findByIdAndDeletedAtIsNull(portfolioId)
+        Portfolio portfolio = portfolioRepository.findById(portfolioId)
                 .orElseThrow(() -> new CustomException(HttpStatus.NOT_FOUND, "게시물을 찾을 수 없습니다."));
 
+        if (portfolio.isDeleted()) {
+            throw new CustomException(HttpStatus.NOT_FOUND, "삭제된 게시물입니다.");
+        }
         portfolio.incrementViews();
 
         return PortfolioResponseDto.from(portfolio);
@@ -62,23 +65,29 @@ public class PortfolioService {
 
     @Transactional
     public PortfolioResponseDto updatePortfolio(Long portfolioId, PortfolioUpdateRequestDto updateDto, Long memberId) {
-        Portfolio portfolio = portfolioRepository.findByIdAndDeletedAtIsNull(portfolioId)
+        Portfolio portfolio = portfolioRepository.findById(portfolioId)
                 .orElseThrow(() -> new CustomException(HttpStatus.NOT_FOUND, "게시물을 찾을 수 없습니다."));
+
+        if (portfolio.isDeleted()) {
+            throw new CustomException(HttpStatus.NOT_FOUND, "삭제된 게시물입니다.");
+        }
 
         if (!portfolio.getMember().getId().equals(memberId)) {
             throw new CustomException(HttpStatus.UNAUTHORIZED, "수정 권한이 없습니다.");
         }
 
         portfolio.update(updateDto.getTitle(), updateDto.getDescription(), updateDto.getFileUrl());
-        Portfolio updatedPortfolio = portfolioRepository.save(portfolio);
-
-        return PortfolioResponseDto.from(updatedPortfolio);
+        return PortfolioResponseDto.from(portfolio);
     }
 
     @Transactional
     public Long deletePortfolio(Long portfolioId, Long memberId) {
-        Portfolio portfolio = portfolioRepository.findByIdAndDeletedAtIsNull(portfolioId)
+        Portfolio portfolio = portfolioRepository.findById(portfolioId)
                 .orElseThrow(() -> new CustomException(HttpStatus.NOT_FOUND, "게시물을 찾을 수 없습니다."));
+
+        if (portfolio.isDeleted()) {
+            throw new CustomException(HttpStatus.NOT_FOUND, "이미 삭제된 게시물입니다.");
+        }
 
         if (!portfolio.getMember().getId().equals(memberId)) {
             throw new CustomException(HttpStatus.UNAUTHORIZED, "수정 권한이 없습니다.");
