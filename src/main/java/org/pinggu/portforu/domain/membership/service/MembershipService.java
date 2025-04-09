@@ -51,7 +51,7 @@ public class MembershipService {
     }
 
     @Transactional(readOnly = true)
-    public MembershipResponseDto findMembershipId(Long membershipId) {
+    public MembershipResponseDto findMembershipById(Long membershipId) {
         Membership membership = membershipRepository.findByIdAndDeletedAtIsNull(membershipId)
                 .orElseThrow(() -> new CustomException(HttpStatus.BAD_REQUEST, "아이디가 없거나 삭제된 멤버십입니다."));
 
@@ -75,12 +75,12 @@ public class MembershipService {
 
     @Transactional
     public Long deleteMembership(Long membershipId) {
-        Membership membership = findMembershipById(membershipId);
+        Membership membership = findMembership(membershipId);
 
         return membership.delete();
     }
 
-    public Membership findMembershipById(Long id) {
+    public Membership findMembership(Long id) {
         Membership membership = membershipRepository.findById(id)
                 .orElseThrow(() -> new CustomException(HttpStatus.NOT_FOUND, "멤버쉽이 존재하지 않습니다."));
 

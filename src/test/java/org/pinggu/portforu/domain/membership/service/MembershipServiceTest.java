@@ -159,7 +159,7 @@ class MembershipServiceTest {
         given(membershipRepository.findById(membershipId)).willReturn(Optional.of(membership));
 
         // when
-        MembershipResponseDto responseDto = membershipService.findMembershipId(membershipId);
+        MembershipResponseDto responseDto = membershipService.findMembershipById(membershipId);
 
         // then
         assertEquals(membershipId, responseDto.getId());
@@ -265,7 +265,6 @@ class MembershipServiceTest {
 
         // when
         MembershipResponseDto responseDto = membershipService.deleteMembership(membershipId);
-        //머임?
 
         // then
         assertEquals(membershipId, responseDto.getId());
