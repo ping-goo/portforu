@@ -5,6 +5,7 @@ import org.pinggu.portforu.common.exception.CustomException;
 import org.pinggu.portforu.domain.member.entity.Member;
 import org.pinggu.portforu.domain.member.enums.UserRole;
 import org.pinggu.portforu.domain.member.repository.MemberRepository;
+import org.pinggu.portforu.domain.oauth.provider.google.GoogleUserInfo;
 import org.pinggu.portforu.domain.oauth.provider.naver.NaverUserInfo;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.oauth2.client.userinfo.DefaultOAuth2UserService;
@@ -29,6 +30,8 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
 
         if (provider.equals("naver")) {
             userInfo = new NaverUserInfo(oAuth2User.getAttributes());
+        } else if (provider.equals("google")) {
+            userInfo = new GoogleUserInfo(oAuth2User.getAttributes());
         } else {
             throw new CustomException(HttpStatus.BAD_REQUEST, "지원하지 않는 로그인 서비스입니다.");
         }
