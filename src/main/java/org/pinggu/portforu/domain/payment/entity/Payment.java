@@ -35,17 +35,14 @@ public class Payment {
         this.subscribe = subscribe;
     }
 
-    // 결제 완료 처리
     public void complete() {
         this.status = PaymentStatus.COMPLETED;
     }
 
-    // 결제 실패 처리
     public void fail() {
         this.status = PaymentStatus.FAILED;
     }
 
-    // 결제 만료 처리
     public void expire() {
         this.status = PaymentStatus.EXPIRED;
     }

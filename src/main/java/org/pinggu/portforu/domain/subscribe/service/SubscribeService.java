@@ -40,24 +40,17 @@ public class SubscribeService {
         Membership membership = membershipRepository.findByIdAndDeletedAtIsNull(membershipId)
                 .orElseThrow(() -> new CustomException(HttpStatus.NOT_FOUND, "해당 멤버십이 존재하지 않습니다."));
 
-        // 이미 PENDING 상태로 결제가 진행 중인 구독이 있는지 확인
         if (paymentRepository.existsBySubscribe_Member_IdAndSubscribe_Membership_IdAndStatus(memberId, membershipId, PaymentStatus.PENDING)) {
             throw new CustomException(HttpStatus.BAD_REQUEST, "결제가 진행 중인 구독이 존재합니다. 결제가 완료된 후 다시 시도하십시오.");
         }
-
-        // 멤버십 정원 초과 여부 체크
         long currentCount = subscribeRepository.countByMembership(membership);
         if (currentCount >= membership.getQuantity()) {
             throw new CustomException(HttpStatus.BAD_REQUEST, "멤버십 정원이 초과되었습니다.");
         }
-
-        // 현재 년도와 멤버십 년도 비교
         int currentYear = Year.now().getValue();
         if (membership.getYear() != currentYear) {
             throw new CustomException(HttpStatus.BAD_REQUEST, "해당 멤버십은 " + membership.getYear() + "년 전용입니다.");
         }
-
-        // 이미 구독한 멤버십인지 확인
         if (subscribeRepository.existsByMemberIdAndMembershipId(memberId, membershipId)) {
             throw new CustomException(HttpStatus.BAD_REQUEST, "이미 구독한 멤버십입니다.");
         }
@@ -67,7 +60,6 @@ public class SubscribeService {
                 .atZone(ZoneId.of("Asia/Seoul"))
                 .toInstant();
 
-        // 구독 생성
         Subscribe subscribe = Subscribe.builder()
                 .member(member)
                 .membership(membership)
@@ -77,7 +69,6 @@ public class SubscribeService {
 
         Subscribe savedSub = subscribeRepository.save(subscribe);
 
-        // 결제 상태는 PENDING으로 설정
         Payment payment = Payment.builder()
                 .paymentMethod(requestDto.getPaymentMethod())
                 .status(PaymentStatus.PENDING)
@@ -148,4 +139,5 @@ public class SubscribeService {
 
         paymentRepository.save(payment);
     }
+
 }

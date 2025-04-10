@@ -39,8 +39,8 @@ public class Subscribe extends BaseEntity {
         this.endDate = endDate;
     }
 
-    // 구독 상태 확인
     public boolean isActive() {
         return Instant.now().isBefore(this.endDate);
     }
+
 }

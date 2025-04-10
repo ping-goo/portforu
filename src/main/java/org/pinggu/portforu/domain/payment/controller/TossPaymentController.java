@@ -26,7 +26,7 @@ public class TossPaymentController {
         // 결제 링크 생성
         String paymentLink = tossPaymentLinkService.savePaymentLink(subscribe);
 
-        // 결제 링크 반환 (사용자가 클릭할 수 있도록 전달)
+        // 결제 링크 반환
         return ResponseEntity.ok(paymentLink);
     }
 

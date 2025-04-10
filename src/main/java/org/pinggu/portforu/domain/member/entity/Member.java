@@ -34,6 +34,9 @@ public class Member extends BaseEntity {
     @Enumerated(EnumType.STRING)
     private UserRole userRole;
 
+    @Column(nullable = false)
+    private Integer viewCount = 3;
+
     @Builder
     public Member(String email, String password, String name, String phoneNumber, String address, UserRole userRole) {
         this.email = email;
@@ -53,18 +56,14 @@ public class Member extends BaseEntity {
         this.userRole = userRole;
     }
 
-    public void updateInfo(String name, String phoneNumber, String address) {
-        if (name != null) this.name = name;
-        if (phoneNumber != null) this.phoneNumber = phoneNumber;
-        if (address != null) this.address = address;
-    }
-
-    public void updatePassword(String newPassword) {
-        if (newPassword != null) this.password = newPassword;
-    }
-
     public static Member fromAuthMember(AuthMember authMember) {
         return new Member(authMember.getId(), authMember.getEmail(), authMember.getName(), authMember.getPhoneNumber(), authMember.getAddress(), authMember.getUserRole());
+    }
+
+    public void decrementRemainingViewCount() {
+        if (viewCount > 0) {
+            this.viewCount--;
+        }
     }
 
 }
