@@ -19,10 +19,10 @@ public class Payment {
     private Long id;
 
     @Enumerated(EnumType.STRING)
-    private PaymentMethod paymentMethod; // 결제 수단
+    private PaymentMethod paymentMethod;
 
     @Enumerated(EnumType.STRING)
-    private PaymentStatus status; // 결제 상태
+    private PaymentStatus status;
 
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "subscribe_id", nullable = false)
@@ -35,5 +35,18 @@ public class Payment {
         this.subscribe = subscribe;
     }
 
-}
+    // 결제 완료 처리
+    public void complete() {
+        this.status = PaymentStatus.COMPLETED;
+    }
 
+    // 결제 실패 처리
+    public void fail() {
+        this.status = PaymentStatus.FAILED;
+    }
+
+    // 결제 만료 처리
+    public void expire() {
+        this.status = PaymentStatus.EXPIRED;
+    }
+}

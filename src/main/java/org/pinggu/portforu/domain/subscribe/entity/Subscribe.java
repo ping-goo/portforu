@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 import org.pinggu.portforu.common.domain.BaseEntity;
 import org.pinggu.portforu.domain.member.entity.Member;
 import org.pinggu.portforu.domain.membership.entity.Membership;
+import org.pinggu.portforu.domain.payment.enums.PaymentStatus;
 
 import java.time.Instant;
 
@@ -38,17 +39,8 @@ public class Subscribe extends BaseEntity {
         this.endDate = endDate;
     }
 
-    public Subscribe update(Membership membership, Instant startDate, Instant endDate) {
-        return Subscribe.builder()
-                .member(this.member)
-                .membership(membership)
-                .startDate(startDate)
-                .endDate(endDate)
-                .build();
-    }
-
+    // 구독 상태 확인
     public boolean isActive() {
         return Instant.now().isBefore(this.endDate);
     }
-
 }
