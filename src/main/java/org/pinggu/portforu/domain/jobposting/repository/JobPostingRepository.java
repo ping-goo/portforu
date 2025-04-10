@@ -12,7 +12,7 @@ public interface JobPostingRepository extends JpaRepository<JobPosting, Long> {
 
     Page<JobPosting> findAllByDeletedAtIsNull(Pageable pageable);
 
-    @Modifying
+    @Modifying(clearAutomatically = true)
     @Query("UPDATE JobPosting j SET " +
             "j.name = COALESCE(:name, j.name), " +
             "j.industry = COALESCE(:industry, j.industry), " +
