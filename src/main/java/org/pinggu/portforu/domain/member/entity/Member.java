@@ -35,7 +35,7 @@ public class Member extends BaseEntity {
     private UserRole userRole;
 
     @Column(nullable = false)
-    private Integer viewCount=3;
+    private Integer viewCount = 3;
 
     @Builder
     public Member(String email, String password, String name, String phoneNumber, String address, UserRole userRole) {

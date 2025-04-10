@@ -52,7 +52,6 @@ public class PortfolioService {
         return portfolioPage.map(PortfolioResponseDto::from);
     }
 
-
     @Transactional
     public PortfolioResponseDto findPortfolio(Long portfolioId,Long viewerId) {
         Portfolio portfolio = portfolioRepository.findById(portfolioId)
@@ -91,7 +90,6 @@ public class PortfolioService {
         return portfolios.map(PortfolioResponseDto::from);
     }
 
-
     @Transactional
     public PortfolioResponseDto findMyPortfolioDetail(Long portfolioId, Long memberId) {
         Portfolio portfolio = portfolioRepository.findById(portfolioId)
@@ -107,7 +105,6 @@ public class PortfolioService {
 
         return PortfolioResponseDto.from(portfolio);
     }
-
 
     @Transactional
     public PortfolioResponseDto updatePortfolio(Long portfolioId, PortfolioUpdateRequestDto updateDto, Long memberId) {
