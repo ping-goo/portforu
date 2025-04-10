@@ -59,7 +59,7 @@ public class PortfolioController {
     }
 
     @Member
-    @GetMapping("/{memberId}/all")
+    @GetMapping("/members/{memberId}")
     public ResponseEntity<ApiResponse<?>> findMyAllPortfolios(
             @AuthenticationPrincipal AuthMember authMember,
             @ModelAttribute Pagecond pagecond
@@ -76,7 +76,7 @@ public class PortfolioController {
     }
 
     @Member
-    @GetMapping("/{memberId}/{portfolioId}")
+    @GetMapping("/members/{memberId}/{portfolioId}")
     public ResponseEntity<ApiResponse<PortfolioResponseDto>> findMyPortfolioDetail(
             @AuthenticationPrincipal AuthMember authMember,
             @PathVariable("portfolioId") Long portfolioId
