@@ -11,24 +11,24 @@
 <button id="payment-button">결제하기</button>
 
 <script th:inline="javascript">
-    const clientKey = [[${clientKey}]];
-    const orderId = [[${orderId}]];
-    const amount = [[${amount}]];
-    const orderName = [[${orderName}]];
-    const customerName = [[${customerName}]];
-    const successUrl = [[${successUrl}]];
-    const failUrl = [[${failUrl}]];
+    const clientKey = "[[${clientKey}]]";
+    const orderId = "[[${orderId}]]";
+    const amount = parseInt("[[${amount}]]");
+    const orderName = "[[${orderName}]]";
+    const customerName = "[[${customerName}]]";
+    const successUrl = "[[${successUrl}]]";
+    const failUrl = "[[${failUrl}]]";
 
     const tossPayments = TossPayments(clientKey);
 
     document.getElementById("payment-button").addEventListener("click", function () {
         tossPayments.requestPayment('카드', {
-            amount,
-            orderId,
-            orderName,
-            customerName,
-            successUrl,
-            failUrl
+            amount: amount,
+            orderId: orderId,
+            orderName: orderName,
+            customerName: customerName,
+            successUrl: successUrl,
+            failUrl: failUrl
         });
     });
 </script>

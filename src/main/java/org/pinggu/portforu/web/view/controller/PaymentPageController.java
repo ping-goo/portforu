@@ -21,24 +21,31 @@ public class PaymentPageController {
     @Value("${toss.test-client-key}")
     private String clientKey;
 
+    @Value("${toss.success-url}")
+    private String successUrl;
+
+    @Value("${toss.fail-url}")
+    private String failUrl;
+
+    @Value("${toss.order-id-prefix}")
+    private String orderIdPrefix;
+
     @GetMapping
-    public String paymentPage(
-            @RequestParam Long subscribeId,
-            Model model
-    ) {
-        // 1. subscribeId로 구독 정보 조회
+    public String paymentPage(@RequestParam Long subscribeId, Model model) {
         Subscribe subscribe = subscribeService.findById(subscribeId);
         Member member = subscribe.getMember();
 
+        String orderId = orderIdPrefix + "-" + subscribeId + "-" + System.currentTimeMillis();
+
         model.addAttribute("clientKey", clientKey);
-        model.addAttribute("orderId", subscribeId); // Toss에선 이걸 orderId로 씀
+        model.addAttribute("orderId", orderId);
         model.addAttribute("amount", subscribe.getMembership().getPrice());
         model.addAttribute("orderName", subscribe.getMembership().getName());
         model.addAttribute("customerName", member.getName());
+        model.addAttribute("successUrl", successUrl);
+        model.addAttribute("failUrl", failUrl);
 
-        model.addAttribute("successUrl", "http://localhost:8080/api/v1/payments/success");
-        model.addAttribute("failUrl", "http://localhost:8080/api/v1/payments/fail");
-
-        return "payment"; // templates/payment.html
+        return "payment";
     }
 }
+
