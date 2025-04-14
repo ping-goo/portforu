@@ -140,4 +140,9 @@ public class SubscribeService {
         paymentRepository.save(payment);
     }
 
+    @Transactional(readOnly = true)
+    public Subscribe findById(Long subscribeId) {
+        return subscribeRepository.findById(subscribeId)
+                .orElseThrow(() -> new CustomException(HttpStatus.NOT_FOUND, "구독 정보를 찾을 수 없습니다."));
+    }
 }

@@ -36,6 +36,9 @@ public class Payment {
     }
 
     public void complete() {
+        if (this.status != PaymentStatus.PENDING) {
+            throw new IllegalStateException("결제는 PENDING 상태에서만 완료할 수 있습니다.");
+        }
         this.status = PaymentStatus.COMPLETED;
     }
 
