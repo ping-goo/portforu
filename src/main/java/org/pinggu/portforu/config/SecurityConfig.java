@@ -37,7 +37,7 @@ public class SecurityConfig {
                 .logout(AbstractHttpConfigurer::disable)
                 .rememberMe(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/api/v1/auth/**", "/oauth2/**", "/login/**", "/error", "/favicon.ico","/pay",              // ✅ 결제페이지"/pay/**","/templates/**",
+                        .requestMatchers("/api/v1/auth/**", "/oauth2/**","/pay",
                                 "/css/**", "/js/**", "/images/**").permitAll()
                         .anyRequest().authenticated())
                 .oauth2Login(oauth2 -> oauth2
