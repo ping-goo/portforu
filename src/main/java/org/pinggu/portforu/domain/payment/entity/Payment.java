@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.pinggu.portforu.common.domain.BaseEntity;
 import org.pinggu.portforu.domain.payment.enums.PaymentMethod;
 import org.pinggu.portforu.domain.payment.enums.PaymentStatus;
 import org.pinggu.portforu.domain.subscribe.entity.Subscribe;
@@ -12,7 +13,7 @@ import org.pinggu.portforu.domain.subscribe.entity.Subscribe;
 @NoArgsConstructor
 @Entity
 @Table(name = "payments")
-public class Payment {
+public class Payment extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -38,6 +39,13 @@ public class Payment {
         this.subscribe = subscribe;
     }
 
+    public void assignPaymentKey(String key) {
+        if (this.paymentKey != null) {
+            throw new IllegalStateException("이미 paymentKey가 설정되어 있습니다.");
+        }
+        this.paymentKey = key;
+    }
+
     public void complete() {
         if (this.status != PaymentStatus.PENDING) {
             throw new IllegalStateException("결제는 PENDING 상태에서만 완료할 수 있습니다.");
@@ -52,6 +60,7 @@ public class Payment {
     public void expire() {
         this.status = PaymentStatus.EXPIRED;
     }
+
 
     public void cancel() {
         if (this.status != PaymentStatus.COMPLETED) {

@@ -15,6 +15,7 @@ import org.springframework.web.client.RestTemplate;
 
 import java.util.Base64;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @Service
@@ -53,6 +54,7 @@ public class PaymentService {
             HttpEntity<Map<String, Object>> request = new HttpEntity<>(body, headers);
             restTemplate.postForEntity(url, request, String.class);
 
+            payment.assignPaymentKey(paymentKey);
             payment.complete();
             paymentRepository.save(payment);
             subscribeService.updateSubscriptionStatus(subscribeId, PaymentStatus.COMPLETED);

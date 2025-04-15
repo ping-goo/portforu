@@ -40,17 +40,21 @@ public class SubscribeService {
         Membership membership = membershipRepository.findByIdAndDeletedAtIsNull(membershipId)
                 .orElseThrow(() -> new CustomException(HttpStatus.NOT_FOUND, "해당 멤버십이 존재하지 않습니다."));
 
-        if (paymentRepository.existsBySubscribe_Member_IdAndSubscribe_Membership_IdAndStatus(memberId, membershipId, PaymentStatus.PENDING)) {
+        if (paymentRepository.existsBySubscribe_Member_IdAndSubscribe_Membership_IdAndStatus(
+                memberId, membershipId, PaymentStatus.PENDING)) {
             throw new CustomException(HttpStatus.BAD_REQUEST, "결제가 진행 중인 구독이 존재합니다. 결제가 완료된 후 다시 시도하십시오.");
         }
-        long currentCount = subscribeRepository.countByMembership(membership);
+
+        long currentCount = subscribeRepository.countActiveByMembership(membership);
         if (currentCount >= membership.getQuantity()) {
             throw new CustomException(HttpStatus.BAD_REQUEST, "멤버십 정원이 초과되었습니다.");
         }
+
         int currentYear = Year.now().getValue();
         if (membership.getYear() != currentYear) {
             throw new CustomException(HttpStatus.BAD_REQUEST, "해당 멤버십은 " + membership.getYear() + "년 전용입니다.");
         }
+
         if (subscribeRepository.existsByMemberIdAndMembershipId(memberId, membershipId)) {
             throw new CustomException(HttpStatus.BAD_REQUEST, "이미 구독한 멤버십입니다.");
         }
@@ -80,7 +84,6 @@ public class SubscribeService {
         return SubscribeResponseDto.from(savedSub, payment);
     }
 
-
     @Transactional(readOnly = true)
     public Page<SubscribeResponseDto> findSubscribes(Long memberId, Pageable pageable) {
         Member member = memberRepository.findById(memberId)
@@ -102,23 +105,27 @@ public class SubscribeService {
         if (subscribe.isDeleted()) {
             throw new CustomException(HttpStatus.BAD_REQUEST, "이미 삭제된 구독입니다.");
         }
+
         if (!subscribe.getMember().getId().equals(memberId)) {
             throw new CustomException(HttpStatus.FORBIDDEN, "내 구독만 취소할 수 있습니다.");
         }
+
         Payment payment = paymentRepository.findBySubscribe(subscribe)
                 .orElseThrow(() -> new CustomException(HttpStatus.NOT_FOUND, "결제 정보가 없습니다."));
+
         if (payment.getStatus() == PaymentStatus.PENDING) {
             throw new CustomException(HttpStatus.BAD_REQUEST, "결제가 진행되지 않은 구독은 취소할 수 없습니다.");
         }
+
         if (payment.getStatus() == PaymentStatus.COMPLETED || payment.getStatus() == PaymentStatus.FAILED) {
             payment.fail();
-            paymentRepository.save(payment);
-            subscribe = subscribeRepository.save(subscribe);
+            paymentRepository.save(payment); // 삭제 X
         }
-        paymentRepository.findBySubscribe(subscribe)
-                .ifPresent(paymentRepository::delete);
 
-        return subscribe.delete();
+        subscribe.delete();
+        subscribeRepository.save(subscribe);
+
+        return subscribe.getId();
     }
 
     @Transactional

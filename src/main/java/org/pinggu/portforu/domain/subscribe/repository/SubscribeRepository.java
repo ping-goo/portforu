@@ -9,8 +9,11 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import java.time.Instant;
 import java.util.Optional;
 
 @Repository
@@ -21,5 +24,12 @@ public interface SubscribeRepository extends JpaRepository<Subscribe, Long> {
 
     Page<Subscribe> findAllByMemberAndDeletedAtIsNull(Member member, Pageable pageable);
 
-    long countByMembership(Membership membership);
+    @Query("SELECT COUNT(s) FROM Subscribe s " +
+            "JOIN Payment p ON p.subscribe = s " +
+            "WHERE s.membership = :membership " +
+            "AND s.deletedAt IS NULL " +
+            "AND p.status = 'COMPLETED' " +
+            "AND p.deletedAt IS NULL")
+    long countActiveByMembership(@Param("membership") Membership membership);
+
 }

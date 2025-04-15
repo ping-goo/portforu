@@ -5,6 +5,8 @@ import org.pinggu.portforu.domain.payment.enums.PaymentStatus;
 import org.pinggu.portforu.domain.subscribe.entity.Subscribe;
 import org.springframework.data.jpa.repository.JpaRepository;
 
+import java.time.Instant;
+import java.util.List;
 import java.util.Optional;
 
 public interface PaymentRepository extends JpaRepository<Payment, Long> {
@@ -14,4 +16,9 @@ public interface PaymentRepository extends JpaRepository<Payment, Long> {
     Optional<Payment> findBySubscribeId(Long subscribeId);
 
     boolean existsBySubscribe_Member_IdAndSubscribe_Membership_IdAndStatus(Long memberId, Long membershipId, PaymentStatus paymentStatus);
+
+    List<Payment> findAllByStatus(PaymentStatus status);
+
+    List<Payment> findByStatusAndCreatedAtBefore(PaymentStatus status, Instant time);
+
 }
