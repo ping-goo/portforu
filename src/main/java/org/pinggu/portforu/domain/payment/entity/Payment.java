@@ -28,6 +28,9 @@ public class Payment {
     @JoinColumn(name = "subscribe_id", nullable = false)
     private Subscribe subscribe;
 
+    @Column(name = "payment_key")
+    private String paymentKey;
+
     @Builder
     public Payment(PaymentMethod paymentMethod, PaymentStatus status, Subscribe subscribe) {
         this.paymentMethod = paymentMethod;
@@ -49,4 +52,12 @@ public class Payment {
     public void expire() {
         this.status = PaymentStatus.EXPIRED;
     }
+
+    public void cancel() {
+        if (this.status != PaymentStatus.COMPLETED) {
+            throw new IllegalStateException("결제가 완료된 상태에서만 취소할 수 있습니다.");
+        }
+        this.status = PaymentStatus.CANCELLED;
+    }
+
 }

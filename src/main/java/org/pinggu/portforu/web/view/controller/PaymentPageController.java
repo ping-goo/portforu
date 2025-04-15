@@ -27,25 +27,27 @@ public class PaymentPageController {
     @Value("${toss.fail-url}")
     private String failUrl;
 
-    @Value("${toss.order-id-prefix}")
-    private String orderIdPrefix;
-
     @GetMapping
     public String paymentPage(@RequestParam Long subscribeId, Model model) {
-        Subscribe subscribe = subscribeService.findById(subscribeId);
-        Member member = subscribe.getMember();
 
-        String orderId = orderIdPrefix + "-" + subscribeId + "-" + System.currentTimeMillis();
+        try {
+            Subscribe subscribe = subscribeService.findById(subscribeId);
+            Member member = subscribe.getMember();
 
-        model.addAttribute("clientKey", clientKey);
-        model.addAttribute("orderId", orderId);
-        model.addAttribute("amount", subscribe.getMembership().getPrice());
-        model.addAttribute("orderName", subscribe.getMembership().getName());
-        model.addAttribute("customerName", member.getName());
-        model.addAttribute("successUrl", successUrl);
-        model.addAttribute("failUrl", failUrl);
+            model.addAttribute("clientKey", clientKey);
+            String orderId = "order_" + subscribeId + "_" + System.currentTimeMillis();
+            model.addAttribute("orderId", orderId);
+            model.addAttribute("amount", subscribe.getMembership().getPrice());
+            model.addAttribute("orderName", subscribe.getMembership().getName());
+            model.addAttribute("customerName", member.getName());
+            model.addAttribute("successUrl", successUrl);
+            model.addAttribute("failUrl", failUrl);
 
-        return "payment";
+            return "payment";
+        } catch (Exception e) {
+            e.printStackTrace();
+            return "error";
+        }
     }
 }
 
