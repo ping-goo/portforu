@@ -14,6 +14,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.time.Instant;
+import java.util.List;
 import java.util.Optional;
 
 @Repository
@@ -29,7 +30,11 @@ public interface SubscribeRepository extends JpaRepository<Subscribe, Long> {
             "WHERE s.membership = :membership " +
             "AND s.deletedAt IS NULL " +
             "AND p.status = 'COMPLETED' " +
-            "AND p.deletedAt IS NULL")
-    long countActiveByMembership(@Param("membership") Membership membership);
+            "AND p.deletedAt IS NULL " +
+            "AND s.endDate > :now")
+    long countActiveByMembership(@Param("membership") Membership membership,
+                                 @Param("now") Instant now);
+
+    List<Subscribe> findAllByEndDateBeforeAndDeletedAtIsNull(Instant time);
 
 }

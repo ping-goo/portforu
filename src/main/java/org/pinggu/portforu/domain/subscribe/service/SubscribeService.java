@@ -45,8 +45,8 @@ public class SubscribeService {
             throw new CustomException(HttpStatus.BAD_REQUEST, "결제가 진행 중인 구독이 존재합니다. 결제가 완료된 후 다시 시도하십시오.");
         }
 
-        long currentCount = subscribeRepository.countActiveByMembership(membership);
-        if (currentCount >= membership.getQuantity()) {
+        long count = subscribeRepository.countActiveByMembership(membership, Instant.now());
+        if (count >= membership.getQuantity()) {
             throw new CustomException(HttpStatus.BAD_REQUEST, "멤버십 정원이 초과되었습니다.");
         }
 

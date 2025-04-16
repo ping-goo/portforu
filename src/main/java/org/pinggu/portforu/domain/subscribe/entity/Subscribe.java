@@ -42,5 +42,4 @@ public class Subscribe extends BaseEntity {
     public boolean isActive() {
         return Instant.now().isBefore(this.endDate);
     }
-
 }
