@@ -34,7 +34,7 @@ public class Subscribe extends BaseEntity {
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private SubscribeStatus status = SubscribeStatus.ACTIVE;
+    private SubscribeStatus status = SubscribeStatus.PENDING;
 
     @Builder
     public Subscribe(Member member, Membership membership, Instant startDate, Instant endDate) {
@@ -54,5 +54,13 @@ public class Subscribe extends BaseEntity {
 
     public void expire() {
         this.status = SubscribeStatus.EXPIRED;
+    }
+
+    public void activate() {
+        this.status = SubscribeStatus.ACTIVE;
+    }
+
+    public void fail() {
+        this.status = SubscribeStatus.FAILED;
     }
 }

@@ -29,7 +29,7 @@ public class PaymentScheduler {
         for (Payment payment : targets) {
             payment.expire();
             paymentRepository.save(payment);
-            log.info("🔔 [만료 처리] paymentId = {}, createdAt = {}", payment.getId(), payment.getCreatedAt());
+            log.info("[만료 처리] paymentId = {}, createdAt = {}", payment.getId(), payment.getCreatedAt());
         }
     }
 }

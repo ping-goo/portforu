@@ -45,6 +45,10 @@ public class SubscribeService {
             throw new CustomException(HttpStatus.BAD_REQUEST, "결제가 진행 중인 구독이 존재합니다. 결제가 완료된 후 다시 시도하십시오.");
         }
 
+        if (subscribeRepository.hasValidSubscription(memberId, membershipId)) {
+            throw new CustomException(HttpStatus.BAD_REQUEST, "이미 구독한 멤버십입니다.");
+        }
+
         long count = subscribeRepository.countActiveByMembership(membership, Instant.now());
         if (count >= membership.getQuantity()) {
             throw new CustomException(HttpStatus.BAD_REQUEST, "멤버십 정원이 초과되었습니다.");
@@ -53,10 +57,6 @@ public class SubscribeService {
         int currentYear = Year.now().getValue();
         if (membership.getYear() != currentYear) {
             throw new CustomException(HttpStatus.BAD_REQUEST, "해당 멤버십은 " + membership.getYear() + "년 전용입니다.");
-        }
-
-        if (subscribeRepository.existsByMemberIdAndMembershipId(memberId, membershipId)) {
-            throw new CustomException(HttpStatus.BAD_REQUEST, "이미 구독한 멤버십입니다.");
         }
 
         Instant startDate = Instant.now();
@@ -117,16 +117,12 @@ public class SubscribeService {
             throw new CustomException(HttpStatus.BAD_REQUEST, "결제가 진행되지 않은 구독은 취소할 수 없습니다.");
         }
 
-        if (payment.getStatus() == PaymentStatus.COMPLETED || payment.getStatus() == PaymentStatus.FAILED) {
-            payment.fail();
-            paymentRepository.save(payment); // 삭제 X
-        }
-
         subscribe.cancel();
         subscribeRepository.save(subscribe);
 
         return subscribe.getId();
     }
+
 
     @Transactional
     public void updateSubscriptionStatus(Long subscribeId, PaymentStatus paymentStatus) {

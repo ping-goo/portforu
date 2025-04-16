@@ -1,7 +1,9 @@
 package org.pinggu.portforu.domain.subscribe.enums;
 
 public enum SubscribeStatus {
-    ACTIVE, // 정상 구독 상태
-    CANCELLED, // 사용자가 취소했지만 만료 전까지는 유효
-    EXPIRED // 기간 만료됨
+    PENDING, // 결제 대기 (초기 상태)
+    ACTIVE, // 결제 성공 후 정식 구독
+    CANCELLED, // 유저가 취소했지만 유효기간 내
+    EXPIRED, // 만료된 구독
+    FAILED // 구독 실패
 }
