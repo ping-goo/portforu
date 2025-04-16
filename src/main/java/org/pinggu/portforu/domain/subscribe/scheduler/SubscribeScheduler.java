@@ -3,6 +3,7 @@ package org.pinggu.portforu.domain.subscribe.scheduler;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.pinggu.portforu.domain.subscribe.entity.Subscribe;
+import org.pinggu.portforu.domain.subscribe.enums.SubscribeStatus;
 import org.pinggu.portforu.domain.subscribe.repository.SubscribeRepository;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
@@ -23,10 +24,9 @@ public class SubscribeScheduler {
         List<Subscribe> expiredSubs = subscribeRepository.findAllByEndDateBeforeAndDeletedAtIsNull(now);
 
         for (Subscribe sub : expiredSubs) {
-            if (!sub.isDeleted()) {
-                sub.delete(); // Soft delete 처리
+            if (sub.getEndDate().isBefore(Instant.now()) && sub.getStatus() != SubscribeStatus.EXPIRED) {
+                sub.expire();
                 subscribeRepository.save(sub);
-                log.info("구독 만료 처리 - subscribeId={}", sub.getId());
             }
         }
     }

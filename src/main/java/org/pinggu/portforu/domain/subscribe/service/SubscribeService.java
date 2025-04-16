@@ -122,7 +122,7 @@ public class SubscribeService {
             paymentRepository.save(payment); // 삭제 X
         }
 
-        subscribe.delete();
+        subscribe.cancel();
         subscribeRepository.save(subscribe);
 
         return subscribe.getId();

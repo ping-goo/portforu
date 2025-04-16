@@ -17,8 +17,6 @@ public interface PaymentRepository extends JpaRepository<Payment, Long> {
 
     boolean existsBySubscribe_Member_IdAndSubscribe_Membership_IdAndStatus(Long memberId, Long membershipId, PaymentStatus paymentStatus);
 
-    List<Payment> findAllByStatus(PaymentStatus status);
-
     List<Payment> findByStatusAndCreatedAtBefore(PaymentStatus status, Instant time);
 
 }

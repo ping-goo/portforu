@@ -8,6 +8,7 @@ import org.pinggu.portforu.common.domain.BaseEntity;
 import org.pinggu.portforu.domain.member.entity.Member;
 import org.pinggu.portforu.domain.membership.entity.Membership;
 import org.pinggu.portforu.domain.payment.enums.PaymentStatus;
+import org.pinggu.portforu.domain.subscribe.enums.SubscribeStatus;
 
 import java.time.Instant;
 
@@ -31,6 +32,10 @@ public class Subscribe extends BaseEntity {
     @Column(nullable = false)
     private Instant endDate;
 
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private SubscribeStatus status = SubscribeStatus.ACTIVE;
+
     @Builder
     public Subscribe(Member member, Membership membership, Instant startDate, Instant endDate) {
         this.member = member;
@@ -41,5 +46,13 @@ public class Subscribe extends BaseEntity {
 
     public boolean isActive() {
         return Instant.now().isBefore(this.endDate);
+    }
+
+    public void cancel() {
+        this.status = SubscribeStatus.CANCELLED;
+    }
+
+    public void expire() {
+        this.status = SubscribeStatus.EXPIRED;
     }
 }
