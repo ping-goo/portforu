@@ -18,13 +18,14 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 public class MemberService {
 
+    private final MemberFinder memberFinder;
     private final MemberRepository memberRepository;
     private final PasswordEncoder passwordEncoder;
 
     @Transactional(readOnly = true)
     public MemberResponseDto findMember(AuthMember authMember, Long id) {
         Member member = findMemberById(id);
-        validateOwnership(authMember, id);
+        memberFinder.validateOwnership(authMember, id);
 
         return MemberResponseDto.from(member);
     }
@@ -33,7 +34,7 @@ public class MemberService {
     public MemberResponseDto updateMember(
             AuthMember authMember, Long id, MemberUpdateRequestDto requestDto
     ) {
-        validateOwnership(authMember, id);
+        memberFinder.validateOwnership(authMember, id);
 
         Integer updatedRows = memberRepository.updateMemberInfo(
                 id, requestDto.getName(), requestDto.getPhoneNumber(), requestDto.getAddress()
@@ -52,7 +53,7 @@ public class MemberService {
     public MemberResponseDto updatePassword(
             AuthMember authMember, Long id, PasswordUpdateRequestDto requestDto
     ) {
-        validateOwnership(authMember, id);
+        memberFinder.validateOwnership(authMember, id);
         Member member = findMemberById(id);
 
         if(!passwordEncoder.matches(requestDto.getOldPassword(), member.getPassword())) {
@@ -77,7 +78,7 @@ public class MemberService {
     public Long deleteMember(
             AuthMember authMember, Long id, MemberDeleteRequestDto requestDto
     ) {
-        validateOwnership(authMember, id);
+        memberFinder.validateOwnership(authMember, id);
         Member member = findMemberById(id);
 
         if (!passwordEncoder.matches(requestDto.getPassword(), member.getPassword())) {
@@ -94,12 +95,6 @@ public class MemberService {
     private Member findMemberById(Long id) {
         return memberRepository.findById(id).orElseThrow(() ->
                 new CustomException(HttpStatus.NOT_FOUND, "존재하지 않는 회원정보입니다."));
-    }
-
-    private void validateOwnership(AuthMember authMember, Long id) {
-        if (!authMember.getId().equals(id)) {
-            throw new CustomException(HttpStatus.FORBIDDEN, "접근 권한이 없습니다");
-        }
     }
 
 }

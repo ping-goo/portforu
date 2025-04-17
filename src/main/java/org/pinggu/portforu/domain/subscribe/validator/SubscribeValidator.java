@@ -32,4 +32,5 @@ public class SubscribeValidator {
                 .filter(sub -> sub.getStartDate().isBefore(Instant.now()))
                 .anyMatch(sub -> sub.getEndDate().isAfter(Instant.now()));
     }
+
 }

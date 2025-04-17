@@ -9,6 +9,7 @@ import java.time.Instant;
 @Getter
 @Builder
 public class CommentResponseDto {
+
     private final Long id;
     private final Long memberId;
     private final Long portfolioId;
@@ -28,4 +29,5 @@ public class CommentResponseDto {
                 .deletedAt(comment.getDeletedAt())
                 .build();
     }
+
 }
