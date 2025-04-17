@@ -9,6 +9,7 @@
 <h1>결제 페이지</h1>
 
 <button id="payment-button">결제하기</button>
+<button id="cancel-button" style="margin-top: 10px;">결제 취소</button>
 
 <script th:inline="javascript">
     const clientKey = /*[[${clientKey}]]*/ "";
@@ -30,6 +31,15 @@
             successUrl,
             failUrl
         });
+    });
+
+    document.getElementById("cancel-button").addEventListener("click", function () {
+        if (!confirm("결제를 취소하시겠습니까?")) return;
+
+        const orderIdParam = encodeURIComponent(orderId);
+        const cancelUrl = `/api/v1/payments/cancel?orderId=${orderIdParam}&reason=사용자 요청 취소`;
+
+        window.location.href = cancelUrl;
     });
 </script>
 
