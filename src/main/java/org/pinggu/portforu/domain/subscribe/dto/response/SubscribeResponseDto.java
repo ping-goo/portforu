@@ -30,7 +30,7 @@ public class SubscribeResponseDto {
                 .startDate(subscribe.getStartDate())
                 .endDate(subscribe.getEndDate())
                 .active(subscribe.isActive())
-                .status(subscribe.getStatus().name()) // 여기!
+                .status(subscribe.getStatus().name())
                 .build();
     }
 }
