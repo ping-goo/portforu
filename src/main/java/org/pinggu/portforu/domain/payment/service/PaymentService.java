@@ -1,6 +1,7 @@
 package org.pinggu.portforu.domain.payment.service;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.pinggu.portforu.domain.membership.entity.Membership;
 import org.pinggu.portforu.domain.payment.entity.Payment;
 import org.pinggu.portforu.domain.payment.enums.PaymentStatus;
@@ -22,6 +23,7 @@ import java.util.Base64;
 import java.util.HashMap;
 import java.util.Map;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class PaymentService {
@@ -35,13 +37,13 @@ public class PaymentService {
     private String secretKey;
 
     public void handleSuccessPayment(String paymentKey, String orderId, Long amount) {
+        Long subscribeId = parseSubscribeId(orderId);
         try {
-            Long subscribeId = parseSubscribeId(orderId);
-
             Payment payment = paymentRepository.findBySubscribeId(subscribeId)
                     .orElseThrow(() -> new PaymentFailedException("결제 정보가 없습니다."));
 
             if (payment.getStatus() == PaymentStatus.COMPLETED) {
+                log.info("중복 결제 요청 차단됨: orderId={}, subscribeId={}", orderId, subscribeId);
                 throw new PaymentFailedException("이미 결제가 완료된 주문입니다.");
             }
 
@@ -53,7 +55,7 @@ public class PaymentService {
                 try {
                     cancelTossPayment(paymentKey, "멤버십 정원 초과로 결제 취소됨");
                 } catch (Exception e) {
-                    System.out.println("⚠️ Toss 결제 취소 실패: " + e.getMessage());
+                    log.warn(" Toss 결제 취소 실패: {}", e.getMessage());
                 }
 
                 payment.fail();
@@ -62,6 +64,7 @@ public class PaymentService {
                 subscribe.fail();
                 subscribeRepository.save(subscribe);
 
+                log.warn("결제 실패 - 정원 초과: orderId={}, subscribeId={}", orderId, subscribeId);
                 throw new PaymentFailedException("멤버십 정원이 초과되어 결제가 취소되었습니다.");
             }
 
@@ -89,19 +92,19 @@ public class PaymentService {
 
             subscribeService.updateSubscriptionStatus(subscribeId, PaymentStatus.COMPLETED);
 
+            log.info("결제 완료: orderId={}, subscribeId={}, amount={}", orderId, subscribeId, amount);
+
         } catch (HttpClientErrorException e) {
-            Long subscribeId = parseSubscribeId(orderId);
             Subscribe subscribe = subscribeRepository.findById(subscribeId)
                     .orElseThrow(() -> new PaymentFailedException("구독 정보를 찾을 수 없습니다."));
             subscribe.fail();
             subscribeRepository.save(subscribe);
 
+            log.warn("Toss 결제 승인 실패: orderId={}, subscribeId={}, error={}", orderId, subscribeId, e.getMessage());
+
             throw new PaymentFailedException("Toss 결제 승인 실패: " + e.getMessage());
         }
     }
-
-
-
 
     public void handleFailPayment(String orderId, String message) {
         try {
@@ -114,10 +117,10 @@ public class PaymentService {
             paymentRepository.save(payment);
             subscribeService.updateSubscriptionStatus(subscribeId, PaymentStatus.FAILED);
 
-            System.out.println("결제 실패 처리 완료 - " + message);
+            log.warn("결제 실패 처리됨: orderId={}, subscribeId={}, reason={}", orderId, subscribeId, message);
 
         } catch (Exception e) {
-            System.out.println("결제 실패 처리 중 오류 발생: " + e.getMessage());
+            log.error("결제 실패 처리 중 오류 발생: orderId={}, error={}", orderId, e.getMessage());
             throw new RuntimeException("결제 실패 처리 중 오류 발생", e);
         }
     }
@@ -142,8 +145,11 @@ public class PaymentService {
             paymentRepository.save(payment);
             subscribeService.updateSubscriptionStatus(subscribeId, PaymentStatus.CANCELLED);
 
+            log.info("결제 취소 완료: orderId={}, subscribeId={}, reason={}", orderId, subscribeId, cancelReason);
+
         } catch (HttpClientErrorException e) {
-            throw new RuntimeException("⚠️ 결제 취소 실패: " + e.getResponseBodyAsString(), e);
+            log.error("Toss 결제 취소 실패: orderId={}, error={}", orderId, e.getMessage());
+            throw new RuntimeException("결제 취소 실패: " + e.getResponseBodyAsString(), e);
         }
     }
 
