@@ -129,11 +129,11 @@ public class PaymentService {
                 .orElseThrow(() -> new RuntimeException("결제 정보가 없습니다."));
 
         if (payment.getStatus() == PaymentStatus.CANCELLED) {
-            throw new IllegalStateException("이미 취소된 결제입니다.");
+            throw new PaymentFailedException("이미 취소된 결제입니다.");
         }
 
         if (payment.getPaymentKey() == null) {
-            throw new IllegalStateException("paymentKey가 저장되어 있지 않아 결제를 취소할 수 없습니다.");
+            throw new PaymentFailedException("paymentKey가 저장되어 있지 않아 결제를 취소할 수 없습니다.");
         }
 
         try {
@@ -143,7 +143,7 @@ public class PaymentService {
             subscribeService.updateSubscriptionStatus(subscribeId, PaymentStatus.CANCELLED);
 
         } catch (HttpClientErrorException e) {
-            throw new RuntimeException("결제 취소 실패: " + e.getResponseBodyAsString(), e);
+            throw new RuntimeException("⚠️ 결제 취소 실패: " + e.getResponseBodyAsString(), e);
         }
     }
 

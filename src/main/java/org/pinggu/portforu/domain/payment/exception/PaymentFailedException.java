@@ -5,6 +5,6 @@ import org.springframework.http.HttpStatus;
 
 public class PaymentFailedException extends CustomException {
     public PaymentFailedException(String message) {
-        super(HttpStatus.BAD_REQUEST, message); // 400 BAD_REQUEST로 처리
+        super(HttpStatus.BAD_REQUEST, message);
     }
 }

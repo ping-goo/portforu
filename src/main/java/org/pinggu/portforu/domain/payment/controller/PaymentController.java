@@ -32,9 +32,6 @@ public class PaymentController {
             redirectAttributes.addAttribute("message", e.getMessage());
             redirectAttributes.addAttribute("subscribeId", subscribeId);
             return "redirect:/payments/fail";
-        } catch (IllegalStateException e) {
-            redirectAttributes.addAttribute("message", e.getMessage());
-            return "redirect:/payments/fail";
         }
     }
 
@@ -69,7 +66,6 @@ public class PaymentController {
         return "redirect:/payments/fail";
     }
 
-    // ✅ orderId에서 subscribeId 뽑아내는 헬퍼 메서드
     private Long extractSubscribeIdFromOrderId(String orderId) {
         String[] tokens = orderId.split("_");
         return Long.parseLong(tokens[1]);
