@@ -109,8 +109,8 @@ public class SubscribeService {
             throw new CustomException(HttpStatus.FORBIDDEN, "내 구독만 취소할 수 있습니다.");
         }
 
-        if (subscribe.isDeleted() || subscribe.getStatus() == SubscribeStatus.CANCELLED) {
-            throw new CustomException(HttpStatus.BAD_REQUEST, "이미 취소된 구독입니다.");
+        if (subscribe.isDeleted()) {
+            throw new CustomException(HttpStatus.BAD_REQUEST, "이미 삭제된 구독입니다.");
         }
 
         Payment payment = paymentRepository.findBySubscribe(subscribe)
