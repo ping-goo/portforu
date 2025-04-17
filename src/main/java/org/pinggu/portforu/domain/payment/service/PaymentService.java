@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.pinggu.portforu.domain.membership.entity.Membership;
 import org.pinggu.portforu.domain.payment.entity.Payment;
 import org.pinggu.portforu.domain.payment.enums.PaymentStatus;
+import org.pinggu.portforu.domain.payment.exception.PaymentFailedException;
 import org.pinggu.portforu.domain.payment.repository.PaymentRepository;
 import org.pinggu.portforu.domain.subscribe.entity.Subscribe;
 import org.pinggu.portforu.domain.subscribe.repository.SubscribeRepository;
@@ -38,10 +39,10 @@ public class PaymentService {
             Long subscribeId = parseSubscribeId(orderId);
 
             Payment payment = paymentRepository.findBySubscribeId(subscribeId)
-                    .orElseThrow(() -> new RuntimeException("결제 정보가 없습니다."));
+                    .orElseThrow(() -> new PaymentFailedException("결제 정보가 없습니다."));
 
             if (payment.getStatus() == PaymentStatus.COMPLETED) {
-                throw new IllegalStateException("이미 결제가 완료된 주문입니다.");
+                throw new PaymentFailedException("이미 결제가 완료된 주문입니다.");
             }
 
             Subscribe subscribe = payment.getSubscribe();
@@ -60,14 +61,16 @@ public class PaymentService {
 
                 subscribe.fail();
                 subscribeRepository.save(subscribe);
-                return;
+
+                throw new PaymentFailedException("멤버십 정원이 초과되어 결제가 취소되었습니다.");
             }
 
-            // Toss 결제 승인
+            // Toss 결제 승인 요청
             String url = "https://api.tosspayments.com/v1/payments/confirm";
             HttpHeaders headers = new HttpHeaders();
             headers.setContentType(MediaType.APPLICATION_JSON);
-            headers.set("Authorization", "Basic " + Base64.getEncoder().encodeToString((secretKey + ":").getBytes()));
+            headers.set("Authorization", "Basic " + Base64.getEncoder()
+                    .encodeToString((secretKey + ":").getBytes()));
 
             Map<String, Object> body = new HashMap<>();
             body.put("paymentKey", paymentKey);
@@ -77,7 +80,6 @@ public class PaymentService {
             HttpEntity<Map<String, Object>> request = new HttpEntity<>(body, headers);
             restTemplate.postForEntity(url, request, String.class);
 
-            // 결제 성공
             payment.assignPaymentKey(paymentKey);
             payment.complete();
             paymentRepository.save(payment);
@@ -88,16 +90,16 @@ public class PaymentService {
             subscribeService.updateSubscriptionStatus(subscribeId, PaymentStatus.COMPLETED);
 
         } catch (HttpClientErrorException e) {
-            // Toss 결제 승인 실패
             Long subscribeId = parseSubscribeId(orderId);
             Subscribe subscribe = subscribeRepository.findById(subscribeId)
-                    .orElseThrow(() -> new RuntimeException("구독 정보를 찾을 수 없습니다."));
+                    .orElseThrow(() -> new PaymentFailedException("구독 정보를 찾을 수 없습니다."));
             subscribe.fail();
             subscribeRepository.save(subscribe);
 
-            throw new RuntimeException("Toss 결제 승인 실패: " + e.getMessage());
+            throw new PaymentFailedException("Toss 결제 승인 실패: " + e.getMessage());
         }
     }
+
 
 
 

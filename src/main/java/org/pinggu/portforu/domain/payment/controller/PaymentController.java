@@ -1,6 +1,7 @@
 package org.pinggu.portforu.domain.payment.controller;
 
 import lombok.RequiredArgsConstructor;
+import org.pinggu.portforu.domain.payment.exception.PaymentFailedException;
 import org.pinggu.portforu.domain.payment.service.PaymentService;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -26,6 +27,11 @@ public class PaymentController {
             paymentService.handleSuccessPayment(paymentKey, orderId, amount);
             redirectAttributes.addAttribute("orderId", orderId);
             return "redirect:/payments/success";
+        } catch (PaymentFailedException e) {
+            Long subscribeId = extractSubscribeIdFromOrderId(orderId);
+            redirectAttributes.addAttribute("message", e.getMessage());
+            redirectAttributes.addAttribute("subscribeId", subscribeId);
+            return "redirect:/payments/fail";
         } catch (IllegalStateException e) {
             redirectAttributes.addAttribute("message", e.getMessage());
             return "redirect:/payments/fail";
@@ -61,5 +67,11 @@ public class PaymentController {
         }
 
         return "redirect:/payments/fail";
+    }
+
+    // ✅ orderId에서 subscribeId 뽑아내는 헬퍼 메서드
+    private Long extractSubscribeIdFromOrderId(String orderId) {
+        String[] tokens = orderId.split("_");
+        return Long.parseLong(tokens[1]);
     }
 }
