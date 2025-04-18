@@ -2,10 +2,10 @@ package org.pinggu.portforu.domain.payment.service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.pinggu.portforu.common.exception.CustomException;
 import org.pinggu.portforu.domain.membership.entity.Membership;
 import org.pinggu.portforu.domain.payment.entity.Payment;
 import org.pinggu.portforu.domain.payment.enums.PaymentStatus;
-import org.pinggu.portforu.domain.payment.exception.PaymentFailedException;
 import org.pinggu.portforu.domain.payment.repository.PaymentRepository;
 import org.pinggu.portforu.domain.subscribe.entity.Subscribe;
 import org.pinggu.portforu.domain.subscribe.repository.SubscribeRepository;
@@ -13,6 +13,7 @@ import org.pinggu.portforu.domain.subscribe.service.SubscribeService;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpClientErrorException;
@@ -29,6 +30,7 @@ public class PaymentService {
 
     private final RestTemplate restTemplate;
     private final PaymentRepository paymentRepository;
+    private final PaymentFinder paymentFinder;
     private final SubscribeService subscribeService;
     private final SubscribeRepository subscribeRepository;
 
@@ -38,12 +40,11 @@ public class PaymentService {
     public void handleSuccessPayment(String paymentKey, String orderId, Long amount) {
         Long subscribeId = parseSubscribeId(orderId);
         try {
-            Payment payment = paymentRepository.findBySubscribeId(subscribeId)
-                    .orElseThrow(() -> new PaymentFailedException("결제 정보가 없습니다."));
+            Payment payment = paymentFinder.findBySubscribeId(subscribeId);
 
             if (payment.getStatus() == PaymentStatus.COMPLETED) {
                 log.info("중복 결제 요청 차단됨: orderId={}, subscribeId={}", orderId, subscribeId);
-                throw new PaymentFailedException("이미 결제가 완료된 주문입니다.");
+                throw new CustomException(HttpStatus.BAD_REQUEST, "이미 결제가 완료된 주문입니다.");
             }
 
             Subscribe subscribe = payment.getSubscribe();
@@ -64,7 +65,7 @@ public class PaymentService {
                 subscribeRepository.save(subscribe);
 
                 log.warn("결제 실패 - 정원 초과: orderId={}, subscribeId={}", orderId, subscribeId);
-                throw new PaymentFailedException("멤버십 정원이 초과되어 결제가 취소되었습니다.");
+                throw new CustomException(HttpStatus.BAD_REQUEST, "멤버십 정원이 초과되어 결제가 취소되었습니다.");
             }
 
             // Toss 결제 승인 요청
@@ -92,13 +93,13 @@ public class PaymentService {
 
         } catch (HttpClientErrorException e) {
             Subscribe subscribe = subscribeRepository.findById(subscribeId)
-                    .orElseThrow(() -> new PaymentFailedException("구독 정보를 찾을 수 없습니다."));
+                    .orElseThrow(() -> new CustomException(HttpStatus.BAD_REQUEST, "구독 정보를 찾을 수 없습니다."));
             subscribe.fail();
             subscribeRepository.save(subscribe);
 
             log.warn("Toss 결제 승인 실패: orderId={}, subscribeId={}, error={}", orderId, subscribeId, e.getMessage());
 
-            throw new PaymentFailedException("Toss 결제 승인 실패: " + e.getMessage());
+            throw new CustomException(HttpStatus.BAD_REQUEST, "Toss 결제 승인 실패: " + e.getMessage());
         }
     }
 
@@ -106,8 +107,7 @@ public class PaymentService {
         try {
             Long subscribeId = parseSubscribeId(orderId);
 
-            Payment payment = paymentRepository.findBySubscribeId(subscribeId)
-                    .orElseThrow(() -> new RuntimeException("결제 정보가 없습니다."));
+            Payment payment = paymentFinder.findBySubscribeId(subscribeId);
 
             payment.fail();
             paymentRepository.save(payment);
@@ -124,15 +124,14 @@ public class PaymentService {
     public void cancelPayment(String orderId, String cancelReason) {
         Long subscribeId = parseSubscribeId(orderId);
 
-        Payment payment = paymentRepository.findBySubscribeId(subscribeId)
-                .orElseThrow(() -> new RuntimeException("결제 정보가 없습니다."));
+        Payment payment = paymentFinder.findBySubscribeId(subscribeId);
 
         if (payment.getStatus() == PaymentStatus.CANCELLED) {
-            throw new PaymentFailedException("이미 취소된 결제입니다.");
+            throw new CustomException(HttpStatus.BAD_REQUEST, "이미 취소된 결제입니다.");
         }
 
         if (payment.getPaymentKey() == null) {
-            throw new PaymentFailedException("paymentKey가 저장되어 있지 않아 결제를 취소할 수 없습니다.");
+            throw new CustomException(HttpStatus.BAD_REQUEST, "paymentKey가 저장되어 있지 않아 결제를 취소할 수 없습니다.");
         }
 
         try {
@@ -168,11 +167,11 @@ public class PaymentService {
         try {
             String[] tokens = orderId.split("_");
             if (tokens.length < 2) {
-                throw new PaymentFailedException("잘못된 orderId 형식입니다.");
+                throw new CustomException(HttpStatus.BAD_REQUEST, "잘못된 orderId 형식입니다.");
             }
             return Long.parseLong(tokens[1]);
         } catch (NumberFormatException e) {
-            throw new PaymentFailedException("orderId에서 subscribeId 추출 실패: 숫자 아님");
+            throw new CustomException(HttpStatus.BAD_REQUEST, "orderId에서 subscribeId 추출 실패: 숫자 아님");
         }
     }
 }

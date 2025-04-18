@@ -19,12 +19,13 @@ public class PaymentScheduler {
 
     private final PaymentRepository paymentRepository;
 
-    @Scheduled(cron = "0 * * * * *")
+    @Scheduled(cron = "0 */5 * * * *") // 5분 마다
     public void expireUnpaidPayments() {
-        Instant tenMinutesAgo = Instant.now().minus(Duration.ofMinutes(10));
+        Instant limit = Instant.now().minus(Duration.ofMinutes(20)); // 20분
 
+        // 결제 창에 들어갔을시에 스캐줄러 작동
         List<Payment> targets = paymentRepository
-                .findByStatusAndCreatedAtBefore(PaymentStatus.PENDING, tenMinutesAgo);
+                .findByStatusAndCreatedAtBeforeAndPaymentKeyIsNotNull(PaymentStatus.PENDING, limit);
 
         for (Payment payment : targets) {
             payment.expire();
@@ -32,4 +33,5 @@ public class PaymentScheduler {
             log.info("[만료 처리] paymentId = {}, createdAt = {}", payment.getId(), payment.getCreatedAt());
         }
     }
+
 }

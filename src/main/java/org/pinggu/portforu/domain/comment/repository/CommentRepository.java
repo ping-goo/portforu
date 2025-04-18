@@ -8,6 +8,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.time.Instant;
 
 @Repository
 public interface CommentRepository extends JpaRepository<Comment, Long> {
@@ -15,9 +16,12 @@ public interface CommentRepository extends JpaRepository<Comment, Long> {
     List<Comment> findByPortfolioId(Long portfolioId);
 
     @Modifying(clearAutomatically = true)
-    @Query("UPDATE Comment c SET c.content = COALESCE(:content, c.content) " +
+    @Query("UPDATE Comment c SET " +
+            "c.content = COALESCE(:content, c.content), " +
+            "c.updatedAt = :now " +
             "WHERE c.id = :commentId AND c.deletedAt IS NULL")
     Integer updateComment(@Param("commentId") Long commentId,
-                      @Param("content") String content);
+                          @Param("content") String content,
+                          @Param("now") Instant now);
 
 }

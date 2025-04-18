@@ -6,7 +6,6 @@ import org.pinggu.portforu.common.exception.CustomException;
 import org.pinggu.portforu.domain.jobposting.dto.request.JobPostingSaveRequestDto;
 import org.pinggu.portforu.domain.jobposting.dto.request.JobPostingUpdateRequestDto;
 import org.pinggu.portforu.domain.jobposting.dto.response.JobPostingResponseDto;
-import org.pinggu.portforu.domain.jobposting.dto.response.JobPostingUpdateResponseDto;
 import org.pinggu.portforu.domain.jobposting.entity.JobPosting;
 import org.pinggu.portforu.domain.jobposting.repository.JobPostingRepository;
 import org.springframework.data.domain.Page;
@@ -17,23 +16,26 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.Instant;
+
 @Service
 @RequiredArgsConstructor
 public class JobPostingService {
 
+    private final JobPostingFinder jobPostingFinder;
     private final JobPostingRepository jobPostingRepository;
 
     @Transactional
-    public JobPostingResponseDto saveJobPosting(JobPostingSaveRequestDto request) {
+    public JobPostingResponseDto saveJobPosting(JobPostingSaveRequestDto requestDto) {
         JobPosting jobPosting = JobPosting.builder()
-                .name(request.getName())
-                .industry(request.getIndustry())
-                .address(request.getAddress())
-                .salary(request.getSalary())
-                .qualifications(request.getQualifications())
-                .preferential(request.getPreferential())
-                .postingDate(request.getPostingDate())
-                .closingDate(request.getClosingDate())
+                .name(requestDto.getName())
+                .industry(requestDto.getIndustry())
+                .address(requestDto.getAddress())
+                .salary(requestDto.getSalary())
+                .qualifications(requestDto.getQualifications())
+                .preferential(requestDto.getPreferential())
+                .postingDate(requestDto.getPostingDate())
+                .closingDate(requestDto.getClosingDate())
                 .build();
 
         jobPostingRepository.save(jobPosting);
@@ -51,46 +53,31 @@ public class JobPostingService {
 
     @Transactional(readOnly = true)
     public JobPostingResponseDto findJobPosting(Long jobPostingId) {
-        JobPosting jobPosting = findJobPostingById(jobPostingId);
+        JobPosting jobPosting = jobPostingFinder.findJobPostingById(jobPostingId);
 
         return JobPostingResponseDto.from(jobPosting);
     }
 
     @Transactional
-    public JobPostingUpdateResponseDto updateJobPosting(Long jobPostingId, JobPostingUpdateRequestDto request) {
-        findJobPostingById(jobPostingId);
+    public JobPostingResponseDto updateJobPosting(Long jobPostingId, JobPostingUpdateRequestDto requestDto) {
+        jobPostingFinder.findJobPostingById(jobPostingId);
 
-        Integer updatedRows = jobPostingRepository.updateJobPosting(
-                jobPostingId, request.getName(), request.getIndustry(), request.getAddress(), request.getSalary(),
-                request.getQualifications(), request.getPreferential(), request.getClosingDate()
+        Instant now = Instant.now();
+        jobPostingRepository.updateJobPosting(
+                jobPostingId, requestDto.getName(), requestDto.getIndustry(), requestDto.getAddress(), requestDto.getSalary(),
+                requestDto.getQualifications(), requestDto.getPreferential(), requestDto.getClosingDate(), now
         );
 
-        if (updatedRows <= 0) {
-            throw new CustomException(HttpStatus.NOT_MODIFIED, "수정 사항이 없습니다.");
-        }
+        JobPosting updatedJobPosting = jobPostingFinder.findJobPostingById(jobPostingId);
 
-        JobPosting updatedJobPosting = jobPostingRepository.findById(jobPostingId)
-                .orElseThrow(() -> new CustomException(HttpStatus.NOT_FOUND, "채용 공고가 존재하지 않습니다."));
-
-        return JobPostingUpdateResponseDto.from(updatedJobPosting);
+        return JobPostingResponseDto.from(updatedJobPosting);
     }
 
     @Transactional
     public Long deleteJobPosting(Long jobPostingId) {
-        JobPosting jobPosting = findJobPostingById(jobPostingId);
+        JobPosting jobPosting = jobPostingFinder.findJobPostingById(jobPostingId);
 
         return jobPosting.delete();
-    }
-
-    public JobPosting findJobPostingById(Long id) {
-        JobPosting jobPosting = jobPostingRepository.findById(id)
-                .orElseThrow(() -> new CustomException(HttpStatus.NOT_FOUND, "채용 공고가 존재하지 않습니다."));
-
-        if (jobPosting.isDeleted()) {
-            throw new CustomException(HttpStatus.BAD_REQUEST, "이미 삭제된 채용 공고입니다.");
-        }
-
-        return jobPosting;
     }
 
 }

@@ -8,6 +8,8 @@ import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
+import java.time.Instant;
+
 public interface JobPostingRepository extends JpaRepository<JobPosting, Long> {
 
     Page<JobPosting> findAllByDeletedAtIsNull(Pageable pageable);
@@ -20,7 +22,8 @@ public interface JobPostingRepository extends JpaRepository<JobPosting, Long> {
             "j.salary = COALESCE(:salary, j.salary), " +
             "j.qualifications = COALESCE(:qualifications, j.qualifications), " +
             "j.preferential = COALESCE(:preferential, j.preferential), " +
-            "j.closingDate = COALESCE(:closingDate, j.closingDate) " +
+            "j.closingDate = COALESCE(:closingDate, j.closingDate), " +
+            "j.updatedAt = :now " +
             "WHERE j.id = :id")
     Integer updateJobPosting(
             @Param("id") Long id,
@@ -30,7 +33,8 @@ public interface JobPostingRepository extends JpaRepository<JobPosting, Long> {
             @Param("salary") String salary,
             @Param("qualifications") String qualifications,
             @Param("preferential") String preferential,
-            @Param("closingDate") String closingDate
+            @Param("closingDate") String closingDate,
+            @Param("now") Instant now
     );
 
 }

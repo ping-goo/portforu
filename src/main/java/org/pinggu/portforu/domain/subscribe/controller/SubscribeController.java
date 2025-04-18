@@ -31,10 +31,9 @@ public class SubscribeController {
     public ResponseEntity<ApiResponse<SubscribeResponseDto>> saveSubscribe(
             @PathVariable("membershipId") Long membershipId,
             @Valid @RequestBody SubscribeRequestDto requestDto,
-            @AuthenticationPrincipal AuthMember member
+            @AuthenticationPrincipal AuthMember authmember
     ) {
-        Long memberId = member.getId();
-        SubscribeResponseDto dto = subscribeService.saveSubscribe(memberId, membershipId, requestDto);
+        SubscribeResponseDto dto = subscribeService.saveSubscribe(authmember, membershipId, requestDto);
         return ResponseEntity.ok(ApiResponse.of(dto));
     }
 
@@ -42,12 +41,10 @@ public class SubscribeController {
     @GetMapping
     public ResponseEntity<ApiResponse<List<SubscribeResponseDto>>> findSubscribes(
             @ModelAttribute Pagecond pagecond,
-            @AuthenticationPrincipal AuthMember member
+            @AuthenticationPrincipal AuthMember authMember
     ) {
-        Long memberId = member.getId();
         Pageable pageable = PageRequest.of(pagecond.getPageNum() - 1, pagecond.getPageSize());
-
-        Page<SubscribeResponseDto> responses = subscribeService.findSubscribes(memberId, pageable);
+        Page<SubscribeResponseDto> responses = subscribeService.findSubscribes(authMember, pageable);
 
         PageInfo pageInfo = PageInfo.builder()
                 .pageNum(pagecond.getPageNum())
@@ -65,8 +62,6 @@ public class SubscribeController {
             @PathVariable("subscribeId") Long subscribeId,
             @AuthenticationPrincipal AuthMember member
     ) {
-        Long deletedSubscribeId = subscribeService.deleteSubscribe(member.getId(), subscribeId);
-
-        return ResponseEntity.ok(ApiResponse.of(deletedSubscribeId));
+        return ResponseEntity.ok(ApiResponse.of(subscribeService.deleteSubscribe(member.getId(), subscribeId)));
     }
 }

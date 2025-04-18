@@ -23,6 +23,18 @@ public interface SubscribeRepository extends JpaRepository<Subscribe, Long> {
     Page<Subscribe> findAllByMemberAndDeletedAtIsNull(Member member, Pageable pageable);
 
     @Query("""
+        SELECT COUNT(s) FROM Subscribe s
+        JOIN Payment p ON p.subscribe = s
+        WHERE s.membership = :membership
+        AND s.status IN ('ACTIVE', 'CANCELLED') 
+        AND s.endDate > :now
+        AND p.status = 'COMPLETED'
+        AND p.deletedAt IS NULL
+        """)
+    long countActiveByMembership(@Param("membership") Membership membership,
+                                 @Param("now") Instant now);
+
+    @Query("""
         SELECT COUNT(s) > 0 FROM Subscribe s
         JOIN Payment p ON p.subscribe = s
         WHERE s.member.id = :memberId
@@ -30,11 +42,11 @@ public interface SubscribeRepository extends JpaRepository<Subscribe, Long> {
         AND s.status IN ('ACTIVE', 'CANCELLED')
         AND p.status = 'COMPLETED'
         AND s.deletedAt IS NULL
-    """)
+        """)
     boolean hasValidSubscription(@Param("memberId") Long memberId,
                                  @Param("membershipId") Long membershipId);
 
-    @EntityGraph(attributePaths = "membership") // n+1 문제 방지
+
     List<Subscribe> findAllByEndDateBeforeAndDeletedAtIsNull(Instant time);
 
 }
