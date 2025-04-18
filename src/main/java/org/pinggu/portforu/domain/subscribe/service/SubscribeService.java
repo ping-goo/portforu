@@ -45,7 +45,7 @@ public class SubscribeService {
 
         if (paymentRepository.existsBySubscribe_Member_IdAndSubscribe_Membership_IdAndStatus(
                 memberId, membershipId, PaymentStatus.PENDING)) {
-            throw new CustomException(HttpStatus.BAD_REQUEST, "결제가 진행 중인 구독이 존재합니다.");
+            throw new CustomException(HttpStatus.BAD_REQUEST, "결제가 진행 중인 구독이 존재합니다.결제가 완료된 후 다시 시도하십시오");
         }
 
         if (subscribeRepository.hasValidSubscription(memberId, membershipId)) {
