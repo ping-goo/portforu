@@ -6,6 +6,7 @@ import org.pinggu.portforu.common.dto.AuthMember;
 import org.pinggu.portforu.common.exception.CustomException;
 import org.pinggu.portforu.domain.member.entity.Member;
 import org.pinggu.portforu.domain.membership.entity.Membership;
+import org.pinggu.portforu.domain.membership.repository.MembershipRepository;
 import org.pinggu.portforu.domain.membership.service.MembershipFinder;
 import org.pinggu.portforu.domain.payment.entity.Payment;
 import org.pinggu.portforu.domain.payment.enums.PaymentStatus;
@@ -34,7 +35,9 @@ public class SubscribeService {
     private final SubscribeFinder subscribeFinder;
     private final MembershipFinder membershipFinder;
     private final PaymentFinder paymentFinder;
+    private final MembershipRepository membershipRepository;
 
+    // 구독 생성
     @Transactional
     public SubscribeResponseDto saveSubscribe(AuthMember authMember, Long membershipId, SubscribeRequestDto requestDto) {
         Member member = Member.fromAuthMember(authMember);
@@ -44,8 +47,7 @@ public class SubscribeService {
 
         subscribeFinder.hasValidSubscription(member, membershipId);
 
-        long count = subscribeRepository.countActiveByMembership(membership, Instant.now());
-        if (count >= membership.getQuantity()) {
+        if (membership.getQuantity() <= 0) {
             throw new CustomException(HttpStatus.BAD_REQUEST, "멤버십 정원이 초과되었습니다.");
         }
 
@@ -66,15 +68,17 @@ public class SubscribeService {
                 .endDate(endDate)
                 .build();
 
+        Subscribe savedSubscribe = subscribeRepository.save(subscribe);
+
         Payment payment = Payment.builder()
-                .paymentMethod(requestDto.getPaymentMethod())
                 .status(PaymentStatus.PENDING)
-                .subscribe(subscribe)
+                .subscribe(savedSubscribe)
                 .build();
 
         return SubscribeResponseDto.from(subscribe, payment);
     }
 
+    // 구독 조회
     @Transactional(readOnly = true)
     public Page<SubscribeResponseDto> findSubscribes(AuthMember authMember, Pageable pageable) {
         Member member = Member.fromAuthMember(authMember);
@@ -86,6 +90,7 @@ public class SubscribeService {
                 });
     }
 
+    // 구독 취소
     @Transactional
     public Long deleteSubscribe(Long memberId, Long subscribeId) {
         Subscribe subscribe = subscribeFinder.findById(subscribeId);
@@ -100,6 +105,7 @@ public class SubscribeService {
             throw new CustomException(HttpStatus.BAD_REQUEST, "결제가 진행되지 않은 구독은 취소할 수 없습니다.");
         }
 
+        // 취소는 정원 복구 안 함
         subscribe.cancel();
         subscribeRepository.save(subscribe);
 
@@ -108,12 +114,16 @@ public class SubscribeService {
         return subscribe.getId();
     }
 
+    // 결제 후 상태 업데이트
     @Transactional
     public void updateSubscriptionStatus(Long subscribeId, PaymentStatus paymentStatus) {
         Subscribe subscribe = subscribeFinder.findById(subscribeId);
+        Membership membership = subscribe.getMembership();
 
         if (paymentStatus == PaymentStatus.COMPLETED) {
             subscribe.activate();
+            membership.decreaseQuantity(); // 정원 감소
+            membershipRepository.save(membership); //  DB 반영
             subscribeRepository.save(subscribe);
             log.info("구독 활성화 완료: subscribeId={}, 상태={}", subscribeId, subscribe.getStatus());
         } else if (paymentStatus == PaymentStatus.FAILED) {
@@ -122,9 +132,10 @@ public class SubscribeService {
             log.info("구독 실패 처리됨: subscribeId={}, 상태={}", subscribeId, subscribe.getStatus());
         } else if (paymentStatus == PaymentStatus.EXPIRED) {
             subscribe.expire();
+            membership.increaseQuantity(); // 정원 증가
+            membershipRepository.save(membership); // DB 반영
             subscribeRepository.save(subscribe);
             log.info("구독 만료 처리됨: subscribeId={}, 상태={}", subscribeId, subscribe.getStatus());
         }
     }
-
 }
