@@ -35,6 +35,7 @@ public class SubscribeService {
     private final MembershipRepository membershipRepository;
     private final PaymentRepository paymentRepository;
 
+    //구독 생성
     @Transactional
     public SubscribeResponseDto saveSubscribe(Long memberId, Long membershipId, SubscribeRequestDto requestDto) {
         Member member = memberRepository.findById(memberId)
@@ -44,15 +45,14 @@ public class SubscribeService {
 
         if (paymentRepository.existsBySubscribe_Member_IdAndSubscribe_Membership_IdAndStatus(
                 memberId, membershipId, PaymentStatus.PENDING)) {
-            throw new CustomException(HttpStatus.BAD_REQUEST, "결제가 진행 중인 구독이 존재합니다. 결제가 완료된 후 다시 시도하십시오.");
+            throw new CustomException(HttpStatus.BAD_REQUEST, "결제가 진행 중인 구독이 존재합니다.");
         }
 
         if (subscribeRepository.hasValidSubscription(memberId, membershipId)) {
             throw new CustomException(HttpStatus.BAD_REQUEST, "이미 구독한 멤버십입니다.");
         }
 
-        long count = subscribeRepository.countActiveByMembership(membership, Instant.now());
-        if (count >= membership.getQuantity()) {
+        if (membership.getQuantity() <= 0) {
             throw new CustomException(HttpStatus.BAD_REQUEST, "멤버십 정원이 초과되었습니다.");
         }
 
@@ -86,6 +86,7 @@ public class SubscribeService {
         return SubscribeResponseDto.from(savedSub, payment);
     }
 
+    // 구독 조회
     @Transactional(readOnly = true)
     public Page<SubscribeResponseDto> findSubscribes(Long memberId, Pageable pageable) {
         Member member = memberRepository.findById(memberId)
@@ -99,6 +100,7 @@ public class SubscribeService {
                 });
     }
 
+    // 구독 취소
     @Transactional
     public Long deleteSubscribe(Long memberId, Long subscribeId) {
         Subscribe subscribe = subscribeRepository.findById(subscribeId)
@@ -119,6 +121,7 @@ public class SubscribeService {
             throw new CustomException(HttpStatus.BAD_REQUEST, "결제가 진행되지 않은 구독은 취소할 수 없습니다.");
         }
 
+        // 취소는 정원 복구 안 함
         subscribe.cancel();
         subscribeRepository.save(subscribe);
 
@@ -127,25 +130,33 @@ public class SubscribeService {
         return subscribe.getId();
     }
 
+    // 결제 후 상태 업데이트
     @Transactional
     public void updateSubscriptionStatus(Long subscribeId, PaymentStatus paymentStatus) {
         Subscribe subscribe = subscribeRepository.findById(subscribeId)
                 .orElseThrow(() -> new CustomException(HttpStatus.NOT_FOUND, "해당 구독을 찾을 수 없습니다."));
 
+        Membership membership = subscribe.getMembership();
+
         if (paymentStatus == PaymentStatus.COMPLETED) {
             subscribe.activate();
-            subscribe.getMembership().decreaseQuantity(); // 정원 감소
+            membership.decreaseQuantity(); //  정원 감소
+            membershipRepository.save(membership);
             subscribeRepository.save(subscribe);
-            log.info("구독 활성화 완료: subscribeId={}, 상태={}", subscribeId, subscribe.getStatus());
+            log.info("구독 활성화 완료: subscribeId={}, 남은 정원={}", subscribeId, membership.getQuantity());
+
         } else if (paymentStatus == PaymentStatus.FAILED) {
             subscribe.fail();
             subscribeRepository.save(subscribe);
-            log.info("구독 실패 처리됨: subscribeId={}, 상태={}", subscribeId, subscribe.getStatus());
+            log.info("구독 실패 처리됨: subscribeId={}", subscribeId);
+
         } else if (paymentStatus == PaymentStatus.EXPIRED) {
             subscribe.expire();
-            subscribe.getMembership().increaseQuantity(); // 정원 증가
+            membership.increaseQuantity(); //  정원 복구
+            membershipRepository.save(membership);
             subscribeRepository.save(subscribe);
-            log.info("구독 만료 처리됨: subscribeId={}, 상태={}", subscribeId, subscribe.getStatus());
+
+            log.info("구독 만료 처리됨: subscribeId={}, 복구된 정원={}", subscribeId, membership.getQuantity());
         }
     }
 

@@ -18,7 +18,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
 
-import java.time.Instant;
 import java.util.Base64;
 import java.util.HashMap;
 import java.util.Map;
@@ -50,12 +49,12 @@ public class PaymentService {
             Subscribe subscribe = payment.getSubscribe();
             Membership membership = subscribe.getMembership();
 
-            long currentCount = subscribeRepository.countActiveByMembership(membership, Instant.now());
-            if (currentCount >= membership.getQuantity()) {
+            //  정원 수량으로 체크 (count 방식 제거)
+            if (membership.getQuantity() <= 0) {
                 try {
-                    cancelTossPayment(paymentKey, "멤버십 정원 초과로 결제 취소됨");
+                    cancelTossPayment(paymentKey, "멤버십 정원이 초과되어 결제가 취소되었습니다.");
                 } catch (Exception e) {
-                    log.warn(" Toss 결제 취소 실패: {}", e.getMessage());
+                    log.warn("Toss 결제 취소 실패: {}", e.getMessage());
                 }
 
                 payment.fail();
@@ -86,9 +85,6 @@ public class PaymentService {
             payment.assignPaymentKey(paymentKey);
             payment.complete();
             paymentRepository.save(payment);
-
-            subscribe.activate();
-            subscribeRepository.save(subscribe);
 
             subscribeService.updateSubscriptionStatus(subscribeId, PaymentStatus.COMPLETED);
 
