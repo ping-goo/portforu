@@ -14,6 +14,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.Instant;
+
 @Service
 @RequiredArgsConstructor
 public class MemberService {
@@ -24,7 +26,7 @@ public class MemberService {
 
     @Transactional(readOnly = true)
     public MemberResponseDto findMember(AuthMember authMember, Long id) {
-        Member member = findMemberById(id);
+        Member member = memberFinder.findMemberById(id);
         memberFinder.validateOwnership(authMember, id);
 
         return MemberResponseDto.from(member);
@@ -36,15 +38,16 @@ public class MemberService {
     ) {
         memberFinder.validateOwnership(authMember, id);
 
+        Instant now = Instant.now();
         Integer updatedRows = memberRepository.updateMemberInfo(
-                id, requestDto.getName(), requestDto.getPhoneNumber(), requestDto.getAddress()
+                id, requestDto.getName(), requestDto.getPhoneNumber(), requestDto.getAddress(), now
         );
 
         if (updatedRows <= 0) {
             throw new CustomException(HttpStatus.NOT_MODIFIED, "수정 사항이 없습니다.");
         }
 
-        Member updatedMember = findMemberById(id);
+        Member updatedMember = memberFinder.findMemberById(id);
 
         return MemberResponseDto.from(updatedMember);
     }
@@ -54,7 +57,7 @@ public class MemberService {
             AuthMember authMember, Long id, PasswordUpdateRequestDto requestDto
     ) {
         memberFinder.validateOwnership(authMember, id);
-        Member member = findMemberById(id);
+        Member member = memberFinder.findMemberById(id);
 
         if(!passwordEncoder.matches(requestDto.getOldPassword(), member.getPassword())) {
             throw new CustomException(HttpStatus.BAD_REQUEST, "기존 비밀번호가 일치하지 않습니다.");
@@ -65,13 +68,15 @@ public class MemberService {
         }
 
         String newEncodedPassword = passwordEncoder.encode(requestDto.getNewPassword());
-        Integer updatedRows = memberRepository.updatePassword(id, newEncodedPassword);
+
+        Instant now = Instant.now();
+        Integer updatedRows = memberRepository.updatePassword(id, newEncodedPassword, now);
 
         if (updatedRows <= 0) {
             throw new CustomException(HttpStatus.NOT_MODIFIED, "비밀번호 변경에 실패했습니다.");
         }
 
-        return MemberResponseDto.from(findMemberById(id));
+        return MemberResponseDto.from(memberFinder.findMemberById(id));
     }
 
     @Transactional
@@ -79,7 +84,7 @@ public class MemberService {
             AuthMember authMember, Long id, MemberDeleteRequestDto requestDto
     ) {
         memberFinder.validateOwnership(authMember, id);
-        Member member = findMemberById(id);
+        Member member = memberFinder.findMemberById(id);
 
         if (!passwordEncoder.matches(requestDto.getPassword(), member.getPassword())) {
             throw new CustomException(HttpStatus.BAD_REQUEST, "잘못된 비밀번호입니다.");
@@ -90,11 +95,6 @@ public class MemberService {
         }
 
         return member.delete();
-    }
-
-    private Member findMemberById(Long id) {
-        return memberRepository.findById(id).orElseThrow(() ->
-                new CustomException(HttpStatus.NOT_FOUND, "존재하지 않는 회원정보입니다."));
     }
 
 }

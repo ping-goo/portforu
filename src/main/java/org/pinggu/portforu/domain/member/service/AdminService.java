@@ -19,11 +19,11 @@ import org.springframework.transaction.annotation.Transactional;
 public class AdminService {
 
     private final MemberRepository memberRepository;
+    private final MemberFinder memberFinder;
 
     @Transactional(readOnly = true)
     public MemberResponseDto findMember(Long memberId) {
-        Member member = memberRepository.findById(memberId)
-                .orElseThrow(() -> new CustomException(HttpStatus.NOT_FOUND, "존재하지 않는 회원정보입니다."));
+        Member member = memberFinder.findMemberById(memberId);
 
         return MemberResponseDto.from(member);
     }
@@ -38,8 +38,7 @@ public class AdminService {
 
     @Transactional
     public Long deleteMember(Long memberId) {
-        Member member = memberRepository.findById(memberId)
-                .orElseThrow(() -> new CustomException(HttpStatus.NOT_FOUND, "존재하지 않는 회원정보입니다."));
+        Member member = memberFinder.findMemberById(memberId);
 
         return member.delete();
     }

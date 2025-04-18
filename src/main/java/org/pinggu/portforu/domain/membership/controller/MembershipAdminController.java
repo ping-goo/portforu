@@ -21,18 +21,18 @@ public class MembershipAdminController {
     @Admin
     @PostMapping
     public ResponseEntity<ApiResponse<MembershipResponseDto>> saveMembership(
-            @Valid @RequestBody MembershipSaveRequestDto request
+            @Valid @RequestBody MembershipSaveRequestDto requestDto
     ) {
-        return ResponseEntity.ok().body(ApiResponse.of(membershipService.saveMembership(request)));
+        return ResponseEntity.ok().body(ApiResponse.of(membershipService.saveMembership(requestDto)));
     }
 
     @Admin
     @PutMapping("/{membershipId}")
     public ResponseEntity<ApiResponse<MembershipResponseDto>> updateMembership(
             @PathVariable("membershipId") Long membershipId,
-            @Valid @RequestBody MembershipUpdateRequestDto request
+            @Valid @RequestBody MembershipUpdateRequestDto requestDto
     ) {
-        return ResponseEntity.ok(ApiResponse.of(membershipService.updateMembership(membershipId, request)));
+        return ResponseEntity.ok(ApiResponse.of(membershipService.updateMembership(membershipId, requestDto)));
     }
 
     @Admin

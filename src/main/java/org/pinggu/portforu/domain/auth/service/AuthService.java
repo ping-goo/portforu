@@ -64,7 +64,8 @@ public class AuthService {
         );
 
         return SignUpResponseDto.builder()
-                .bearerToken(accessToken)
+                .accessToken(accessToken)
+                .refreshToken(refreshToken)
                 .id(savedMember.getId())
                 .email(savedMember.getEmail())
                 .name(savedMember.getName())

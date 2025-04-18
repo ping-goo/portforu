@@ -8,6 +8,7 @@ import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
+import java.time.Instant;
 import java.util.Optional;
 
 public interface MembershipRepository extends JpaRepository<Membership, Long> {
@@ -22,14 +23,16 @@ public interface MembershipRepository extends JpaRepository<Membership, Long> {
             + "m.name = COALESCE(:name, m.name), "
             + "m.price = COALESCE(:price, m.price), "
             + "m.quantity = COALESCE(:quantity, m.quantity), "
-            + "m.year = COALESCE(:year, m.year) "
+            + "m.year = COALESCE(:year, m.year), "
+            + "m.updatedAt = :now "
             + "WHERE m.id = :id AND m.deletedAt IS NULL")
     Integer updateMembership(
             @Param("id") Long id,
             @Param("name") String name,
             @Param("price") Integer price,
             @Param("quantity") Integer quantity,
-            @Param("year") Integer year
-    );
+            @Param("year") Integer year,
+            @Param("now") Instant now
+            );
 
 }

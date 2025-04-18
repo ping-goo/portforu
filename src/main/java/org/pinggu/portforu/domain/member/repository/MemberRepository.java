@@ -8,6 +8,7 @@ import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
+import java.time.Instant;
 import java.util.Optional;
 
 public interface MemberRepository extends JpaRepository<Member, Long> {
@@ -22,20 +23,25 @@ public interface MemberRepository extends JpaRepository<Member, Long> {
     @Query("UPDATE Member m SET "
             + "m.name = COALESCE(:name, m.name), "
             + "m.phoneNumber = COALESCE(:phoneNumber, m.phoneNumber), "
-            + "m.address = COALESCE(:address, m.address) "
+            + "m.address = COALESCE(:address, m.address), "
+            + "m.updatedAt = :now "
             + "WHERE m.id = :id")
     Integer updateMemberInfo(
             @Param("id") Long id,
             @Param("name") String name,
             @Param("phoneNumber") String phoneNumber,
-            @Param("address") String address
+            @Param("address") String address,
+            @Param("now") Instant now
     );
 
     @Modifying
-    @Query("UPDATE Member m SET m.password = :newPassword WHERE m.id = :id")
+    @Query("UPDATE Member m SET m.password = :newPassword, "
+            + "m.updatedAt = :now "
+            + " WHERE m.id = :id")
     Integer updatePassword(
             @Param("id") Long id,
-            @Param("newPassword") String newPassword
+            @Param("newPassword") String newPassword,
+            @Param("now") Instant now
     );
 
 }
