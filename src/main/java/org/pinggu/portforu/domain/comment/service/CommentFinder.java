@@ -14,12 +14,7 @@ public class CommentFinder {
     private final CommentRepository commentRepository;
 
     public Comment findCommentById(Long id) {
-        return commentRepository.findWithMemberById(id)
-                .orElseThrow(() -> new CustomException(HttpStatus.NOT_FOUND, "댓글을 찾을 수 없습니다."));
-    }
-
-    public Comment findCommentWithMemberById(Long id) {
-        Comment comment = commentRepository.findWithMemberById(id)
+        Comment comment = commentRepository.findById(id)
                 .orElseThrow(() -> new CustomException(HttpStatus.NOT_FOUND, "댓글을 찾을 수 없습니다."));
 
         if (comment.isDeleted()) {

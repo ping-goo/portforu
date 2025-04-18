@@ -25,7 +25,7 @@ public interface JobPostingRepository extends JpaRepository<JobPosting, Long> {
             "j.closingDate = COALESCE(:closingDate, j.closingDate), " +
             "j.updatedAt = :now " +
             "WHERE j.id = :id")
-    Void updateJobPosting(
+    Integer updateJobPosting(
             @Param("id") Long id,
             @Param("name") String name,
             @Param("industry") String industry,

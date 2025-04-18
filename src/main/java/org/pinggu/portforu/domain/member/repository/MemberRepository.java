@@ -38,7 +38,7 @@ public interface MemberRepository extends JpaRepository<Member, Long> {
     @Query("UPDATE Member m SET m.password = :newPassword, "
             + "m.updatedAt = :now "
             + " WHERE m.id = :id")
-    Void updatePassword(
+    Integer updatePassword(
             @Param("id") Long id,
             @Param("newPassword") String newPassword,
             @Param("now") Instant now

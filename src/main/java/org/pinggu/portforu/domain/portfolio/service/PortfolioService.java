@@ -68,7 +68,7 @@ public class PortfolioService {
 
     @Transactional(readOnly = true)
     public PortfolioResponseDto findPortfolio(AuthMember authMember, Long portfolioId) {
-        Portfolio portfolio = portfolioFinder.findPortfolioWithMemberById(portfolioId);
+        Portfolio portfolio = portfolioFinder.findPortfolioById(portfolioId);
 
         if (!portfolio.getMember().getId().equals(authMember.getId())) {
             if (!subscribeValidator.isSubscribed(authMember.getId())) {
@@ -101,7 +101,7 @@ public class PortfolioService {
     @Transactional(readOnly = true)
     public PortfolioResponseDto findMyPortfolioDetail(AuthMember authMember, Long memberId, Long portfolioId) {
         memberFinder.validateOwnership(authMember, memberId);
-        Portfolio portfolio = portfolioFinder.findPortfolioWithMemberById(portfolioId);
+        Portfolio portfolio = portfolioFinder.findPortfolioById(portfolioId);
 
         if (!portfolio.getMember().getId().equals(memberId)) {
             throw new CustomException(HttpStatus.UNAUTHORIZED, "게시물에 대한 접근 권한이 없습니다.");
@@ -112,7 +112,7 @@ public class PortfolioService {
 
     @Transactional
     public PortfolioResponseDto updatePortfolio(AuthMember authMember, Long portfolioId, PortfolioUpdateRequestDto requestDto) {
-        Portfolio portfolio = portfolioFinder.findPortfolioWithMemberById(portfolioId);
+        Portfolio portfolio = portfolioFinder.findPortfolioById(portfolioId);
 
         if (!portfolio.getMember().getId().equals(authMember.getId())) {
             throw new CustomException(HttpStatus.UNAUTHORIZED, "수정 권한이 없습니다.");
@@ -143,7 +143,7 @@ public class PortfolioService {
 
     @Transactional
     public Long deletePortfolio(AuthMember authMember, Long portfolioId) {
-        Portfolio portfolio = portfolioFinder.findPortfolioWithMemberById(portfolioId);
+        Portfolio portfolio = portfolioFinder.findPortfolioById(portfolioId);
 
         if (!portfolio.getMember().getId().equals(authMember.getId())) {
             throw new CustomException(HttpStatus.UNAUTHORIZED, "삭제 권한이 없습니다.");

@@ -24,15 +24,4 @@ public class PortfolioFinder {
         return portfolio;
     }
 
-    public Portfolio findPortfolioWithMemberById(Long id) {
-        Portfolio portfolio = portfolioRepository.findWithMemberById(id)
-                .orElseThrow(() -> new CustomException(HttpStatus.NOT_FOUND, "게시물을 찾을 수 없습니다."));
-
-        if (portfolio.isDeleted()) {
-            throw new CustomException(HttpStatus.BAD_REQUEST, "이미 삭제된 게시물입니다.");
-        }
-
-        return portfolio;
-    }
-
 }

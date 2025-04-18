@@ -30,7 +30,7 @@ public class CommentService {
 
     @Transactional
     public CommentResponseDto saveComment(AuthMember authMember, Long portfolioId, CommentRequestDto requestDto) {
-        Portfolio portfolio = portfolioFinder.findPortfolioWithMemberById(portfolioId);
+        Portfolio portfolio = portfolioFinder.findPortfolioById(portfolioId);
 
         Member member = Member.fromAuthMember(authMember);
 
@@ -67,7 +67,7 @@ public class CommentService {
     public CommentResponseDto updateComment(AuthMember authMember, Long portfolioId, Long commentId, CommentRequestDto requestDto) {
         portfolioFinder.findPortfolioById(portfolioId);
 
-        Comment comment = commentFinder.findCommentWithMemberById(commentId);
+        Comment comment = commentFinder.findCommentById(commentId);
 
         if (!comment.getMember().getId().equals(authMember.getId())) {
             throw new CustomException(HttpStatus.UNAUTHORIZED, "수정 권한이 없습니다.");
@@ -85,7 +85,7 @@ public class CommentService {
     public Long deleteComment(AuthMember authMember, Long portfolioId, Long commentId) {
         portfolioFinder.findPortfolioById(portfolioId);
 
-        Comment comment = commentFinder.findCommentWithMemberById(commentId);
+        Comment comment = commentFinder.findCommentById(commentId);
 
         if (!comment.getMember().getId().equals(authMember.getId())) {
             throw new CustomException(HttpStatus.UNAUTHORIZED, "삭제 권한이 없습니다.");
