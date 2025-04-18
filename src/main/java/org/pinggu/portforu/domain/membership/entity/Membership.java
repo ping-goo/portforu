@@ -33,4 +33,16 @@ public class Membership extends BaseEntity {
         this.year = year;
     }
 
+    // 정원 감소
+    public void decreaseQuantity() {
+        if (this.quantity <= 0) {
+            throw new IllegalStateException("멤버십 정원이 가득 찼습니다.");
+        }
+        this.quantity--;
+    }
+
+    // 정원 증가
+    public void increaseQuantity() {
+        this.quantity++;
+    }
 }

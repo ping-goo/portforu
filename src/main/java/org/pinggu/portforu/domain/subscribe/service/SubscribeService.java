@@ -13,7 +13,6 @@ import org.pinggu.portforu.domain.payment.repository.PaymentRepository;
 import org.pinggu.portforu.domain.subscribe.dto.request.SubscribeRequestDto;
 import org.pinggu.portforu.domain.subscribe.dto.response.SubscribeResponseDto;
 import org.pinggu.portforu.domain.subscribe.entity.Subscribe;
-import org.pinggu.portforu.domain.subscribe.enums.SubscribeStatus;
 import org.pinggu.portforu.domain.subscribe.repository.SubscribeRepository;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -135,6 +134,7 @@ public class SubscribeService {
 
         if (paymentStatus == PaymentStatus.COMPLETED) {
             subscribe.activate();
+            subscribe.getMembership().decreaseQuantity(); // 정원 감소
             subscribeRepository.save(subscribe);
             log.info("구독 활성화 완료: subscribeId={}, 상태={}", subscribeId, subscribe.getStatus());
         } else if (paymentStatus == PaymentStatus.FAILED) {
@@ -143,6 +143,7 @@ public class SubscribeService {
             log.info("구독 실패 처리됨: subscribeId={}, 상태={}", subscribeId, subscribe.getStatus());
         } else if (paymentStatus == PaymentStatus.EXPIRED) {
             subscribe.expire();
+            subscribe.getMembership().increaseQuantity(); // 정원 증가
             subscribeRepository.save(subscribe);
             log.info("구독 만료 처리됨: subscribeId={}, 상태={}", subscribeId, subscribe.getStatus());
         }
