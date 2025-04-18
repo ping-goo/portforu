@@ -38,9 +38,9 @@ public class SubscribeService {
     @Transactional
     public SubscribeResponseDto saveSubscribe(AuthMember authMember, Long membershipId, SubscribeRequestDto requestDto) {
         Member member = Member.fromAuthMember(authMember);
-        Membership membership = membershipFinder.findByIdOrThrow(membershipId);
+        Membership membership = membershipFinder.findById(membershipId);
 
-        paymentFinder.existsBySubscribe_Member_IdAndSubscribe_Membership_IdAndStatus(member, membershipId, PaymentStatus.PENDING);
+        paymentFinder.existsPayment(member, membershipId, PaymentStatus.PENDING);
 
         subscribeFinder.hasValidSubscription(member, membershipId);
 

@@ -15,12 +15,14 @@ public class SubscribeFinder {
     private final SubscribeRepository subscribeRepository;
 
     public Subscribe findById(Long subscribeId) {
+        Subscribe subscribe = subscribeRepository.findById(subscribeId)
+                .orElseThrow(() -> new CustomException(HttpStatus.NOT_FOUND, "구독 정보를 찾을 수 없습니다."));
+
         if (subscribe.isDeleted()) {
             throw new CustomException(HttpStatus.BAD_REQUEST, "이미 삭제된 구독입니다.");
         }
 
-        return subscribeRepository.findById(subscribeId)
-                .orElseThrow(() -> new CustomException(HttpStatus.NOT_FOUND, "구독 정보를 찾을 수 없습니다."));
+        return subscribe;
     }
 
     public void hasValidSubscription (Member member, Long membershipId) {

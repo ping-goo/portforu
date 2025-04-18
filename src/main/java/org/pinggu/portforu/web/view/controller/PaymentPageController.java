@@ -3,6 +3,7 @@ package org.pinggu.portforu.web.view.controller;
 import lombok.RequiredArgsConstructor;
 import org.pinggu.portforu.domain.member.entity.Member;
 import org.pinggu.portforu.domain.subscribe.entity.Subscribe;
+import org.pinggu.portforu.domain.subscribe.service.SubscribeFinder;
 import org.pinggu.portforu.domain.subscribe.service.SubscribeService;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
@@ -16,7 +17,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 @RequestMapping("/pay")
 public class PaymentPageController {
 
-    private final SubscribeService subscribeService;
+    private final SubscribeFinder subscribeFinder;
 
     @Value("${toss.test-client-key}")
     private String clientKey;
@@ -31,7 +32,7 @@ public class PaymentPageController {
     public String paymentPage(@RequestParam Long subscribeId, Model model) {
 
         try {
-            Subscribe subscribe = subscribeService.findById(subscribeId);
+            Subscribe subscribe = subscribeFinder.findById(subscribeId);
             Member member = subscribe.getMember();
 
             model.addAttribute("clientKey", clientKey);
