@@ -1,7 +1,7 @@
 package org.pinggu.portforu.domain.payment.controller;
 
 import lombok.RequiredArgsConstructor;
-import org.pinggu.portforu.domain.payment.exception.PaymentFailedException;
+import org.pinggu.portforu.common.exception.CustomException;
 import org.pinggu.portforu.domain.payment.service.PaymentService;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -27,7 +27,7 @@ public class PaymentController {
             paymentService.handleSuccessPayment(paymentKey, orderId, amount);
             redirectAttributes.addAttribute("orderId", orderId);
             return "redirect:/payments/success";
-        } catch (PaymentFailedException e) {
+        } catch (CustomException e) {
             Long subscribeId = extractSubscribeIdFromOrderId(orderId);
             redirectAttributes.addAttribute("message", e.getMessage());
             redirectAttributes.addAttribute("subscribeId", subscribeId);
@@ -70,4 +70,5 @@ public class PaymentController {
         String[] tokens = orderId.split("_");
         return Long.parseLong(tokens[1]);
     }
+
 }

@@ -32,4 +32,5 @@ public class PaymentScheduler {
             log.info("[만료 처리] paymentId = {}, createdAt = {}", payment.getId(), payment.getCreatedAt());
         }
     }
+
 }

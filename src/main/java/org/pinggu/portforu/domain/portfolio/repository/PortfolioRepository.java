@@ -30,7 +30,7 @@ public interface PortfolioRepository extends JpaRepository<Portfolio, Long> {
             "    p.fileUrl = COALESCE(:fileUrl, p.fileUrl), " +
             "    p.updatedAt = :now " +
             "WHERE p.id = :portfolioId AND p.deletedAt IS NULL")
-    Integer updatePortfolio(@Param("portfolioId") Long portfolioId,
+    Void updatePortfolio(@Param("portfolioId") Long portfolioId,
                             @Param("title") String title,
                             @Param("description") String description,
                             @Param("fileUrl") String fileUrl,

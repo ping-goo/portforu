@@ -16,8 +16,6 @@ public interface MembershipRepository extends JpaRepository<Membership, Long> {
     @Query("SELECT m FROM Membership m WHERE m.deletedAt IS NULL")
     Page<Membership> findAllActiveMemberships(Pageable pageable);
 
-    Optional<Membership> findByIdAndDeletedAtIsNull(Long membershipId);
-
     @Modifying(clearAutomatically = true)
     @Query("UPDATE Membership m SET "
             + "m.name = COALESCE(:name, m.name), "
@@ -26,7 +24,7 @@ public interface MembershipRepository extends JpaRepository<Membership, Long> {
             + "m.year = COALESCE(:year, m.year), "
             + "m.updatedAt = :now "
             + "WHERE m.id = :id AND m.deletedAt IS NULL")
-    Integer updateMembership(
+    Void updateMembership(
             @Param("id") Long id,
             @Param("name") String name,
             @Param("price") Integer price,

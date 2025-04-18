@@ -48,7 +48,7 @@ public class MembershipService {
 
     @Transactional(readOnly = true)
     public MembershipResponseDto findMembershipById(Long membershipId) {
-        return MembershipResponseDto.from(membershipFinder.findByIdAndNotDeleted(membershipId));
+        return MembershipResponseDto.from(membershipFinder.findById(membershipId));
     }
 
     @Transactional
@@ -58,22 +58,18 @@ public class MembershipService {
     ) {
 
         Instant now = Instant.now();
-        Integer updatedRows = membershipRepository.updateMembership(
+        membershipRepository.updateMembership(
                 membershipId, request.getName(), request.getPrice(), request.getQuantity(), request.getYear(), now
         );
 
-        if (updatedRows <= 0) {
-            throw new CustomException(HttpStatus.NOT_MODIFIED, "수정 사항이 없습니다.");
-        }
-
-        Membership updatedMembership = membershipFinder.findByIdAndNotDeleted(membershipId);
+        Membership updatedMembership = membershipFinder.findById(membershipId);
 
         return MembershipResponseDto.from(updatedMembership);
     }
 
     @Transactional
     public Long deleteMembership(Long membershipId) {
-        Membership membership = membershipFinder.findByIdOrThrow(membershipId);
+        Membership membership = membershipFinder.findById(membershipId);
 
         if (membership.isDeleted()) {
             throw new CustomException(HttpStatus.BAD_REQUEST, "이미 삭제된 멤버십입니다.");

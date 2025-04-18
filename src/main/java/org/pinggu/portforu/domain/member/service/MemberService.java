@@ -39,13 +39,9 @@ public class MemberService {
         memberFinder.validateOwnership(authMember, id);
 
         Instant now = Instant.now();
-        Integer updatedRows = memberRepository.updateMemberInfo(
+        memberRepository.updateMemberInfo(
                 id, requestDto.getName(), requestDto.getPhoneNumber(), requestDto.getAddress(), now
         );
-
-        if (updatedRows <= 0) {
-            throw new CustomException(HttpStatus.NOT_MODIFIED, "수정 사항이 없습니다.");
-        }
 
         Member updatedMember = memberFinder.findMemberById(id);
 
@@ -64,17 +60,13 @@ public class MemberService {
         }
 
         if (passwordEncoder.matches(requestDto.getNewPassword(), member.getPassword())) {
-            throw new CustomException(HttpStatus.BAD_REQUEST, "동일한 비밀번호로 변경할수 없습니다.");
+            throw new CustomException(HttpStatus.BAD_REQUEST, "동일한 비밀번호로 변경할 수 없습니다.");
         }
 
         String newEncodedPassword = passwordEncoder.encode(requestDto.getNewPassword());
 
         Instant now = Instant.now();
-        Integer updatedRows = memberRepository.updatePassword(id, newEncodedPassword, now);
-
-        if (updatedRows <= 0) {
-            throw new CustomException(HttpStatus.NOT_MODIFIED, "비밀번호 변경에 실패했습니다.");
-        }
+        memberRepository.updatePassword(id, newEncodedPassword, now);
 
         return MemberResponseDto.from(memberFinder.findMemberById(id));
     }

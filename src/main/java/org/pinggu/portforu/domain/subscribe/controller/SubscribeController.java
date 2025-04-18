@@ -62,8 +62,6 @@ public class SubscribeController {
             @PathVariable("subscribeId") Long subscribeId,
             @AuthenticationPrincipal AuthMember member
     ) {
-        Long deletedSubscribeId = subscribeService.deleteSubscribe(member.getId(), subscribeId);
-
-        return ResponseEntity.ok(ApiResponse.of(deletedSubscribeId));
+        return ResponseEntity.ok(ApiResponse.of(subscribeService.deleteSubscribe(member.getId(), subscribeId)));
     }
 }

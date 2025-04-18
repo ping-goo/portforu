@@ -25,7 +25,7 @@ public interface CommentRepository extends JpaRepository<Comment, Long> {
             "c.content = COALESCE(:content, c.content), " +
             "c.updatedAt = :now " +
             "WHERE c.id = :commentId AND c.deletedAt IS NULL")
-    Integer updateComment(@Param("commentId") Long commentId,
+    Void updateComment(@Param("commentId") Long commentId,
                           @Param("content") String content,
                           @Param("now") Instant now);
 

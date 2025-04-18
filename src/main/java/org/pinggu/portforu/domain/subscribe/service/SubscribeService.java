@@ -5,19 +5,14 @@ import lombok.extern.slf4j.Slf4j;
 import org.pinggu.portforu.common.dto.AuthMember;
 import org.pinggu.portforu.common.exception.CustomException;
 import org.pinggu.portforu.domain.member.entity.Member;
-import org.pinggu.portforu.domain.member.repository.MemberRepository;
-import org.pinggu.portforu.domain.member.service.MemberFinder;
 import org.pinggu.portforu.domain.membership.entity.Membership;
-import org.pinggu.portforu.domain.membership.repository.MembershipRepository;
 import org.pinggu.portforu.domain.membership.service.MembershipFinder;
 import org.pinggu.portforu.domain.payment.entity.Payment;
 import org.pinggu.portforu.domain.payment.enums.PaymentStatus;
-import org.pinggu.portforu.domain.payment.repository.PaymentRepository;
 import org.pinggu.portforu.domain.payment.service.PaymentFinder;
 import org.pinggu.portforu.domain.subscribe.dto.request.SubscribeRequestDto;
 import org.pinggu.portforu.domain.subscribe.dto.response.SubscribeResponseDto;
 import org.pinggu.portforu.domain.subscribe.entity.Subscribe;
-import org.pinggu.portforu.domain.subscribe.enums.SubscribeStatus;
 import org.pinggu.portforu.domain.subscribe.repository.SubscribeRepository;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -36,19 +31,18 @@ import java.time.ZoneId;
 public class SubscribeService {
 
     private final SubscribeRepository subscribeRepository;
-    private final SubscribFinder subscribFinder;
-    private final MemberFinder memberFinder;
+    private final SubscribeFinder subscribeFinder;
     private final MembershipFinder membershipFinder;
     private final PaymentFinder paymentFinder;
 
     @Transactional
     public SubscribeResponseDto saveSubscribe(AuthMember authMember, Long membershipId, SubscribeRequestDto requestDto) {
-        Member member = memberFinder.findMemberById(authMember.getId());
+        Member member = Member.fromAuthMember(authMember);
         Membership membership = membershipFinder.findByIdOrThrow(membershipId);
 
         paymentFinder.existsBySubscribe_Member_IdAndSubscribe_Membership_IdAndStatus(member, membershipId, PaymentStatus.PENDING);
 
-        subscribFinder.hasValidSubscription(member, membershipId);
+        subscribeFinder.hasValidSubscription(member, membershipId);
 
         long count = subscribeRepository.countActiveByMembership(membership, Instant.now());
         if (count >= membership.getQuantity()) {
@@ -83,7 +77,7 @@ public class SubscribeService {
 
     @Transactional(readOnly = true)
     public Page<SubscribeResponseDto> findSubscribes(AuthMember authMember, Pageable pageable) {
-        Member member = memberFinder.findMemberById(authMember.getId());
+        Member member = Member.fromAuthMember(authMember);
 
         return subscribeRepository.findAllByMemberAndDeletedAtIsNull(member, pageable)
                 .map(subscribe -> {
@@ -94,14 +88,10 @@ public class SubscribeService {
 
     @Transactional
     public Long deleteSubscribe(Long memberId, Long subscribeId) {
-        Subscribe subscribe = subscribFinder.findById(subscribeId);
+        Subscribe subscribe = subscribeFinder.findById(subscribeId);
 
         if (!subscribe.getMember().getId().equals(memberId)) {
             throw new CustomException(HttpStatus.FORBIDDEN, "내 구독만 취소할 수 있습니다.");
-        }
-
-        if (subscribe.isDeleted()) {
-            throw new CustomException(HttpStatus.BAD_REQUEST, "이미 삭제된 구독입니다.");
         }
 
         Payment payment = paymentFinder.findBySubscribeId(subscribeId);
@@ -120,7 +110,7 @@ public class SubscribeService {
 
     @Transactional
     public void updateSubscriptionStatus(Long subscribeId, PaymentStatus paymentStatus) {
-        Subscribe subscribe = subscribFinder.findById(subscribeId);
+        Subscribe subscribe = subscribeFinder.findById(subscribeId);
 
         if (paymentStatus == PaymentStatus.COMPLETED) {
             subscribe.activate();

@@ -63,14 +63,10 @@ public class JobPostingService {
         jobPostingFinder.findJobPostingById(jobPostingId);
 
         Instant now = Instant.now();
-        Integer updatedRows = jobPostingRepository.updateJobPosting(
+        jobPostingRepository.updateJobPosting(
                 jobPostingId, requestDto.getName(), requestDto.getIndustry(), requestDto.getAddress(), requestDto.getSalary(),
                 requestDto.getQualifications(), requestDto.getPreferential(), requestDto.getClosingDate(), now
         );
-
-        if (updatedRows <= 0) {
-            throw new CustomException(HttpStatus.NOT_MODIFIED, "수정 사항이 없습니다.");
-        }
 
         JobPosting updatedJobPosting = jobPostingFinder.findJobPostingById(jobPostingId);
 

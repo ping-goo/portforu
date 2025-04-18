@@ -26,7 +26,7 @@ public interface MemberRepository extends JpaRepository<Member, Long> {
             + "m.address = COALESCE(:address, m.address), "
             + "m.updatedAt = :now "
             + "WHERE m.id = :id")
-    Integer updateMemberInfo(
+    Void updateMemberInfo(
             @Param("id") Long id,
             @Param("name") String name,
             @Param("phoneNumber") String phoneNumber,
@@ -38,7 +38,7 @@ public interface MemberRepository extends JpaRepository<Member, Long> {
     @Query("UPDATE Member m SET m.password = :newPassword, "
             + "m.updatedAt = :now "
             + " WHERE m.id = :id")
-    Integer updatePassword(
+    Void updatePassword(
             @Param("id") Long id,
             @Param("newPassword") String newPassword,
             @Param("now") Instant now

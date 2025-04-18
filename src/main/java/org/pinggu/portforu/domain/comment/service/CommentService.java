@@ -74,11 +74,7 @@ public class CommentService {
         }
 
         Instant now = Instant.now();
-        Integer updatedRows = commentRepository.updateComment(commentId, requestDto.getContent(), now);
-
-        if (updatedRows <= 0) {
-            throw new CustomException(HttpStatus.NOT_MODIFIED, "수정 사항이 없습니다.");
-        }
+        commentRepository.updateComment(commentId, requestDto.getContent(), now);
 
         Comment updatedComment = commentFinder.findCommentById(commentId);
 

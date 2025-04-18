@@ -28,8 +28,7 @@ public class CommentController {
             @PathVariable("portfolioId") Long portfolioId,
             @Valid @RequestBody CommentRequestDto requestDto
     ) {
-        return ResponseEntity.ok().body(ApiResponse.of(
-                commentService.saveComment(authMember, portfolioId, requestDto)));
+        return ResponseEntity.ok().body(ApiResponse.of(commentService.saveComment(authMember, portfolioId, requestDto)));
     }
 
     @Member

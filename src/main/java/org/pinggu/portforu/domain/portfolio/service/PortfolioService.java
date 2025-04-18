@@ -132,17 +132,9 @@ public class PortfolioService {
         }
 
         Instant now = Instant.now();
-        Integer updatedRows = portfolioRepository.updatePortfolio(
-                portfolioId,
-                requestDto.getTitle(),
-                requestDto.getDescription(),
-                newFileUrl,
-                now
+        portfolioRepository.updatePortfolio(
+                portfolioId, requestDto.getTitle(), requestDto.getDescription(), newFileUrl, now
         );
-
-        if (updatedRows <= 0) {
-            throw new CustomException(HttpStatus.NOT_MODIFIED, "수정 사항이 없습니다.");
-        }
 
         Portfolio updatedPortfolio = portfolioFinder.findPortfolioById(portfolioId);
 
