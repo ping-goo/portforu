@@ -22,6 +22,5 @@ public interface PaymentRepository extends JpaRepository<Payment, Long> {
                           @Param("membershipId") Long membershipId,
                           @Param("status") PaymentStatus status);
 
-    List<Payment> findByStatusAndCreatedAtBefore(PaymentStatus status, Instant time);
-
+    List<Payment> findByStatusAndCreatedAtBeforeAndPaymentKeyIsNotNull(PaymentStatus paymentStatus, Instant limit);
 }
