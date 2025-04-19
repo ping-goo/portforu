@@ -4,17 +4,16 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.pinggu.portforu.common.exception.CustomException;
 import org.pinggu.portforu.domain.membership.entity.Membership;
+import org.pinggu.portforu.domain.payment.dto.response.TossPaymentConfirmResponseDto;
 import org.pinggu.portforu.domain.payment.entity.Payment;
+import org.pinggu.portforu.domain.payment.enums.PaymentMethod;
 import org.pinggu.portforu.domain.payment.enums.PaymentStatus;
 import org.pinggu.portforu.domain.payment.repository.PaymentRepository;
 import org.pinggu.portforu.domain.subscribe.entity.Subscribe;
 import org.pinggu.portforu.domain.subscribe.repository.SubscribeRepository;
 import org.pinggu.portforu.domain.subscribe.service.SubscribeService;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
+import org.springframework.http.*;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
@@ -81,9 +80,15 @@ public class PaymentService {
             body.put("amount", amount);
 
             HttpEntity<Map<String, Object>> request = new HttpEntity<>(body, headers);
-            restTemplate.postForEntity(url, request, String.class);
+            ResponseEntity<TossPaymentConfirmResponseDto> response = restTemplate
+                    .postForEntity(url, request, TossPaymentConfirmResponseDto.class);
+
+            String method = response.getBody() != null ? response.getBody().getMethod() : null;
+            log.info("Toss에서 받은 결제 수단: {}", method);
+            PaymentMethod paymentMethod = PaymentMethod.fromTossMethod(method);
 
             payment.assignPaymentKey(paymentKey);
+            payment.assignPaymentMethod(paymentMethod);
             payment.complete();
             paymentRepository.save(payment);
 

@@ -61,7 +61,6 @@ public class Payment extends BaseEntity {
         this.status = PaymentStatus.EXPIRED;
     }
 
-
     public void cancel() {
         if (this.status != PaymentStatus.COMPLETED) {
             throw new IllegalStateException("결제가 완료된 상태에서만 취소할 수 있습니다.");
@@ -69,4 +68,10 @@ public class Payment extends BaseEntity {
         this.status = PaymentStatus.CANCELLED;
     }
 
+    public void assignPaymentMethod(PaymentMethod paymentMethod) {
+        if (this.paymentMethod != null) {
+            throw new IllegalStateException("이미 결제 수단이 설정되어 있습니다.");
+        }
+        this.paymentMethod = paymentMethod;
+    }
 }

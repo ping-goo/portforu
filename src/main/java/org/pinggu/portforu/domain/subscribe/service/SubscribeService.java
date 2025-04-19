@@ -10,6 +10,7 @@ import org.pinggu.portforu.domain.membership.repository.MembershipRepository;
 import org.pinggu.portforu.domain.membership.service.MembershipFinder;
 import org.pinggu.portforu.domain.payment.entity.Payment;
 import org.pinggu.portforu.domain.payment.enums.PaymentStatus;
+import org.pinggu.portforu.domain.payment.repository.PaymentRepository;
 import org.pinggu.portforu.domain.payment.service.PaymentFinder;
 import org.pinggu.portforu.domain.subscribe.dto.response.SubscribeResponseDto;
 import org.pinggu.portforu.domain.subscribe.entity.Subscribe;
@@ -35,7 +36,9 @@ public class SubscribeService {
     private final MembershipFinder membershipFinder;
     private final PaymentFinder paymentFinder;
     private final MembershipRepository membershipRepository;
+    private final PaymentRepository paymentRepository;
 
+    // 구독 생성
     // 구독 생성
     @Transactional
     public SubscribeResponseDto saveSubscribe(AuthMember authMember, Long membershipId) {
@@ -43,7 +46,6 @@ public class SubscribeService {
         Membership membership = membershipFinder.findById(membershipId);
 
         paymentFinder.existsPayment(member, membershipId, PaymentStatus.PENDING);
-
         subscribeFinder.hasValidSubscription(member, membershipId);
 
         if (membership.getQuantity() <= 0) {
@@ -67,6 +69,7 @@ public class SubscribeService {
                 .endDate(endDate)
                 .build();
 
+
         Subscribe savedSubscribe = subscribeRepository.save(subscribe);
 
         Payment payment = Payment.builder()
@@ -74,8 +77,11 @@ public class SubscribeService {
                 .subscribe(savedSubscribe)
                 .build();
 
-        return SubscribeResponseDto.from(subscribe, payment);
+        paymentRepository.save(payment);
+
+        return SubscribeResponseDto.from(savedSubscribe, payment);
     }
+
 
     // 구독 조회
     @Transactional(readOnly = true)
