@@ -25,8 +25,7 @@ public class SubscribeController {
             @PathVariable("membershipId") Long membershipId,
             @AuthenticationPrincipal AuthMember authmember
     ) {
-        SubscribeResponseDto dto = subscribeService.saveSubscribe(authmember, membershipId);
-        return ResponseEntity.ok(ApiResponse.of(dto));
+        return ResponseEntity.ok(ApiResponse.of(subscribeService.saveSubscribe(authmember, membershipId)));
     }
 
     @Member
