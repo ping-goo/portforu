@@ -4,6 +4,8 @@ import lombok.Builder;
 import lombok.Getter;
 import org.pinggu.portforu.domain.member.entity.Member;
 
+import java.time.Instant;
+
 @Getter
 @Builder
 public class MemberResponseDto {
@@ -14,6 +16,8 @@ public class MemberResponseDto {
     private final String phoneNumber;
     private final String address;
     private final String userRole;
+    private final Instant createdAt;
+    private final Instant updatedAt;
 
     public static MemberResponseDto from(Member member) {
         return MemberResponseDto.builder()
@@ -23,6 +27,8 @@ public class MemberResponseDto {
                 .phoneNumber(member.getPhoneNumber())
                 .address(member.getAddress())
                 .userRole(member.getUserRole().name())
+                .createdAt(member.getCreatedAt())
+                .updatedAt(member.getUpdatedAt())
                 .build();
     }
 

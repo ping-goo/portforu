@@ -8,6 +8,7 @@ import org.pinggu.portforu.domain.member.entity.Member;
 import org.pinggu.portforu.domain.member.service.MemberFinder;
 import org.pinggu.portforu.domain.portfolio.dto.request.PortfolioRequestDto;
 import org.pinggu.portforu.domain.portfolio.dto.request.PortfolioUpdateRequestDto;
+import org.pinggu.portforu.domain.portfolio.dto.response.PortfolioListResponseDto;
 import org.pinggu.portforu.domain.portfolio.dto.response.PortfolioResponseDto;
 import org.pinggu.portforu.domain.portfolio.entity.Portfolio;
 import org.pinggu.portforu.domain.portfolio.repository.PortfolioRepository;
@@ -38,11 +39,11 @@ public class PortfolioService {
 
         String fileUrl = null;
         try {
-            if (requestDto.getImageFile() != null && !requestDto.getImageFile().isEmpty()) {
-                fileUrl = s3Service.uploadImage(requestDto.getImageFile());
+            if (requestDto.getPortfolioFile() != null && !requestDto.getPortfolioFile().isEmpty()) {
+                fileUrl = s3Service.uploadPortfolioFile(requestDto.getPortfolioFile());
             }
         } catch (IOException e) {
-            throw new CustomException(HttpStatus.BAD_REQUEST, "파일업로드에 실패하였습니다.");
+            throw new CustomException(HttpStatus.BAD_REQUEST, "파일 업로드에 실패했습니다.");
         }
 
         Portfolio portfolio = Portfolio.builder()
@@ -59,11 +60,11 @@ public class PortfolioService {
     }
 
     @Transactional(readOnly = true)
-    public Page<PortfolioResponseDto> findAllPortfolios(Pagecond pagecond) {
+    public Page<PortfolioListResponseDto> findAllPortfolios(Pagecond pagecond) {
         Pageable pageable = PageRequest.of(pagecond.getPageNum() - 1, pagecond.getPageSize());
         Page<Portfolio> portfolioPage = portfolioRepository.findAllByDeletedAtIsNull(pageable);
 
-        return portfolioPage.map(PortfolioResponseDto::from);
+        return portfolioPage.map(PortfolioListResponseDto::from);
     }
 
     @Transactional(readOnly = true)
@@ -87,15 +88,14 @@ public class PortfolioService {
         return PortfolioResponseDto.from(portfolio);
     }
 
-    // 마이페이지에서 내가 올린 포트폴리오만 조회하기
     @Transactional(readOnly = true)
-    public Page<PortfolioResponseDto> findMyAllPortfolios(AuthMember authMember, Long memberId, Pagecond pagecond) {
+    public Page<PortfolioListResponseDto> findMyAllPortfolios(AuthMember authMember, Long memberId, Pagecond pagecond) {
         memberFinder.validateOwnership(authMember, memberId);
 
         Pageable pageable = PageRequest.of(pagecond.getPageNum() - 1, pagecond.getPageSize());
         Page<Portfolio> portfolios = portfolioRepository.findAllByMemberIdAndDeletedAtIsNull(memberId, pageable);
 
-        return portfolios.map(PortfolioResponseDto::from);
+        return portfolios.map(PortfolioListResponseDto::from);
     }
 
     @Transactional(readOnly = true)
@@ -120,12 +120,12 @@ public class PortfolioService {
 
         String newFileUrl = portfolio.getFileUrl();
         try {
-            if (requestDto.getImageFile() != null && !requestDto.getImageFile().isEmpty()) {
+            if (requestDto.getPortfolioFile() != null && !requestDto.getPortfolioFile().isEmpty()) {
                 if (portfolio.getFileUrl() != null && !portfolio.getFileUrl().isBlank()) {
                     s3Service.markFileAsInactive(portfolio.getFileUrl());
                 }
 
-                newFileUrl = s3Service.uploadImage(requestDto.getImageFile());
+                newFileUrl = s3Service.uploadPortfolioFile(requestDto.getPortfolioFile());
             }
         } catch (IOException e) {
             throw new CustomException(HttpStatus.INTERNAL_SERVER_ERROR, "이미지 업로드에 실패했습니다.");

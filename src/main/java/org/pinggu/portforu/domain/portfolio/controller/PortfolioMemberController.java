@@ -9,6 +9,7 @@ import org.pinggu.portforu.common.dto.ApiResponse;
 import org.pinggu.portforu.common.dto.AuthMember;
 import org.pinggu.portforu.domain.portfolio.dto.request.PortfolioRequestDto;
 import org.pinggu.portforu.domain.portfolio.dto.request.PortfolioUpdateRequestDto;
+import org.pinggu.portforu.domain.portfolio.dto.response.PortfolioListResponseDto;
 import org.pinggu.portforu.domain.portfolio.dto.response.PortfolioResponseDto;
 import org.pinggu.portforu.domain.portfolio.service.PortfolioService;
 import org.springframework.data.domain.Page;
@@ -36,20 +37,20 @@ public class PortfolioMemberController {
 
     @Member
     @GetMapping("/members/{memberId}")
-    public ResponseEntity<ApiResponse<List<PortfolioResponseDto>>> findMyAllPortfolios(
+    public ResponseEntity<ApiResponse<List<PortfolioListResponseDto>>> findMyAllPortfolios(
             @AuthenticationPrincipal AuthMember authMember,
             @PathVariable("memberId") Long memberId,
             @ModelAttribute Pagecond pagecond
     ){
-        Page<PortfolioResponseDto> portfolios = portfolioService.findMyAllPortfolios(authMember, memberId, pagecond);
+        Page<PortfolioListResponseDto> portfolioList = portfolioService.findMyAllPortfolios(authMember, memberId, pagecond);
         PageInfo pageInfo = PageInfo.builder()
                 .pageNum(pagecond.getPageNum())
                 .pageSize(pagecond.getPageSize())
-                .totalElement(portfolios.getTotalElements())
-                .totalPage(portfolios.getTotalPages())
+                .totalElement(portfolioList.getTotalElements())
+                .totalPage(portfolioList.getTotalPages())
                 .build();
 
-        return ResponseEntity.ok().body(ApiResponse.of(portfolios.getContent(), pageInfo));
+        return ResponseEntity.ok().body(ApiResponse.of(portfolioList.getContent(), pageInfo));
     }
 
     @Member

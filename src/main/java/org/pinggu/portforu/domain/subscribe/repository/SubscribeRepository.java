@@ -15,12 +15,11 @@ import org.springframework.stereotype.Repository;
 
 import java.time.Instant;
 import java.util.List;
-import java.util.Optional;
 
 @Repository
 public interface SubscribeRepository extends JpaRepository<Subscribe, Long> {
 
-    Page<Subscribe> findAllByMemberAndDeletedAtIsNull(Member member, Pageable pageable);
+    List<Subscribe> findAllByMemberAndDeletedAtIsNull(Member member);
 
     @Query("""
         SELECT COUNT(s) > 0 FROM Subscribe s
@@ -34,7 +33,7 @@ public interface SubscribeRepository extends JpaRepository<Subscribe, Long> {
     boolean hasValidSubscription(@Param("memberId") Long memberId,
                                  @Param("membershipId") Long membershipId);
 
-    @EntityGraph(attributePaths = "membership") // n+1 문제 방지
+    @EntityGraph(attributePaths = "membership")
     List<Subscribe> findAllByEndDateBeforeAndDeletedAtIsNull(Instant time);
 
 }
