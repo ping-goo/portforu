@@ -25,8 +25,7 @@ public class SubscribeValidator {
                 .orElseThrow(() -> new CustomException(HttpStatus.NOT_FOUND, "회원 정보를 찾을 수 없습니다."));
 
         List<Subscribe> subscriptions = subscribeRepository
-                .findAllByMemberAndDeletedAtIsNull(member, Pageable.unpaged())
-                .getContent();
+                .findAllByMemberAndDeletedAtIsNull(member);
 
         return subscriptions.stream()
                 .filter(sub -> sub.getStartDate().isBefore(Instant.now()))
