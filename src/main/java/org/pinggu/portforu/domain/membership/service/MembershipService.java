@@ -1,22 +1,18 @@
 package org.pinggu.portforu.domain.membership.service;
 
 import lombok.RequiredArgsConstructor;
-import org.pinggu.portforu.common.domain.Pagecond;
 import org.pinggu.portforu.common.exception.CustomException;
 import org.pinggu.portforu.domain.membership.dto.request.MembershipSaveRequestDto;
 import org.pinggu.portforu.domain.membership.dto.request.MembershipUpdateRequestDto;
 import org.pinggu.portforu.domain.membership.dto.response.MembershipResponseDto;
 import org.pinggu.portforu.domain.membership.entity.Membership;
 import org.pinggu.portforu.domain.membership.repository.MembershipRepository;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.Instant;
+import java.util.List;
 
 @RequiredArgsConstructor
 @Service
@@ -40,10 +36,10 @@ public class MembershipService {
     }
 
     @Transactional(readOnly = true)
-    public Page<MembershipResponseDto> findAllMemberships(Pagecond pagecond) {
-        Pageable pageable = PageRequest.of(pagecond.getPageNum() - 1, pagecond.getPageSize(), Sort.by(Sort.Order.desc("createdAt")));
-
-        return membershipRepository.findAllActiveMemberships(pageable).map(MembershipResponseDto::from);
+    public List<MembershipResponseDto> findAllMemberships() {
+        return membershipRepository.findAllActiveMemberships().stream()
+                .map(MembershipResponseDto::from)
+                .toList();
     }
 
     @Transactional(readOnly = true)

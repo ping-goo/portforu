@@ -54,7 +54,7 @@ public class ScrapService {
     }
 
     @Transactional(readOnly = true)
-    public Page<ScrapDetailResponseDto> findScraps(AuthMember authMember, Long memberId, Pagecond pagecond) {
+    public Page<ScrapDetailResponseDto> findAllScraps(AuthMember authMember, Long memberId, Pagecond pagecond) {
         if (!authMember.getId().equals(memberId)) {
             throw new CustomException(HttpStatus.FORBIDDEN, "다른 회원의 스크랩 목록에 접근할 수 없습니다.");
         }

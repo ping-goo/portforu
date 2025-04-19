@@ -17,6 +17,6 @@ public class PortfolioRequestDto {
     @NotBlank(message = "게시물의 내용을 작성해주세요.")
     private String description;
 
-    private MultipartFile imageFile;
+    private MultipartFile portfolioFile;
 
 }

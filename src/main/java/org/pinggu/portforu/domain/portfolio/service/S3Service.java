@@ -23,11 +23,11 @@ public class S3Service {
     }
 
     /**
-     * S3에 이미지 업로드
+     * S3에 파일 업로드
      */
-    public String uploadImage(MultipartFile image) throws IOException {
-        String fileName ="active/" + UUID.randomUUID() + "_" + image.getOriginalFilename();
-        return uploadFile(image, fileName);
+    public String uploadPortfolioFile(MultipartFile portfolioFile) throws IOException {
+        String fileName ="active/" + UUID.randomUUID() + "_" + portfolioFile.getOriginalFilename();
+        return uploadFile(portfolioFile, fileName);
     }
 
     /**

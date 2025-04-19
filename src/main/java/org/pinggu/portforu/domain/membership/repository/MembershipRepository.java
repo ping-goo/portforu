@@ -1,19 +1,18 @@
 package org.pinggu.portforu.domain.membership.repository;
 
 import org.pinggu.portforu.domain.membership.entity.Membership;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 import java.time.Instant;
+import java.util.List;
 
 public interface MembershipRepository extends JpaRepository<Membership, Long> {
 
     @Query("SELECT m FROM Membership m WHERE m.deletedAt IS NULL")
-    Page<Membership> findAllActiveMemberships(Pageable pageable);
+    List<Membership> findAllActiveMemberships();
 
     @Modifying(clearAutomatically = true)
     @Query("UPDATE Membership m SET "

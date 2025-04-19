@@ -11,12 +11,9 @@ import org.pinggu.portforu.domain.membership.service.MembershipFinder;
 import org.pinggu.portforu.domain.payment.entity.Payment;
 import org.pinggu.portforu.domain.payment.enums.PaymentStatus;
 import org.pinggu.portforu.domain.payment.service.PaymentFinder;
-import org.pinggu.portforu.domain.subscribe.dto.request.SubscribeRequestDto;
 import org.pinggu.portforu.domain.subscribe.dto.response.SubscribeResponseDto;
 import org.pinggu.portforu.domain.subscribe.entity.Subscribe;
 import org.pinggu.portforu.domain.subscribe.repository.SubscribeRepository;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -25,6 +22,8 @@ import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.Year;
 import java.time.ZoneId;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Service
@@ -37,9 +36,8 @@ public class SubscribeService {
     private final PaymentFinder paymentFinder;
     private final MembershipRepository membershipRepository;
 
-    // 구독 생성
     @Transactional
-    public SubscribeResponseDto saveSubscribe(AuthMember authMember, Long membershipId, SubscribeRequestDto requestDto) {
+    public SubscribeResponseDto saveSubscribe(AuthMember authMember, Long membershipId) {
         Member member = Member.fromAuthMember(authMember);
         Membership membership = membershipFinder.findById(membershipId);
 
@@ -78,19 +76,18 @@ public class SubscribeService {
         return SubscribeResponseDto.from(subscribe, payment);
     }
 
-    // 구독 조회
     @Transactional(readOnly = true)
-    public Page<SubscribeResponseDto> findSubscribes(AuthMember authMember, Pageable pageable) {
+    public List<SubscribeResponseDto> findAllSubscribes(AuthMember authMember) {
         Member member = Member.fromAuthMember(authMember);
 
-        return subscribeRepository.findAllByMemberAndDeletedAtIsNull(member, pageable)
+        return subscribeRepository.findAllByMemberAndDeletedAtIsNull(member).stream()
                 .map(subscribe -> {
                     Payment payment = paymentFinder.findBySubscribeId(subscribe.getId());
                     return SubscribeResponseDto.from(subscribe, payment);
-                });
+                })
+                .collect(Collectors.toList());
     }
 
-    // 구독 취소
     @Transactional
     public Long deleteSubscribe(Long memberId, Long subscribeId) {
         Subscribe subscribe = subscribeFinder.findById(subscribeId);
@@ -105,11 +102,8 @@ public class SubscribeService {
             throw new CustomException(HttpStatus.BAD_REQUEST, "결제가 진행되지 않은 구독은 취소할 수 없습니다.");
         }
 
-        // 취소는 정원 복구 안 함
         subscribe.cancel();
         subscribeRepository.save(subscribe);
-
-        log.info("구독 취소됨: subscribeId={}, memberId={}, 상태={}", subscribeId, memberId, subscribe.getStatus());
 
         return subscribe.getId();
     }

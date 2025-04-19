@@ -33,4 +33,5 @@ public class SubscribeResponseDto {
                 .status(subscribe.getStatus().name())
                 .build();
     }
+
 }
