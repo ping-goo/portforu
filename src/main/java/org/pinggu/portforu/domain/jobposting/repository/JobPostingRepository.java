@@ -12,6 +12,7 @@ public interface JobPostingRepository extends JpaRepository<JobPosting, Long> {
 
     Page<JobPosting> findAllByDeletedAtIsNull(Pageable pageable);
 
+    //TODO 이게 도대체 뭔 쿼리인지 영속성으로 바꾸세요
     @Modifying(clearAutomatically = true)
     @Query("UPDATE JobPosting j SET " +
             "j.name = COALESCE(:name, j.name), " +

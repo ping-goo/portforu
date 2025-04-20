@@ -11,6 +11,7 @@ import org.pinggu.portforu.common.domain.BaseEntity;
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Table(name = "memberships")
+//@Where(clause = "deleted_at IS NULL") 이런거 넣어주면 소프트딜리트 안된애들만 조회가능
 public class Membership extends BaseEntity {
 
     @Column(length = 50, nullable = false)

@@ -25,6 +25,7 @@ public class JobPosting extends BaseEntity {
 
     private String preferential;
 
+    //TODO 날짜관련 String -> Instant로 변경
     private String postingDate;
 
     private String closingDate;

@@ -6,7 +6,6 @@ import lombok.Getter;
 @Getter
 @AllArgsConstructor
 public class JobPostingSaveRequestDto {
-
     private String name;
 
     private String industry;

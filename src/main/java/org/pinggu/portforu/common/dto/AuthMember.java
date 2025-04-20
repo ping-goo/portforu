@@ -26,7 +26,7 @@ public class AuthMember {
         this.name = name;
         this.phoneNumber = phoneNumber;
         this.address = address;
-        this.authorities = List.of(new SimpleGrantedAuthority(userRole.name()));
+        this.authorities = List.of(new SimpleGrantedAuthority(userRole.name()));    //Set<UserRole> 가 유연성 더높음
     }
 
     public UserRole getUserRole() {
@@ -35,6 +35,6 @@ public class AuthMember {
                 .map(UserRole::valueOf)
                 .findFirst()
                 .orElseThrow(() -> new CustomException(HttpStatus.FORBIDDEN, "사용자 권한이 유효하지 않습니다."));
-    }
+    }   //권한 여러개면?
 
 }

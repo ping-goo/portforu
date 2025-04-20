@@ -97,7 +97,8 @@ public class CommentService {
 
         Comment updatedComment = commentRepository.findById(commentId)
                 .orElseThrow(() -> new CustomException(HttpStatus.NOT_FOUND, "댓글을 찾을 수 없습니다."));
-
+        //TODO 이거 왜 업데이트 이후에 조회까지 하는지, Comment 안에 update있는데 이거 걍 영속성 컨텍스트로 이용하면됨 지금 방식은 IO가 2번
+        //comment.update -> Comment~.from(comment)
         return CommentResponseDto.from(updatedComment);
     }
 
@@ -106,14 +107,14 @@ public class CommentService {
         Portfolio portfolio = portfolioRepository.findById(portfolioId)
                 .orElseThrow(() -> new CustomException(HttpStatus.NOT_FOUND, "게시물을 찾을 수 없습니다."));
 
-        if (portfolio.isDeleted()) {
+        if (portfolio.isDeleted()) {//TODO Entity에서 @SQLDelete 쓸것
             throw new CustomException(HttpStatus.NOT_FOUND, "삭제된 게시물입니다.");
         }
 
         Comment comment = commentRepository.findById(commentId)
                 .orElseThrow(() -> new CustomException(HttpStatus.NOT_FOUND, "댓글을 찾을 수 없습니다."));
 
-        if (comment.isDeleted()) {
+        if (comment.isDeleted()) { //얘도
             throw new CustomException(HttpStatus.NOT_FOUND, "이미 삭제된 댓글입니다.");
         }
 

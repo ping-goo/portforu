@@ -14,13 +14,14 @@ import org.springframework.stereotype.Component;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
-
 @Component
 @RequiredArgsConstructor
 public class OAuth2AuthenticationSuccessHandler implements AuthenticationSuccessHandler {
 
     private final JwtUtil jwtUtil;
     private final ObjectMapper objectMapper;
+
+    //TODO OAuth2 로그인 이후 리프레시 토큰의 저장 여부 확인 불가, 지금은 생성만하는중 저장 로직 추가 필요
 
     @Override
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response,

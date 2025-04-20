@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+//TODO extractSubscribeIdFromOrderId 요런건 코드 전체에서 사용 가능함으로 Utils에 빼서 사용하면 더 좋아요
 @Controller
 @RequiredArgsConstructor
 @RequestMapping("/api/v1/payments")
@@ -46,7 +47,7 @@ public class PaymentController {
             paymentService.handleFailPayment(orderId, message);
             redirectAttributes.addAttribute("message", message);
         } catch (Exception e) {
-            redirectAttributes.addAttribute("message", e.getMessage());
+            redirectAttributes.addAttribute("message", e.getMessage()); //이거 중요(민감) 정보 message에 다 실릴 수가 있음
         }
 
         return "redirect:/payments/fail";

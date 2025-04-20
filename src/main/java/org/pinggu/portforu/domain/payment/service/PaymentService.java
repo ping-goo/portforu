@@ -43,6 +43,7 @@ public class PaymentService {
                     .orElseThrow(() -> new PaymentFailedException("결제 정보가 없습니다."));
 
             if (payment.getStatus() == PaymentStatus.COMPLETED) {
+                //TODO 이건 동시성 어떻게 할건지, 서드파티 이용하는 거기 때문에 문제가 생길 여지가 있음
                 log.info("중복 결제 요청 차단됨: orderId={}, subscribeId={}", orderId, subscribeId);
                 throw new PaymentFailedException("이미 결제가 완료된 주문입니다.");
             }
@@ -85,7 +86,7 @@ public class PaymentService {
 
             payment.assignPaymentKey(paymentKey);
             payment.complete();
-            paymentRepository.save(payment);
+            paymentRepository.save(payment);    //TODO 얘 필요없음 왜 필요없는진 영속성컨텍스트, 그리고 save자체가 로직에 너무 많음
 
             subscribe.activate();
             subscribeRepository.save(subscribe);

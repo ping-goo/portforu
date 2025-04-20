@@ -28,6 +28,7 @@ public class AuthService {
 
     @Transactional
     public SignUpResponseDto signUp(SignUpRequestDto requestDto) {
+        //TODO Email은 toLower or toUpper로 한쪽으로 nomalize시켜주고 비즈니스 수행할 것 (보통 toLower)
         if (memberRepository.existsByEmail(requestDto.getEmail())) {
             throw new CustomException(HttpStatus.BAD_REQUEST, "이미 존재하는 이메일입니다.");
         }

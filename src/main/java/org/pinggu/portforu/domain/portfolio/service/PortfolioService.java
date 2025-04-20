@@ -37,7 +37,7 @@ public class PortfolioService {
         String fileUrl = null;
         try {
             if (request.getImageFile() != null && !request.getImageFile().isEmpty()) {
-                fileUrl = s3Service.uploadImage(request.getImageFile());
+                fileUrl = s3Service.uploadImage(request.getImageFile());    //TODO 이미지 올리는건 다른 API에서 실행하게하고 거기서 return으로 받은 image Url를 사용해서 DBㅇㅔ 넣으세요
             }
         } catch (IOException e) {
             throw new CustomException(HttpStatus.BAD_REQUEST, "파일업로드에 실패하였습니다.");
@@ -96,7 +96,7 @@ public class PortfolioService {
 
         PageRequest pageRequest = PageRequest.of(pagecond.getPageNum() - 1, pagecond.getPageSize());
         Page<Portfolio> portfolios = portfolioRepository.findAllByMemberIdAndDeletedAtIsNull(memberId, pageRequest);
-        if(portfolios.isEmpty()){
+        if(portfolios.isEmpty()){ //TODO 이거는 실제로 포트폴리오가 없는게 에러는 아니니 200으로 던져주고 빈 리스트 주세요, 로직적으로 문제가 없고, 네트워크 호출 응답 잘 된거니까요
             throw new CustomException(HttpStatus.NOT_FOUND, "게시물을 찾을 수 없습니다.");
         }
         return portfolios.map(PortfolioResponseDto::from);

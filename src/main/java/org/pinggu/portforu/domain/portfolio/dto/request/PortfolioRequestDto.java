@@ -17,6 +17,6 @@ public class PortfolioRequestDto {
     @NotBlank(message = "게시물의 내용을 작성해주세요.")
     private String description;
 
-    private MultipartFile imageFile;
+    private MultipartFile imageFile;    //TODO Multiparfile받지말고 imageUrl을 String으로만 받으세요 이미지 올리는건 다른 API에서 실행하게 하세요
 
 }

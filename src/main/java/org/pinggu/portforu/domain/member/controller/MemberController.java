@@ -16,10 +16,12 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/v1/members/{id}")
+@RequestMapping("/api/v1/members/{id}") //TODO 이거 {id}를 왜 여기서 가지고 있는지, 위험한 방식임, 유연성이 낮음
 public class MemberController {
 
     private final MemberService memberService;
+
+    //TODO 각 메소드에 Valid어노테이션 빠져있음
 
     @Member
     @GetMapping

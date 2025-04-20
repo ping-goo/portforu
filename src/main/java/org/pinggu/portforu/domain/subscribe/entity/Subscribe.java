@@ -51,7 +51,9 @@ public class Subscribe extends BaseEntity {
         if (this.status == SubscribeStatus.CANCELLED) {
             throw new IllegalStateException("이미 취소된 구독입니다.");
         }
-        if (this.status != SubscribeStatus.ACTIVE) {
+        if (this.status != SubscribeStatus.ACTIVE) {    //TODO 실무 환경에선 실제 서드파티에선 결제했으나 서버/DB애 반영이 늦을 수가 있음,
+            // 특히 구글은 그런일 빈번함 구글 플레이스토어에 인앱 구독 앱이 많지 않은 이유 중 하나임
+            //이러한 것들을 고려하면 ACTIVE만 보는건 상당히 보수적일수가 있음. PENDING일 떄도 허용하거나 뭐 등등.. 정책적으로 잘 정리하길 바람
             throw new IllegalStateException("구독이 활성 상태일 때만 취소할 수 있습니다.");
         }
         this.status = SubscribeStatus.CANCELLED;

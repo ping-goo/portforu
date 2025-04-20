@@ -36,7 +36,7 @@ public class JobPostingUpdateResponseDto {
                 .postingDate(jobPosting.getPostingDate())
                 .closingDate(jobPosting.getClosingDate())
                 .createdAt(jobPosting.getCreatedAt())
-                .updatedAt(Instant.now())
+                .updatedAt(Instant.now())   //TODO 이거 now 말고 jobposting entity에 있는 시간으로 가져오세요
                 .deletedAt(jobPosting.getDeletedAt())
                 .build();
     }

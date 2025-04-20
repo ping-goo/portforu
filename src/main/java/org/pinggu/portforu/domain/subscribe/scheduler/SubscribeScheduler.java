@@ -22,7 +22,7 @@ public class SubscribeScheduler {
     public void expireEndedSubscriptions() {
         Instant now = Instant.now();
         List<Subscribe> expiredSubs = subscribeRepository.findAllByEndDateBeforeAndDeletedAtIsNull(now);
-
+        //TODO Jdbc로 변경
         for (Subscribe sub : expiredSubs) {
             if (sub.getEndDate().isBefore(Instant.now()) && sub.getStatus() != SubscribeStatus.EXPIRED) {
                 sub.expire();

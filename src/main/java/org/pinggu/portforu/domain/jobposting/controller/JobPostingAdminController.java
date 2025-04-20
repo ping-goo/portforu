@@ -12,7 +12,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/api/v1/job-postings")
+@RequestMapping("/api/v1/job-postings") //TODO 이거 /api/v1/admin/~ 나 /admin/v1/~ 이런 식으로 변경하세요
 @RequiredArgsConstructor
 public class JobPostingAdminController {
 

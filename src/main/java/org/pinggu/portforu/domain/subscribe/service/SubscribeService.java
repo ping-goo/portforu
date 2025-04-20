@@ -44,7 +44,7 @@ public class SubscribeService {
                 .orElseThrow(() -> new CustomException(HttpStatus.NOT_FOUND, "해당 멤버십이 존재하지 않습니다."));
 
         if (paymentRepository.existsBySubscribe_Member_IdAndSubscribe_Membership_IdAndStatus(
-                memberId, membershipId, PaymentStatus.PENDING)) {
+                memberId, membershipId, PaymentStatus.PENDING)) {   //TODO COMPLETED떄는 신경안써도되는지?
             throw new CustomException(HttpStatus.BAD_REQUEST, "결제가 진행 중인 구독이 존재합니다. 결제가 완료된 후 다시 시도하십시오.");
         }
 
@@ -121,7 +121,7 @@ public class SubscribeService {
         }
 
         subscribe.cancel();
-        subscribeRepository.save(subscribe);
+        subscribeRepository.save(subscribe); //TODO 영속성떄문에 필요없어요 다른 부분도 다 체크 필요
 
         log.info("구독 취소됨: subscribeId={}, memberId={}, 상태={}", subscribeId, memberId, subscribe.getStatus());
 

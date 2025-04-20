@@ -14,7 +14,7 @@ import org.pinggu.portforu.domain.member.enums.UserRole;
 @Table(name = "members")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Member extends BaseEntity {
-
+    //TODO SNS Login 생겼으니 Provider 컬럼도 추가할것
     @Column(length = 100, unique = true, nullable = false)
     private String email;
 

@@ -29,7 +29,7 @@ public class MembershipService {
     public MembershipResponseDto saveMembership(
             MembershipSaveRequestDto request
     ) {
-        logger.info("MembershipService :: saveMembership ~~");
+//        logger.info("MembershipService :: saveMembership ~~"); 이거 그대로 있네요
 
         Membership membership = Membership.builder()
                 .name(request.getName())

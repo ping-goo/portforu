@@ -68,7 +68,7 @@ public class JobPostingService {
         if (updatedRows <= 0) {
             throw new CustomException(HttpStatus.NOT_MODIFIED, "수정 사항이 없습니다.");
         }
-
+        //TODO 얘도 업데이트 후 select문을 또 던지는 IO가 많이생기는 방식
         JobPosting updatedJobPosting = jobPostingRepository.findById(jobPostingId)
                 .orElseThrow(() -> new CustomException(HttpStatus.NOT_FOUND, "채용 공고가 존재하지 않습니다."));
 
@@ -86,6 +86,8 @@ public class JobPostingService {
         JobPosting jobPosting = jobPostingRepository.findById(id)
                 .orElseThrow(() -> new CustomException(HttpStatus.NOT_FOUND, "채용 공고가 존재하지 않습니다."));
 
+        //TODO isDeleted 넣으란건, 메소드를 넣으라는게 아니라 컬럼으로 넣어서 관리하라 말씀드렸던 겁니다. deleteAt이 아닌 isDeleted로,
+        //하지만 유니크 키를 넣으실 계획이 있으면 생각해보셔야함
         if (jobPosting.isDeleted()) {
             throw new CustomException(HttpStatus.BAD_REQUEST, "이미 삭제된 채용 공고입니다.");
         }

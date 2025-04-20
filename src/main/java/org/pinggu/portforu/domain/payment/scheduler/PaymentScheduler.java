@@ -25,7 +25,7 @@ public class PaymentScheduler {
 
         List<Payment> targets = paymentRepository
                 .findByStatusAndCreatedAtBefore(PaymentStatus.PENDING, tenMinutesAgo);
-
+        //TODO 이거 JDBC로 변경하세요
         for (Payment payment : targets) {
             payment.expire();
             paymentRepository.save(payment);
