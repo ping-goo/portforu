@@ -36,30 +36,42 @@ public class Member extends BaseEntity {
     @Enumerated(EnumType.STRING)
     private UserRole userRole;
 
+    @Column
+    private String provider;
+
     @Column(nullable = false)
     private Integer viewCount = 3;
 
     @Builder
-    public Member(String email, String password, String name, String phoneNumber, String address, UserRole userRole) {
+    public Member(String email, String password, String name, String phoneNumber, String address, UserRole userRole, String provider) {
         this.email = email;
         this.password = password;
         this.name = name;
         this.phoneNumber = phoneNumber;
         this.address = address;
         this.userRole = userRole;
+        this.provider = provider;
     }
 
-    private Member(Long id, String email, String name, String phoneNumber, String address, UserRole userRole) {
+    private Member(Long id, String email, String name, String phoneNumber, String address, UserRole userRole, String provider) {
         this.id = id;
         this.email = email;
         this.name = name;
         this.phoneNumber = phoneNumber;
         this.address = address;
         this.userRole = userRole;
+        this.provider = provider;
     }
 
     public static Member fromAuthMember(AuthMember authMember) {
-        return new Member(authMember.getId(), authMember.getEmail(), authMember.getName(), authMember.getPhoneNumber(), authMember.getAddress(), authMember.getUserRole());
+        return new Member(
+                authMember.getId(),
+                authMember.getEmail(),
+                authMember.getName(),
+                authMember.getPhoneNumber(),
+                authMember.getAddress(),
+                authMember.getUserRole(),
+                authMember.getProvider());
     }
 
     public void decrementRemainingViewCount() {

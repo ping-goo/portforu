@@ -48,19 +48,23 @@ public class RefreshTokenService {
         Member member = memberRepository.findById(memberId)
                 .orElseThrow(() -> new CustomException(HttpStatus.NOT_FOUND, "유저 없음"));
 
-        String newAccessToken = jwtUtil.createToken(member.getId(),
+        String newAccessToken = jwtUtil.createToken(
+                member.getId(),
                 member.getEmail(),
                 member.getName(),
                 member.getPhoneNumber(),
                 member.getAddress(),
-                member.getUserRole()
+                member.getUserRole(),
+                member.getProvider()
         );
-        String newRefreshToken = jwtUtil.createRefreshToken(member.getId(),
+        String newRefreshToken = jwtUtil.createRefreshToken(
+                member.getId(),
                 member.getEmail(),
                 member.getName(),
                 member.getPhoneNumber(),
                 member.getAddress(),
-                member.getUserRole()
+                member.getUserRole(),
+                member.getProvider()
         );
         saved.updateToken(newRefreshToken);
 

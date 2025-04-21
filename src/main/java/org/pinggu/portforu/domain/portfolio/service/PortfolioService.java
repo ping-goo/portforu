@@ -11,7 +11,9 @@ import org.pinggu.portforu.domain.portfolio.dto.request.PortfolioUpdateRequestDt
 import org.pinggu.portforu.domain.portfolio.dto.response.PortfolioListResponseDto;
 import org.pinggu.portforu.domain.portfolio.dto.response.PortfolioResponseDto;
 import org.pinggu.portforu.domain.portfolio.entity.Portfolio;
+import org.pinggu.portforu.domain.portfolio.entity.UploadedFile;
 import org.pinggu.portforu.domain.portfolio.repository.PortfolioRepository;
+import org.pinggu.portforu.domain.portfolio.repository.UploadedFileRepository;
 import org.pinggu.portforu.domain.subscribe.validator.SubscribeValidator;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -20,7 +22,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.Instant;
 
 @Service
 @RequiredArgsConstructor
@@ -30,10 +31,15 @@ public class PortfolioService {
     private final MemberFinder memberFinder;
     private final SubscribeValidator subscribeValidator;
     private final PortfolioRepository portfolioRepository;
+    private final UploadedFileRepository uploadedFileRepository;
+    private final S3Service s3Service;
 
     @Transactional
     public PortfolioResponseDto savePortfolio(AuthMember authMember, PortfolioRequestDto requestDto) {
         Member member = Member.fromAuthMember(authMember);
+
+        uploadedFileRepository.findByFileUrl(requestDto.getPortfolioFileUrl())
+                .ifPresent(UploadedFile::markUsed);
 
         Portfolio portfolio = Portfolio.builder()
                 .member(member)
@@ -107,10 +113,23 @@ public class PortfolioService {
             throw new CustomException(HttpStatus.UNAUTHORIZED, "수정 권한이 없습니다.");
         }
 
+        String originalFileUrl = portfolio.getFileUrl();
+        String newFileUrl = requestDto.getPortfolioFileUrl();
+
+        if (originalFileUrl != null
+                && newFileUrl != null
+                && !originalFileUrl.equals(newFileUrl)) {
+            s3Service.markFileAsInactive(originalFileUrl);
+        }
+        if (newFileUrl != null) {
+            uploadedFileRepository.findByFileUrl(newFileUrl)
+                    .ifPresent(UploadedFile::markUsed);
+        }
+
         portfolio.update(
                 requestDto.getTitle(),
                 requestDto.getDescription(),
-                requestDto.getPortfolioFileUrl()
+                newFileUrl
         );
 
         return PortfolioResponseDto.from(portfolio);

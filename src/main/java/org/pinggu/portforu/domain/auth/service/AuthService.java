@@ -53,7 +53,8 @@ public class AuthService {
                 savedMember.getName(),
                 savedMember.getPhoneNumber(),
                 savedMember.getAddress(),
-                savedMember.getUserRole()
+                savedMember.getUserRole(),
+                savedMember.getProvider()
         );
         String refreshToken = jwtUtil.createRefreshToken(
                 savedMember.getId(),
@@ -61,7 +62,8 @@ public class AuthService {
                 savedMember.getName(),
                 savedMember.getPhoneNumber(),
                 savedMember.getAddress(),
-                savedMember.getUserRole()
+                savedMember.getUserRole(),
+                savedMember.getProvider()
         );
 
         refreshTokenRepository.save(new RefreshToken(savedMember.getId(), refreshToken));
@@ -96,7 +98,8 @@ public class AuthService {
                 member.getName(),
                 member.getPhoneNumber(),
                 member.getAddress(),
-                member.getUserRole()
+                member.getUserRole(),
+                member.getProvider()
         );
         String refreshToken = jwtUtil.createRefreshToken(
                 member.getId(),
@@ -104,7 +107,8 @@ public class AuthService {
                 member.getName(),
                 member.getPhoneNumber(),
                 member.getAddress(),
-                member.getUserRole()
+                member.getUserRole(),
+                member.getProvider()
         );
 
         refreshTokenRepository.findById(member.getId())
