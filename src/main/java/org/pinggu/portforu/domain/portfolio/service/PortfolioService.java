@@ -20,7 +20,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.io.IOException;
 import java.time.Instant;
 
 @Service
@@ -29,7 +28,6 @@ public class PortfolioService {
 
     private final PortfolioFinder portfolioFinder;
     private final MemberFinder memberFinder;
-    private final S3Service s3Service;
     private final SubscribeValidator subscribeValidator;
     private final PortfolioRepository portfolioRepository;
 
@@ -37,20 +35,11 @@ public class PortfolioService {
     public PortfolioResponseDto savePortfolio(AuthMember authMember, PortfolioRequestDto requestDto) {
         Member member = Member.fromAuthMember(authMember);
 
-        String fileUrl = null;
-        try {
-            if (requestDto.getPortfolioFile() != null && !requestDto.getPortfolioFile().isEmpty()) {
-                fileUrl = s3Service.uploadPortfolioFile(requestDto.getPortfolioFile());
-            }
-        } catch (IOException e) {
-            throw new CustomException(HttpStatus.BAD_REQUEST, "파일 업로드에 실패했습니다.");
-        }
-
         Portfolio portfolio = Portfolio.builder()
                 .member(member)
                 .title(requestDto.getTitle())
                 .description(requestDto.getDescription())
-                .fileUrl(fileUrl)
+                .fileUrl(requestDto.getPortfolioFileUrl())
                 .views(0)
                 .build();
 
@@ -118,18 +107,9 @@ public class PortfolioService {
             throw new CustomException(HttpStatus.UNAUTHORIZED, "수정 권한이 없습니다.");
         }
 
-        String newFileUrl = portfolio.getFileUrl();
-        try {
-            if (requestDto.getPortfolioFile() != null && !requestDto.getPortfolioFile().isEmpty()) {
-                if (portfolio.getFileUrl() != null && !portfolio.getFileUrl().isBlank()) {
-                    s3Service.markFileAsInactive(portfolio.getFileUrl());
-                }
-
-                newFileUrl = s3Service.uploadPortfolioFile(requestDto.getPortfolioFile());
-            }
-        } catch (IOException e) {
-            throw new CustomException(HttpStatus.INTERNAL_SERVER_ERROR, "이미지 업로드에 실패했습니다.");
-        }
+        String newFileUrl = requestDto.getPortfolioFileUrl() != null
+                ? requestDto.getPortfolioFileUrl()
+                : portfolio.getFileUrl();
 
         Instant now = Instant.now();
         portfolioRepository.updatePortfolio(
@@ -137,7 +117,6 @@ public class PortfolioService {
         );
 
         Portfolio updatedPortfolio = portfolioFinder.findPortfolioById(portfolioId);
-
         return PortfolioResponseDto.from(updatedPortfolio);
     }
 
