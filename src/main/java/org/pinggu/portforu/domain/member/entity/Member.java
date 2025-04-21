@@ -74,6 +74,16 @@ public class Member extends BaseEntity {
                 authMember.getProvider());
     }
 
+    public void updateMemberInfo(String name, String phoneNumber, String address) {
+        if (name != null) this.name = name;
+        if (phoneNumber != null) this.phoneNumber = phoneNumber;
+        if (address != null) this.address = address;
+    }
+
+    public void updatePassword(String password) {
+        if (password != null) this.password = password;
+    }
+
     public void decrementRemainingViewCount() {
         if (viewCount > 0) {
             this.viewCount--;

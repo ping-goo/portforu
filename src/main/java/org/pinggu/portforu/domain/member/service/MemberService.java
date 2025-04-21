@@ -8,20 +8,17 @@ import org.pinggu.portforu.domain.member.dto.request.PasswordUpdateRequestDto;
 import org.pinggu.portforu.domain.member.dto.response.MemberResponseDto;
 import org.pinggu.portforu.domain.member.dto.request.MemberUpdateRequestDto;
 import org.pinggu.portforu.domain.member.entity.Member;
-import org.pinggu.portforu.domain.member.repository.MemberRepository;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.Instant;
 
 @Service
 @RequiredArgsConstructor
 public class MemberService {
 
     private final MemberFinder memberFinder;
-    private final MemberRepository memberRepository;
     private final PasswordEncoder passwordEncoder;
 
     @Transactional(readOnly = true)
@@ -37,15 +34,11 @@ public class MemberService {
             AuthMember authMember, Long id, MemberUpdateRequestDto requestDto
     ) {
         memberFinder.validateOwnership(authMember, id);
+        Member member = memberFinder.findMemberById(id);
 
-        Instant now = Instant.now();
-        memberRepository.updateMemberInfo(
-                id, requestDto.getName(), requestDto.getPhoneNumber(), requestDto.getAddress(), now
-        );
+        member.updateMemberInfo(requestDto.getName(), requestDto.getPhoneNumber(), requestDto.getAddress());
 
-        Member updatedMember = memberFinder.findMemberById(id);
-
-        return MemberResponseDto.from(updatedMember);
+        return MemberResponseDto.from(member);
     }
 
     @Transactional
@@ -65,10 +58,9 @@ public class MemberService {
 
         String newEncodedPassword = passwordEncoder.encode(requestDto.getNewPassword());
 
-        Instant now = Instant.now();
-        memberRepository.updatePassword(id, newEncodedPassword, now);
+        member.updatePassword(newEncodedPassword);
 
-        return MemberResponseDto.from(memberFinder.findMemberById(id));
+        return MemberResponseDto.from(member);
     }
 
     @Transactional
