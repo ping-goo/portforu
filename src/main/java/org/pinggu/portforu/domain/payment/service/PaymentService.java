@@ -42,6 +42,8 @@ public class PaymentService {
             Payment payment = paymentFinder.findBySubscribeId(subscribeId);
 
             if (payment.getStatus() == PaymentStatus.COMPLETED) {
+                //TODO 이건 동시성 어떻게 할건지, 서드파티 이용하는 거기 때문에 문제가 생길 여지가 있음
+                // -redis 도입해서 분산 lock처리를 해주면 괜찮을거같아서 이렇게 해둿는데 고치고 redis를 넣고 할까요?
                 log.info("중복 결제 요청 차단됨: orderId={}, subscribeId={}", orderId, subscribeId);
                 throw new CustomException(HttpStatus.BAD_REQUEST, "이미 결제가 완료된 주문입니다.");
             }
@@ -49,7 +51,7 @@ public class PaymentService {
             Subscribe subscribe = payment.getSubscribe();
             Membership membership = subscribe.getMembership();
 
-            //  정원 수량으로 체크 (count 방식 제거)
+            //  정원 수량으로 체크 (count 방식 제거) 동시성문제는 나중에 redis 사용할예정
             if (membership.getQuantity() <= 0) {
                 try {
                     cancelTossPayment(paymentKey, "멤버십 정원이 초과되어 결제가 취소되었습니다.");
@@ -58,10 +60,7 @@ public class PaymentService {
                 }
 
                 payment.fail();
-                paymentRepository.save(payment);
-
                 subscribe.fail();
-                subscribeRepository.save(subscribe);
 
                 log.warn("결제 실패 - 정원 초과: orderId={}, subscribeId={}", orderId, subscribeId);
                 throw new CustomException(HttpStatus.BAD_REQUEST, "멤버십 정원이 초과되어 결제가 취소되었습니다.");
@@ -90,7 +89,6 @@ public class PaymentService {
             payment.assignPaymentKey(paymentKey);
             payment.assignPaymentMethod(paymentMethod);
             payment.complete();
-            paymentRepository.save(payment);
 
             subscribeService.updateSubscriptionStatus(subscribeId, PaymentStatus.COMPLETED);
 
@@ -115,7 +113,6 @@ public class PaymentService {
             Payment payment = paymentFinder.findBySubscribeId(subscribeId);
 
             payment.fail();
-            paymentRepository.save(payment);
             subscribeService.updateSubscriptionStatus(subscribeId, PaymentStatus.FAILED);
 
             log.warn("결제 실패 처리됨: orderId={}, subscribeId={}, reason={}", orderId, subscribeId, message);
@@ -142,7 +139,6 @@ public class PaymentService {
         try {
             cancelTossPayment(payment.getPaymentKey(), cancelReason);
             payment.cancel();
-            paymentRepository.save(payment);
             subscribeService.updateSubscriptionStatus(subscribeId, PaymentStatus.CANCELLED);
 
             log.info("결제 취소 완료: orderId={}, subscribeId={}, reason={}", orderId, subscribeId, cancelReason);
