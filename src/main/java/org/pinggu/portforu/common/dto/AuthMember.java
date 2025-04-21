@@ -19,14 +19,15 @@ public class AuthMember {
     private final String phoneNumber;
     private final String address;
     private final Set<GrantedAuthority> authorities;
+    private final String provider;
 
     // 권한이 한개인 경우
-    public AuthMember(Long id, String email, String name, String phoneNumber, String address, UserRole userRole) {
-        this(id, email, name, phoneNumber, address, Set.of(userRole));
+    public AuthMember(Long id, String email, String name, String phoneNumber, String address, UserRole userRole, String provider) {
+        this(id, email, name, phoneNumber, address, Set.of(userRole), provider);
     }
 
     // 권한이 여러개인 경우
-    public AuthMember(Long id, String email, String name, String phoneNumber, String address, Set<UserRole> userRoles) {
+    public AuthMember(Long id, String email, String name, String phoneNumber, String address, Set<UserRole> userRoles, String provider) {
         this.id = id;
         this.email = email;
         this.name = name;
@@ -35,6 +36,7 @@ public class AuthMember {
         this.authorities = userRoles.stream()
                 .map(role -> new SimpleGrantedAuthority(role.name()))
                 .collect(Collectors.toSet());
+        this.provider = provider;
     }
 
     public UserRole getUserRole() {
