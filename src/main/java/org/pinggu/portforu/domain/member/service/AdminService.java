@@ -29,7 +29,7 @@ public class AdminService {
     @Transactional(readOnly = true)
     public Page<MemberResponseDto> findAllMembers(Pagecond pagecond) {
         Pageable pageable = PageRequest.of(pagecond.getPageNum() - 1, pagecond.getPageSize(), Sort.by(Sort.Order.desc("createdAt")));
-        Page<Member> members = memberRepository.findAllByDeletedAtIsNull(pageable);
+        Page<Member> members = memberRepository.findAll(pageable);
 
         return members.map(MemberResponseDto::from);
     }
