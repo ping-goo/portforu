@@ -41,7 +41,7 @@ public class RefreshTokenService {
         RefreshToken saved = refreshTokenRepository.findById(memberId)
                 .orElseThrow(() -> new CustomException(HttpStatus.UNAUTHORIZED, "Refresh Token 없음"));
 
-        if (!saved.getToken().equals(bearerToken)) {
+        if (!saved.getToken().equals(token)) {
             throw new CustomException(HttpStatus.UNAUTHORIZED, "Refresh Token 불일치");
         }
 
