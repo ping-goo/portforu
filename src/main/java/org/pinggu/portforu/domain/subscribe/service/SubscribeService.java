@@ -87,7 +87,7 @@ public class SubscribeService {
     public List<SubscribeResponseDto> findAllSubscribes(AuthMember authMember) {
         Member member = Member.fromAuthMember(authMember);
 
-        return subscribeRepository.findAllByMemberAndDeletedAtIsNull(member).stream()
+        return subscribeRepository.findAllByMemberAndIsDeletedFalse(member).stream()
                 .map(subscribe -> {
                     Payment payment = paymentFinder.findBySubscribeId(subscribe.getId());
                     return SubscribeResponseDto.from(subscribe, payment);

@@ -21,7 +21,7 @@ import java.util.List;
 @Repository
 public interface SubscribeRepository extends JpaRepository<Subscribe, Long> {
 
-    List<Subscribe> findAllByMemberAndDeletedAtIsNull(Member member);
+    List<Subscribe> findAllByMemberAndIsDeletedFalse(Member member);
 
     @Query("""
         SELECT COUNT(s) > 0 FROM Subscribe s
