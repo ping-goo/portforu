@@ -15,7 +15,7 @@ import org.pinggu.portforu.domain.subscribe.entity.Subscribe;
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Table(name = "payments")
-@SoftDelete(sql = "UPDATE job_postings SET deleted = true WHERE id = ?")
+@SoftDelete(sql = "UPDATE job_postings SET isDeleted = true WHERE id = ?")
 public class Payment extends BaseEntity {
 
     @Enumerated(EnumType.STRING)

@@ -71,7 +71,7 @@ public class CommentService {
         if (!comment.getMember().getId().equals(authMember.getId())) {
             throw new CustomException(HttpStatus.UNAUTHORIZED, "수정 권한이 없습니다.");
         }
-        comment.updateContent(requestDto.getContent());
+        comment.update(requestDto.getContent());
 
         return CommentResponseDto.from(comment);
     }

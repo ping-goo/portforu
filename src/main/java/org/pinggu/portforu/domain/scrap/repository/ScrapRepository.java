@@ -16,6 +16,6 @@ public interface ScrapRepository extends JpaRepository<Scrap, Long> {
     Optional<Scrap> findByMemberAndJobPosting(Member member, JobPosting jobPosting);
 
     @EntityGraph(attributePaths = {"member", "jobPosting"})
-    Page<Scrap> findAllByMemberIdAndDeletedAtIsNull(Long memberId, Pageable pageable);
+    Page<Scrap> findAllByMemberId(Long memberId, Pageable pageable);
 
 }

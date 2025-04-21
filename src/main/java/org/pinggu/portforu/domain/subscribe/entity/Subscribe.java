@@ -17,7 +17,7 @@ import java.time.Instant;
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Table(name = "subscribes")
-@SoftDelete(sql = "UPDATE subscribes SET deleted = true WHERE id = ?")
+@SoftDelete(sql = "UPDATE subscribes SET isDeleted = true WHERE id = ?")
 public class Subscribe extends BaseEntity {
 
     @ManyToOne(fetch = FetchType.LAZY)

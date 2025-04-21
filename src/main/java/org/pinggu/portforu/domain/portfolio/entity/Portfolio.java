@@ -10,7 +10,7 @@ import org.pinggu.portforu.domain.member.entity.Member;
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Table(name ="portfolios")
-@SoftDelete(sql = "UPDATE portfolios SET deleted = true WHERE id = ?")
+@SoftDelete(sql = "UPDATE portfolios SET isDeleted = true WHERE id = ?")
 public class Portfolio extends BaseEntity {
 
     @ManyToOne(fetch = FetchType.LAZY)
@@ -43,6 +43,18 @@ public class Portfolio extends BaseEntity {
             this.views = 1;
         } else {
             this.views++;
+        }
+    }
+
+    public void update(String newTitle, String newDescription, String newFileUrl) {
+        if (newTitle != null && !newTitle.isBlank()) {
+            this.title = newTitle;
+        }
+        if (newDescription != null && !newDescription.isBlank()) {
+            this.description = newDescription;
+        }
+        if (newFileUrl != null && !newFileUrl.isBlank()) {
+            this.fileUrl = newFileUrl;
         }
     }
 

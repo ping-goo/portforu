@@ -22,7 +22,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.Instant;
 
 @Service
 @RequiredArgsConstructor
@@ -58,7 +57,7 @@ public class PortfolioService {
     @Transactional(readOnly = true)
     public Page<PortfolioListResponseDto> findAllPortfolios(Pagecond pagecond) {
         Pageable pageable = PageRequest.of(pagecond.getPageNum() - 1, pagecond.getPageSize());
-        Page<Portfolio> portfolioPage = portfolioRepository.findAllByDeletedAtIsNull(pageable);
+        Page<Portfolio> portfolioPage = portfolioRepository.findAll(pageable);
 
         return portfolioPage.map(PortfolioListResponseDto::from);
     }
@@ -89,7 +88,7 @@ public class PortfolioService {
         memberFinder.validateOwnership(authMember, memberId);
 
         Pageable pageable = PageRequest.of(pagecond.getPageNum() - 1, pagecond.getPageSize());
-        Page<Portfolio> portfolios = portfolioRepository.findAllByMemberIdAndDeletedAtIsNull(memberId, pageable);
+        Page<Portfolio> portfolios = portfolioRepository.findAllByMember(memberId, pageable);
 
         return portfolios.map(PortfolioListResponseDto::from);
     }
@@ -117,32 +116,24 @@ public class PortfolioService {
         String originalFileUrl = portfolio.getFileUrl();
         String newFileUrl = requestDto.getPortfolioFileUrl();
 
-        if (originalFileUrl != null &&
-                newFileUrl != null &&
-                !originalFileUrl.equals(newFileUrl)) {
+        if (originalFileUrl != null
+                && newFileUrl != null
+                && !originalFileUrl.equals(newFileUrl)) {
             s3Service.markFileAsInactive(originalFileUrl);
         }
-
         if (newFileUrl != null) {
             uploadedFileRepository.findByFileUrl(newFileUrl)
                     .ifPresent(UploadedFile::markUsed);
         }
 
-        String finalFileUrl = (newFileUrl != null) ? newFileUrl : originalFileUrl;
-
-        Instant now = Instant.now();
-        portfolioRepository.updatePortfolio(
-                portfolioId,
+        portfolio.update(
                 requestDto.getTitle(),
                 requestDto.getDescription(),
-                finalFileUrl,
-                now
+                newFileUrl
         );
 
-        Portfolio updatedPortfolio = portfolioFinder.findPortfolioById(portfolioId);
-        return PortfolioResponseDto.from(updatedPortfolio);
+        return PortfolioResponseDto.from(portfolio);
     }
-
 
     @Transactional
     public Long deletePortfolio(AuthMember authMember, Long portfolioId) {

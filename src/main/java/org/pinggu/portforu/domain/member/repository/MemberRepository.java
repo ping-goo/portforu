@@ -17,8 +17,6 @@ public interface MemberRepository extends JpaRepository<Member, Long> {
 
     Optional<Member> findByEmail(String email);
 
-    Page<Member> findAllByDeletedAtIsNull(Pageable pageable);
-
     @Modifying(clearAutomatically = true)
     @Query("UPDATE Member m SET "
             + "m.name = COALESCE(:name, m.name), "

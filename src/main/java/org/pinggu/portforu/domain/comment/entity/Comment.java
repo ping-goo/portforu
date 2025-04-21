@@ -14,7 +14,7 @@ import org.pinggu.portforu.domain.portfolio.entity.Portfolio;
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Table(name = "comments")
-@SoftDelete(sql = "UPDATE comments SET deleted = true WHERE id = ?")
+@SoftDelete(sql = "UPDATE comments SET isDeleted = true WHERE id = ?")
 public class Comment extends BaseEntity {
 
     @ManyToOne(fetch = FetchType.LAZY)
@@ -35,7 +35,7 @@ public class Comment extends BaseEntity {
         this.content = content;
     }
 
-    public void updateContent(String content){
+    public void update(String content){
         if(content != null && !content.isBlank()){
             this.content = content;
         }
