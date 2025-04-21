@@ -58,17 +58,12 @@ public class JobPostingService {
 
     @Transactional
     public JobPostingResponseDto updateJobPosting(Long jobPostingId, JobPostingUpdateRequestDto requestDto) {
-        jobPostingFinder.findJobPostingById(jobPostingId);
+        JobPosting jobPosting = jobPostingFinder.findJobPostingById(jobPostingId);
 
-        Instant now = Instant.now();
-        jobPostingRepository.updateJobPosting(
-                jobPostingId, requestDto.getName(), requestDto.getIndustry(), requestDto.getAddress(), requestDto.getSalary(),
-                requestDto.getQualifications(), requestDto.getPreferential(), requestDto.getClosingDate(), now
-        );
+        jobPosting.update(requestDto.getName(), requestDto.getIndustry(), requestDto.getAddress(), requestDto.getSalary(),
+                requestDto.getQualifications(), requestDto.getPreferential(), requestDto.getClosingDate());
 
-        JobPosting updatedJobPosting = jobPostingFinder.findJobPostingById(jobPostingId);
-
-        return JobPostingResponseDto.from(updatedJobPosting);
+        return JobPostingResponseDto.from(jobPosting);
     }
 
     @Transactional
@@ -76,7 +71,6 @@ public class JobPostingService {
         JobPosting jobPosting = jobPostingFinder.findJobPostingById(jobPostingId);
 
         return jobPosting.softDelete();
-
     }
 
 }

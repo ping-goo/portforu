@@ -16,8 +16,8 @@ public class ScrapDetailResponseDto {
     private final String industry;
     private final String address;
     private final String salary;
-    private final String postingDate;
-    private final String closingDate;
+    private final Instant postingDate;
+    private final Instant closingDate;
     private final Instant createdAt;
     private final Instant deletedAt;
 
