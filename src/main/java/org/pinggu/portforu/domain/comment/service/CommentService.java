@@ -17,7 +17,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.stream.Collectors;
-import java.time.Instant;
 
 @Service
 @RequiredArgsConstructor
@@ -58,7 +57,7 @@ public class CommentService {
         List<Comment> comments = commentRepository.findByPortfolioId(portfolioId);
 
         return comments.stream()
-                .filter(comment -> !comment.isDeleted())
+                .filter(comment -> !comment.getIsDeleted())
                 .map(CommentResponseDto::from)
                 .collect(Collectors.toList());
     }
@@ -72,13 +71,9 @@ public class CommentService {
         if (!comment.getMember().getId().equals(authMember.getId())) {
             throw new CustomException(HttpStatus.UNAUTHORIZED, "수정 권한이 없습니다.");
         }
+        comment.updateContent(requestDto.getContent());
 
-        Instant now = Instant.now();
-        commentRepository.updateComment(commentId, requestDto.getContent(), now);
-
-        Comment updatedComment = commentFinder.findCommentById(commentId);
-
-        return CommentResponseDto.from(updatedComment);
+        return CommentResponseDto.from(comment);
     }
 
     @Transactional
@@ -91,7 +86,7 @@ public class CommentService {
             throw new CustomException(HttpStatus.UNAUTHORIZED, "삭제 권한이 없습니다.");
         }
 
-        return comment.delete();
+        return comment.softDelete();
     }
 
 }

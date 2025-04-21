@@ -11,7 +11,9 @@ import org.pinggu.portforu.domain.portfolio.dto.request.PortfolioUpdateRequestDt
 import org.pinggu.portforu.domain.portfolio.dto.response.PortfolioListResponseDto;
 import org.pinggu.portforu.domain.portfolio.dto.response.PortfolioResponseDto;
 import org.pinggu.portforu.domain.portfolio.entity.Portfolio;
+import org.pinggu.portforu.domain.portfolio.entity.UploadedFile;
 import org.pinggu.portforu.domain.portfolio.repository.PortfolioRepository;
+import org.pinggu.portforu.domain.portfolio.repository.UploadedFileRepository;
 import org.pinggu.portforu.domain.subscribe.validator.SubscribeValidator;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -20,7 +22,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.io.IOException;
 import java.time.Instant;
 
 @Service
@@ -29,28 +30,23 @@ public class PortfolioService {
 
     private final PortfolioFinder portfolioFinder;
     private final MemberFinder memberFinder;
-    private final S3Service s3Service;
     private final SubscribeValidator subscribeValidator;
     private final PortfolioRepository portfolioRepository;
+    private final UploadedFileRepository uploadedFileRepository;
+    private final S3Service s3Service;
 
     @Transactional
     public PortfolioResponseDto savePortfolio(AuthMember authMember, PortfolioRequestDto requestDto) {
         Member member = Member.fromAuthMember(authMember);
 
-        String fileUrl = null;
-        try {
-            if (requestDto.getPortfolioFile() != null && !requestDto.getPortfolioFile().isEmpty()) {
-                fileUrl = s3Service.uploadPortfolioFile(requestDto.getPortfolioFile());
-            }
-        } catch (IOException e) {
-            throw new CustomException(HttpStatus.BAD_REQUEST, "파일 업로드에 실패했습니다.");
-        }
+        uploadedFileRepository.findByFileUrl(requestDto.getPortfolioFileUrl())
+                .ifPresent(UploadedFile::markUsed);
 
         Portfolio portfolio = Portfolio.builder()
                 .member(member)
                 .title(requestDto.getTitle())
                 .description(requestDto.getDescription())
-                .fileUrl(fileUrl)
+                .fileUrl(requestDto.getPortfolioFileUrl())
                 .views(0)
                 .build();
 
@@ -118,28 +114,35 @@ public class PortfolioService {
             throw new CustomException(HttpStatus.UNAUTHORIZED, "수정 권한이 없습니다.");
         }
 
-        String newFileUrl = portfolio.getFileUrl();
-        try {
-            if (requestDto.getPortfolioFile() != null && !requestDto.getPortfolioFile().isEmpty()) {
-                if (portfolio.getFileUrl() != null && !portfolio.getFileUrl().isBlank()) {
-                    s3Service.markFileAsInactive(portfolio.getFileUrl());
-                }
+        String originalFileUrl = portfolio.getFileUrl();
+        String newFileUrl = requestDto.getPortfolioFileUrl();
 
-                newFileUrl = s3Service.uploadPortfolioFile(requestDto.getPortfolioFile());
-            }
-        } catch (IOException e) {
-            throw new CustomException(HttpStatus.INTERNAL_SERVER_ERROR, "이미지 업로드에 실패했습니다.");
+        if (originalFileUrl != null &&
+                newFileUrl != null &&
+                !originalFileUrl.equals(newFileUrl)) {
+            s3Service.markFileAsInactive(originalFileUrl);
         }
+
+        if (newFileUrl != null) {
+            uploadedFileRepository.findByFileUrl(newFileUrl)
+                    .ifPresent(UploadedFile::markUsed);
+        }
+
+        String finalFileUrl = (newFileUrl != null) ? newFileUrl : originalFileUrl;
 
         Instant now = Instant.now();
         portfolioRepository.updatePortfolio(
-                portfolioId, requestDto.getTitle(), requestDto.getDescription(), newFileUrl, now
+                portfolioId,
+                requestDto.getTitle(),
+                requestDto.getDescription(),
+                finalFileUrl,
+                now
         );
 
         Portfolio updatedPortfolio = portfolioFinder.findPortfolioById(portfolioId);
-
         return PortfolioResponseDto.from(updatedPortfolio);
     }
+
 
     @Transactional
     public Long deletePortfolio(AuthMember authMember, Long portfolioId) {
@@ -149,7 +152,7 @@ public class PortfolioService {
             throw new CustomException(HttpStatus.UNAUTHORIZED, "삭제 권한이 없습니다.");
         }
 
-        return portfolio.delete();
+        return portfolio.softDelete();
     }
 
 }

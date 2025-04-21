@@ -1,13 +1,11 @@
 package org.pinggu.portforu.domain.membership.service;
 
 import lombok.RequiredArgsConstructor;
-import org.pinggu.portforu.common.exception.CustomException;
 import org.pinggu.portforu.domain.membership.dto.request.MembershipSaveRequestDto;
 import org.pinggu.portforu.domain.membership.dto.request.MembershipUpdateRequestDto;
 import org.pinggu.portforu.domain.membership.dto.response.MembershipResponseDto;
 import org.pinggu.portforu.domain.membership.entity.Membership;
 import org.pinggu.portforu.domain.membership.repository.MembershipRepository;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -67,11 +65,7 @@ public class MembershipService {
     public Long deleteMembership(Long membershipId) {
         Membership membership = membershipFinder.findById(membershipId);
 
-        if (membership.isDeleted()) {
-            throw new CustomException(HttpStatus.BAD_REQUEST, "이미 삭제된 멤버십입니다.");
-        }
-
-        return membership.delete();
+        return membership.softDelete();
     }
 
 }

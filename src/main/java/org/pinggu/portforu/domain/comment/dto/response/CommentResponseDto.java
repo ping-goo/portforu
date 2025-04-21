@@ -14,9 +14,10 @@ public class CommentResponseDto {
     private final Long memberId;
     private final Long portfolioId;
     private final String content;
+    private final String email;
     private final Instant createdAt;
     private final Instant updatedAt;
-    private final Instant deletedAt;
+    private final Boolean isDeleted;
 
     public static CommentResponseDto from(Comment comment) {
         return CommentResponseDto.builder()
@@ -24,9 +25,10 @@ public class CommentResponseDto {
                 .memberId(comment.getMember().getId())
                 .portfolioId(comment.getPortfolio().getId())
                 .content(comment.getContent())
+                .email(comment.getMember().getEmail())
                 .createdAt(comment.getCreatedAt())
                 .updatedAt(comment.getUpdatedAt())
-                .deletedAt(comment.getDeletedAt())
+                .isDeleted(comment.getIsDeleted())
                 .build();
     }
 

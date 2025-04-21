@@ -5,12 +5,14 @@ import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.pinggu.portforu.common.annotation.SoftDelete;
 import org.pinggu.portforu.common.domain.BaseEntity;
 
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Table(name = "memberships")
+@SoftDelete(sql = "UPDATE memberships SET deleted = true WHERE id = ?")
 public class Membership extends BaseEntity {
 
     @Column(length = 50, nullable = false)

@@ -21,7 +21,7 @@ public class JobPostingResponseDto {
     private final String closingDate;
     private final Instant createdAt;
     private final Instant updatedAt;
-    private final Instant deletedAt;
+    private final Boolean deletedAt;
 
     public static JobPostingResponseDto from(JobPosting jobPosting) {
         return JobPostingResponseDto.builder()
@@ -36,7 +36,7 @@ public class JobPostingResponseDto {
                 .closingDate(jobPosting.getClosingDate())
                 .createdAt(jobPosting.getCreatedAt())
                 .updatedAt(jobPosting.getUpdatedAt())
-                .deletedAt(jobPosting.getDeletedAt())
+                .deletedAt(jobPosting.getIsDeleted())
                 .build();
     }
 

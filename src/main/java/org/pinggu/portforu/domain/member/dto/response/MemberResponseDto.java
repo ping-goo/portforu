@@ -18,6 +18,7 @@ public class MemberResponseDto {
     private final String userRole;
     private final Instant createdAt;
     private final Instant updatedAt;
+    private final Boolean isDeleted;
 
     public static MemberResponseDto from(Member member) {
         return MemberResponseDto.builder()
@@ -29,6 +30,7 @@ public class MemberResponseDto {
                 .userRole(member.getUserRole().name())
                 .createdAt(member.getCreatedAt())
                 .updatedAt(member.getUpdatedAt())
+                .isDeleted(member.getIsDeleted())
                 .build();
     }
 

@@ -1,9 +1,11 @@
 package org.pinggu.portforu.domain.subscribe.entity;
 
 import jakarta.persistence.*;
+import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.pinggu.portforu.common.annotation.SoftDelete;
 import org.pinggu.portforu.common.domain.BaseEntity;
 import org.pinggu.portforu.domain.member.entity.Member;
 import org.pinggu.portforu.domain.membership.entity.Membership;
@@ -12,9 +14,10 @@ import org.pinggu.portforu.domain.subscribe.enums.SubscribeStatus;
 import java.time.Instant;
 
 @Getter
-@NoArgsConstructor
 @Entity
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Table(name = "subscribes")
+@SoftDelete(sql = "UPDATE subscribes SET deleted = true WHERE id = ?")
 public class Subscribe extends BaseEntity {
 
     @ManyToOne(fetch = FetchType.LAZY)

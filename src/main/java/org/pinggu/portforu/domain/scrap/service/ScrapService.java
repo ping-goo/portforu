@@ -33,8 +33,8 @@ public class ScrapService {
 
         Scrap scrap = scrapRepository.findByMemberAndJobPosting(member, jobPosting)
                 .map(existingScrap -> {
-                    if (existingScrap.getDeletedAt() == null) {
-                        existingScrap.delete();
+                    if (existingScrap.getIsDeleted() == null) {
+                        existingScrap.softDelete();
                     } else {
                         existingScrap.restore();
                     }

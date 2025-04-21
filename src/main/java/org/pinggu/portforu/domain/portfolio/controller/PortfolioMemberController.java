@@ -30,7 +30,7 @@ public class PortfolioMemberController {
     @PostMapping
     public ResponseEntity<ApiResponse<PortfolioResponseDto>> savePortfolio(
             @AuthenticationPrincipal AuthMember authMember,
-            @Valid @ModelAttribute PortfolioRequestDto requestDto
+            @Valid @RequestBody PortfolioRequestDto requestDto
     ){
         return ResponseEntity.ok(ApiResponse.of(portfolioService.savePortfolio(authMember, requestDto)));
     }
@@ -68,7 +68,7 @@ public class PortfolioMemberController {
     public ResponseEntity<ApiResponse<PortfolioResponseDto>> updatePortfolio(
             @AuthenticationPrincipal AuthMember authMember,
             @PathVariable Long portfolioId,
-            @Valid @ModelAttribute PortfolioUpdateRequestDto requestDto
+            @Valid @RequestBody PortfolioUpdateRequestDto requestDto
     ) {
         return ResponseEntity.ok().body(ApiResponse.of(portfolioService.updatePortfolio(authMember, portfolioId, requestDto)));
     }
