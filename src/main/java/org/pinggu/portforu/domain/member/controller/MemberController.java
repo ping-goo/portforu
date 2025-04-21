@@ -16,13 +16,13 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/v1/members/{id}")
+@RequestMapping("/api/v1/members")
 public class MemberController {
 
     private final MemberService memberService;
 
     @Member
-    @GetMapping
+    @GetMapping("/{id}")
     public ResponseEntity<ApiResponse<MemberResponseDto>> findMember(
             @AuthenticationPrincipal AuthMember authMember,
             @PathVariable Long id
@@ -31,7 +31,7 @@ public class MemberController {
     }
 
     @Member
-    @PutMapping
+    @PutMapping("/{id}")
     public ResponseEntity<ApiResponse<MemberResponseDto>> updateMember(
             @AuthenticationPrincipal AuthMember authMember,
             @PathVariable Long id,
@@ -41,7 +41,7 @@ public class MemberController {
     }
 
     @Member
-    @PutMapping("/password")
+    @PutMapping("/{id}/password")
     public ResponseEntity<ApiResponse<MemberResponseDto>> updatePassword(
             @AuthenticationPrincipal AuthMember authMember,
             @PathVariable Long id,
@@ -51,7 +51,7 @@ public class MemberController {
     }
 
     @Member
-    @DeleteMapping
+    @DeleteMapping("/{id}")
     public ResponseEntity<ApiResponse<Long>> deleteMember(
             @AuthenticationPrincipal AuthMember authMember,
             @PathVariable Long id,
