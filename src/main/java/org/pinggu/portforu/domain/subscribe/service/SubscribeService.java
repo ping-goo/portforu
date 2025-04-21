@@ -39,7 +39,6 @@ public class SubscribeService {
     private final PaymentRepository paymentRepository;
 
     // 구독 생성
-    // 구독 생성
     @Transactional
     public SubscribeResponseDto saveSubscribe(AuthMember authMember, Long membershipId) {
         Member member = Member.fromAuthMember(authMember);
@@ -113,8 +112,6 @@ public class SubscribeService {
 
         // 취소는 정원 복구 안 함
         subscribe.cancel();
-        subscribeRepository.save(subscribe);
-
         return subscribe.getId();
     }
 
@@ -128,17 +125,14 @@ public class SubscribeService {
             subscribe.activate();
             membership.decreaseQuantity(); // 정원 감소
             membershipRepository.save(membership); //  DB 반영
-            subscribeRepository.save(subscribe);
             log.info("구독 활성화 완료: subscribeId={}, 상태={}", subscribeId, subscribe.getStatus());
         } else if (paymentStatus == PaymentStatus.FAILED) {
             subscribe.fail();
-            subscribeRepository.save(subscribe);
             log.info("구독 실패 처리됨: subscribeId={}, 상태={}", subscribeId, subscribe.getStatus());
         } else if (paymentStatus == PaymentStatus.EXPIRED) {
             subscribe.expire();
             membership.increaseQuantity(); // 정원 증가
             membershipRepository.save(membership); // DB 반영
-            subscribeRepository.save(subscribe);
             log.info("구독 만료 처리됨: subscribeId={}, 상태={}", subscribeId, subscribe.getStatus());
         }
     }
