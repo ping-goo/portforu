@@ -7,8 +7,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 
-import java.util.Collection;
-import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 @Getter
 public class AuthMember {
@@ -18,15 +18,23 @@ public class AuthMember {
     private final String name;
     private final String phoneNumber;
     private final String address;
-    private final Collection<? extends GrantedAuthority> authorities;
+    private final Set<GrantedAuthority> authorities;
 
+    // 권한이 한개인 경우
     public AuthMember(Long id, String email, String name, String phoneNumber, String address, UserRole userRole) {
+        this(id, email, name, phoneNumber, address, Set.of(userRole));
+    }
+
+    // 권한이 여러개인 경우
+    public AuthMember(Long id, String email, String name, String phoneNumber, String address, Set<UserRole> userRoles) {
         this.id = id;
         this.email = email;
         this.name = name;
         this.phoneNumber = phoneNumber;
         this.address = address;
-        this.authorities = List.of(new SimpleGrantedAuthority(userRole.name()));
+        this.authorities = userRoles.stream()
+                .map(role -> new SimpleGrantedAuthority(role.name()))
+                .collect(Collectors.toSet());
     }
 
     public UserRole getUserRole() {
@@ -35,6 +43,14 @@ public class AuthMember {
                 .map(UserRole::valueOf)
                 .findFirst()
                 .orElseThrow(() -> new CustomException(HttpStatus.FORBIDDEN, "사용자 권한이 유효하지 않습니다."));
+    }
+
+    // 권한 여러개 반환
+    public Set<UserRole> getUserRoles() {
+        return authorities.stream()
+                .map(GrantedAuthority::getAuthority)
+                .map(UserRole::valueOf)
+                .collect(Collectors.toSet());
     }
 
 }
