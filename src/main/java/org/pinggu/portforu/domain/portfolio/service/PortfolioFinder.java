@@ -5,9 +5,9 @@ import org.pinggu.portforu.common.exception.CustomException;
 import org.pinggu.portforu.domain.portfolio.entity.Portfolio;
 import org.pinggu.portforu.domain.portfolio.repository.PortfolioRepository;
 import org.springframework.http.HttpStatus;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 
-@Component
+@Service
 @RequiredArgsConstructor
 public class PortfolioFinder {
 
