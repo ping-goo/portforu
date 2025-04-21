@@ -12,6 +12,4 @@ import java.time.Instant;
 
 public interface JobPostingRepository extends JpaRepository<JobPosting, Long> {
 
-    Page<JobPosting> findAllByDeletedAtIsNull(Pageable pageable);
-
 }

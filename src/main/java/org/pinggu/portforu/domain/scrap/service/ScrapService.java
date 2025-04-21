@@ -33,7 +33,7 @@ public class ScrapService {
 
         Scrap scrap = scrapRepository.findByMemberAndJobPosting(member, jobPosting)
                 .map(existingScrap -> {
-                    if (existingScrap.getIsDeleted() == null) {
+                    if (!existingScrap.getIsDeleted()) {
                         existingScrap.softDelete();
                     } else {
                         existingScrap.restore();
@@ -60,7 +60,7 @@ public class ScrapService {
         }
 
         Pageable pageable = PageRequest.of(pagecond.getPageNum() - 1, pagecond.getPageSize(), Sort.by(Sort.Order.desc("updatedAt")));
-        Page<Scrap> scraps = scrapRepository.findAllByMemberIdAndDeletedAtIsNull(memberId, pageable);
+        Page<Scrap> scraps = scrapRepository.findAllByMemberId(memberId, pageable);
 
         return scraps.map(ScrapDetailResponseDto::from);
     }

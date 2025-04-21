@@ -44,7 +44,7 @@ public class JobPostingService {
     @Transactional(readOnly = true)
     public Page<JobPostingResponseDto> findAllJobPostings(Pagecond pagecond) {
         Pageable pageable = PageRequest.of(pagecond.getPageNum() - 1, pagecond.getPageSize(), Sort.by(Sort.Order.desc("createdAt")));
-        Page<JobPosting> jobPostings = jobPostingRepository.findAllByDeletedAtIsNull(pageable);
+        Page<JobPosting> jobPostings = jobPostingRepository.findAll(pageable);
 
         return jobPostings.map(JobPostingResponseDto::from);
     }
