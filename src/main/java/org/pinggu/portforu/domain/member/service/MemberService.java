@@ -86,7 +86,7 @@ public class MemberService {
             throw new CustomException(HttpStatus.BAD_REQUEST, "비밀번호 확인에 실패했습니다.");
         }
 
-        return member.delete();
+        return member.softDelete();
     }
 
 }

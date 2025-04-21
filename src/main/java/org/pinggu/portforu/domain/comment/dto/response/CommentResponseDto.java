@@ -17,7 +17,7 @@ public class CommentResponseDto {
     private final String email;
     private final Instant createdAt;
     private final Instant updatedAt;
-    private final Instant deletedAt;
+    private final Boolean isDeleted;
 
     public static CommentResponseDto from(Comment comment) {
         return CommentResponseDto.builder()
@@ -28,7 +28,7 @@ public class CommentResponseDto {
                 .email(comment.getMember().getEmail())
                 .createdAt(comment.getCreatedAt())
                 .updatedAt(comment.getUpdatedAt())
-                .deletedAt(comment.getDeletedAt())
+                .isDeleted(comment.getIsDeleted())
                 .build();
     }
 

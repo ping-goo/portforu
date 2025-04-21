@@ -2,13 +2,15 @@ package org.pinggu.portforu.domain.portfolio.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
+import org.pinggu.portforu.common.annotation.SoftDelete;
 import org.pinggu.portforu.common.domain.BaseEntity;
 import org.pinggu.portforu.domain.member.entity.Member;
 
 @Getter
 @Entity
-@Table(name ="portfolios")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@Table(name ="portfolios")
+@SoftDelete(sql = "UPDATE portfolios SET deleted = true WHERE id = ?")
 public class Portfolio extends BaseEntity {
 
     @ManyToOne(fetch = FetchType.LAZY)

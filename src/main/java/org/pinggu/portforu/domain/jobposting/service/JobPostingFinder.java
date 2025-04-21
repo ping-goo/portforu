@@ -17,7 +17,7 @@ public class JobPostingFinder {
         JobPosting jobPosting = jobPostingRepository.findById(id)
                 .orElseThrow(() -> new CustomException(HttpStatus.NOT_FOUND, "채용 공고가 존재하지 않습니다."));
 
-        if (jobPosting.isDeleted()) {
+        if (jobPosting.getIsDeleted()) {
             throw new CustomException(HttpStatus.BAD_REQUEST, "이미 삭제된 채용 공고입니다.");
         }
 

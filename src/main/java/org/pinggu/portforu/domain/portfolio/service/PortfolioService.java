@@ -149,7 +149,7 @@ public class PortfolioService {
             throw new CustomException(HttpStatus.UNAUTHORIZED, "삭제 권한이 없습니다.");
         }
 
-        return portfolio.delete();
+        return portfolio.softDelete();
     }
 
 }

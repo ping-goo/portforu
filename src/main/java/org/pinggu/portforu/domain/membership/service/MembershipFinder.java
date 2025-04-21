@@ -17,7 +17,7 @@ public class MembershipFinder {
         Membership membership = membershipRepository.findById(id)
                 .orElseThrow(() -> new CustomException(HttpStatus.NOT_FOUND, "멤버십이 존재하지 않습니다."));
 
-        if (membership.isDeleted()) {
+        if (membership.getIsDeleted()) {
             throw new CustomException(HttpStatus.BAD_REQUEST, "이미 삭제된 멤버십입니다.");
         }
 

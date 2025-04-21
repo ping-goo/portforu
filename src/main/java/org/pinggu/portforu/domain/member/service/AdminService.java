@@ -38,7 +38,7 @@ public class AdminService {
     public Long deleteMember(Long memberId) {
         Member member = memberFinder.findMemberById(memberId);
 
-        return member.delete();
+        return member.softDelete();
     }
 
 }
