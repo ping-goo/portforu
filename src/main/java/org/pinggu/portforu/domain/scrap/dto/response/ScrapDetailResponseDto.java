@@ -19,7 +19,7 @@ public class ScrapDetailResponseDto {
     private final String postingDate;
     private final String closingDate;
     private final Instant createdAt;
-    private final Instant deletedAt;
+    private final Boolean isDeleted;
 
     public static ScrapDetailResponseDto from(Scrap scrap) {
         return ScrapDetailResponseDto.builder()
@@ -32,7 +32,7 @@ public class ScrapDetailResponseDto {
                 .postingDate(scrap.getJobPosting().getPostingDate())
                 .closingDate(scrap.getJobPosting().getClosingDate())
                 .createdAt(scrap.getCreatedAt())
-                .deletedAt(scrap.getDeletedAt())
+                .isDeleted(scrap.getIsDeleted())
                 .build();
     }
 

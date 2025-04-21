@@ -12,7 +12,7 @@ import org.pinggu.portforu.common.domain.BaseEntity;
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Table(name = "memberships")
-@SoftDelete(sql = "UPDATE memberships SET deleted = true WHERE id = ?")
+@SoftDelete(sql = "UPDATE memberships SET isDeleted = true WHERE id = ?")
 public class Membership extends BaseEntity {
 
     @Column(length = 50, nullable = false)

@@ -51,7 +51,7 @@ public class PortfolioService {
     @Transactional(readOnly = true)
     public Page<PortfolioListResponseDto> findAllPortfolios(Pagecond pagecond) {
         Pageable pageable = PageRequest.of(pagecond.getPageNum() - 1, pagecond.getPageSize());
-        Page<Portfolio> portfolioPage = portfolioRepository.findAllByDeletedAtIsNull(pageable);
+        Page<Portfolio> portfolioPage = portfolioRepository.findAll(pageable);
 
         return portfolioPage.map(PortfolioListResponseDto::from);
     }
@@ -82,7 +82,7 @@ public class PortfolioService {
         memberFinder.validateOwnership(authMember, memberId);
 
         Pageable pageable = PageRequest.of(pagecond.getPageNum() - 1, pagecond.getPageSize());
-        Page<Portfolio> portfolios = portfolioRepository.findAllByMemberIdAndDeletedAtIsNull(memberId, pageable);
+        Page<Portfolio> portfolios = portfolioRepository.findAllByMember(memberId, pageable);
 
         return portfolios.map(PortfolioListResponseDto::from);
     }
@@ -107,17 +107,13 @@ public class PortfolioService {
             throw new CustomException(HttpStatus.UNAUTHORIZED, "수정 권한이 없습니다.");
         }
 
-        String newFileUrl = requestDto.getPortfolioFileUrl() != null
-                ? requestDto.getPortfolioFileUrl()
-                : portfolio.getFileUrl();
-
-        Instant now = Instant.now();
-        portfolioRepository.updatePortfolio(
-                portfolioId, requestDto.getTitle(), requestDto.getDescription(), newFileUrl, now
+        portfolio.update(
+                requestDto.getTitle(),
+                requestDto.getDescription(),
+                requestDto.getPortfolioFileUrl()
         );
 
-        Portfolio updatedPortfolio = portfolioFinder.findPortfolioById(portfolioId);
-        return PortfolioResponseDto.from(updatedPortfolio);
+        return PortfolioResponseDto.from(portfolio);
     }
 
     @Transactional

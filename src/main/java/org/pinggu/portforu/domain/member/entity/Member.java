@@ -14,7 +14,7 @@ import org.pinggu.portforu.domain.member.enums.UserRole;
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Table(name = "members")
-@SoftDelete(sql = "UPDATE members SET deleted = true WHERE id = ?")
+@SoftDelete(sql = "UPDATE members SET isDeleted = true WHERE id = ?")
 public class Member extends BaseEntity {
 
     @Column(length = 100, unique = true, nullable = false)

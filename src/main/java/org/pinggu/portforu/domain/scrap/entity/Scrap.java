@@ -14,7 +14,7 @@ import org.pinggu.portforu.domain.member.entity.Member;
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Table(name = "scraps")
-@SoftDelete(sql = "UPDATE scraps SET deleted = true WHERE id = ?")
+@SoftDelete(sql = "UPDATE scraps SET isDeleted = true WHERE id = ?")
 public class Scrap extends BaseEntity {
 
     @ManyToOne(fetch = FetchType.LAZY)
