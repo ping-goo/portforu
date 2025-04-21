@@ -3,6 +3,7 @@ package org.pinggu.portforu.domain.payment.repository;
 import org.pinggu.portforu.domain.payment.entity.Payment;
 import org.pinggu.portforu.domain.payment.enums.PaymentStatus;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
@@ -22,5 +23,11 @@ public interface PaymentRepository extends JpaRepository<Payment, Long> {
                           @Param("membershipId") Long membershipId,
                           @Param("status") PaymentStatus status);
 
-    List<Payment> findByStatusAndCreatedAtBefore(PaymentStatus status, Instant time);
+    //JDBC
+    @Modifying
+    @Query("UPDATE Payment p SET p.status = :status WHERE p.status = :currentStatus AND p.createdAt < :limit AND p.paymentKey IS NULL")
+    int bulkExpireOldPendingPayments(@Param("status") PaymentStatus status,
+                                     @Param("currentStatus") PaymentStatus currentStatus,
+                                     @Param("limit") Instant limit);
+
 }

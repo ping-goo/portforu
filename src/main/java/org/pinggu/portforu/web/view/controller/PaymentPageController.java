@@ -36,7 +36,6 @@ public class PaymentPageController {
 
     @GetMapping
     public String paymentPage(@RequestParam Long subscribeId, Model model) {
-
         try {
             Subscribe subscribe = subscribeFinder.findById(subscribeId);
             Payment payment = paymentFinder.findBySubscribeId(subscribeId);
@@ -44,11 +43,10 @@ public class PaymentPageController {
             if (payment.getStatus() != PaymentStatus.PENDING) {
                 throw new CustomException(HttpStatus.BAD_REQUEST, "만료되었거나 유효하지 않은 결제입니다.");
             }
-            Member member = subscribe.getMember();
 
+            Member member = subscribe.getMember();
             model.addAttribute("clientKey", clientKey);
-            String orderId = "order_" + subscribeId + "_" + System.currentTimeMillis();
-            model.addAttribute("orderId", orderId);
+            model.addAttribute("orderId", "order_" + subscribeId + "_" + System.currentTimeMillis());
             model.addAttribute("amount", subscribe.getMembership().getPrice());
             model.addAttribute("orderName", subscribe.getMembership().getName());
             model.addAttribute("customerName", member.getName());
@@ -56,10 +54,16 @@ public class PaymentPageController {
             model.addAttribute("failUrl", failUrl);
 
             return "payment";
+        } catch (CustomException e) {
+            model.addAttribute("message", e.getMessage());
+            model.addAttribute("subscribeId", subscribeId);
+            return "payment-fail";
         } catch (Exception e) {
-            e.printStackTrace();
-            return "error";
+            model.addAttribute("message", "알 수 없는 오류가 발생했습니다.");
+            model.addAttribute("subscribeId", subscribeId);
+            return "payment-fail";
         }
     }
 }
+
 
