@@ -38,7 +38,6 @@ public class PaymentController {
 
     @GetMapping("/fail")
     public String handlePaymentFail(
-            @RequestParam String code,
             @RequestParam String message,
             @RequestParam String orderId,
             RedirectAttributes redirectAttributes

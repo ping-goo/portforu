@@ -11,7 +11,7 @@ import java.util.List;
 
 public interface MembershipRepository extends JpaRepository<Membership, Long> {
 
-    @Query("SELECT m FROM Membership m WHERE m.deletedAt IS NULL")
+    @Query("SELECT m FROM Membership m WHERE m.isDeleted IS NULL")
     List<Membership> findAllActiveMemberships();
 
     @Modifying(clearAutomatically = true)
@@ -21,7 +21,7 @@ public interface MembershipRepository extends JpaRepository<Membership, Long> {
             + "m.quantity = COALESCE(:quantity, m.quantity), "
             + "m.year = COALESCE(:year, m.year), "
             + "m.updatedAt = :now "
-            + "WHERE m.id = :id AND m.deletedAt IS NULL")
+            + "WHERE m.id = :id AND m.isDeleted IS NULL")
     Integer updateMembership(
             @Param("id") Long id,
             @Param("name") String name,

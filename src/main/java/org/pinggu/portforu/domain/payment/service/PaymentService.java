@@ -61,6 +61,8 @@ public class PaymentService {
 
                 payment.fail();
                 subscribe.fail();
+                paymentRepository.save(payment);
+                subscribeRepository.save(subscribe);
 
                 log.warn("결제 실패 - 정원 초과: orderId={}, subscribeId={}", orderId, subscribeId);
                 throw new CustomException(HttpStatus.BAD_REQUEST, "멤버십 정원이 초과되어 결제가 취소되었습니다.");
