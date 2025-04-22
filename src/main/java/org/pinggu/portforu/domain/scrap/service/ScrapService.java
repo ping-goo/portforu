@@ -60,7 +60,7 @@ public class ScrapService {
         }
 
         Pageable pageable = PageRequest.of(pagecond.getPageNum() - 1, pagecond.getPageSize(), Sort.by(Sort.Order.desc("updatedAt")));
-        Page<Scrap> scraps = scrapRepository.findAllByMemberId(memberId, pageable);
+        Page<Scrap> scraps = scrapRepository.findAllByMemberIdAndIsDeletedFalse(memberId, pageable);
 
         return scraps.map(ScrapDetailResponseDto::from);
     }

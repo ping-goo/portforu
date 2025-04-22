@@ -5,8 +5,7 @@ import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.hibernate.annotations.Where;
-import org.pinggu.portforu.common.annotation.SoftDelete;
+import org.hibernate.annotations.SQLDelete;
 import org.pinggu.portforu.common.domain.BaseEntity;
 import org.pinggu.portforu.domain.jobposting.entity.JobPosting;
 import org.pinggu.portforu.domain.member.entity.Member;
@@ -15,8 +14,7 @@ import org.pinggu.portforu.domain.member.entity.Member;
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Table(name = "scraps")
-@SoftDelete(sql = "UPDATE scraps SET is_deleted = true WHERE id = ?")
-@Where(clause = "is_deleted = false")
+@SQLDelete(sql = "UPDATE scraps SET is_deleted = true WHERE id = ?")
 public class Scrap extends BaseEntity {
 
     @ManyToOne(fetch = FetchType.LAZY)
