@@ -60,7 +60,7 @@ public class PaymentController {
                                 RedirectAttributes redirectAttributes) {
         try {
             paymentService.cancelPayment(orderId, reason);
-            redirectAttributes.addAttribute("errorCode", "PAYMENT_CANCELLED");
+            redirectAttributes.addAttribute("errorCode", "PAYMENT_CANCELED");
         } catch (Exception e) {
             redirectAttributes.addAttribute("errorCode", "CANCEL_FAILED");
         }

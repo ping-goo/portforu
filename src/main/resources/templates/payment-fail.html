@@ -5,7 +5,7 @@
   <title>결제 실패</title>
 </head>
 <body>
-<h1>❌ 결제에 실패했습니다.</h1>
+<h1>결제에 실패했습니다.</h1>
 
 <p th:if="${param.errorCode == 'EXPIRED_PAYMENT'}">만료되었거나 유효하지 않은 결제입니다.</p>
 <p th:if="${param.errorCode == 'CAPACITY_EXCEEDED'}">정원이 초과되어 결제를 진행할 수 없습니다.</p>

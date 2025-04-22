@@ -24,7 +24,7 @@ public class PaymentExpireScheduler {
     private final ScheduledExecutorService executorService = Executors.newScheduledThreadPool(5);
 
     public void scheduleExpire(Long subscribeId, Duration delay) {
-        log.info("⏳ 구독 ID {} 에 대해 {}분 후 결제 만료 예약", subscribeId, delay.toMinutes());
+        log.info(" 구독 ID {} 에 대해 {}분 후 결제 만료 예약", subscribeId, delay.toMinutes());
 
         executorService.schedule(() -> {
             expireIfPending(subscribeId);
@@ -38,7 +38,7 @@ public class PaymentExpireScheduler {
             if (payment.getStatus() == PaymentStatus.PENDING && payment.getPaymentKey() == null) {
                 payment.expire();
                 paymentRepository.save(payment);
-                log.info("❌ 결제 만료 처리 완료: subscribeId={}", subscribeId);
+                log.info(" 결제 만료 처리 완료: subscribeId={}", subscribeId);
             }
         });
     }

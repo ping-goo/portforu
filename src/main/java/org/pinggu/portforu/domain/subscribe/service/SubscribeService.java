@@ -11,18 +11,17 @@ import org.pinggu.portforu.domain.membership.service.MembershipFinder;
 import org.pinggu.portforu.domain.payment.entity.Payment;
 import org.pinggu.portforu.domain.payment.enums.PaymentStatus;
 import org.pinggu.portforu.domain.payment.repository.PaymentRepository;
+import org.pinggu.portforu.domain.payment.scheduler.PaymentExpireScheduler;
 import org.pinggu.portforu.domain.payment.service.PaymentFinder;
 import org.pinggu.portforu.domain.subscribe.dto.response.SubscribeResponseDto;
 import org.pinggu.portforu.domain.subscribe.entity.Subscribe;
 import org.pinggu.portforu.domain.subscribe.repository.SubscribeRepository;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.Instant;
-import java.time.LocalDateTime;
-import java.time.Year;
-import java.time.ZoneId;
+import java.time.*;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -37,6 +36,7 @@ public class SubscribeService {
     private final PaymentFinder paymentFinder;
     private final MembershipRepository membershipRepository;
     private final PaymentRepository paymentRepository;
+    private final PaymentExpireScheduler paymentExpireScheduler;
 
     // 구독 생성
     @Transactional
@@ -77,6 +77,7 @@ public class SubscribeService {
                 .build();
 
         paymentRepository.save(payment);
+        paymentExpireScheduler.scheduleExpire(savedSubscribe.getId(), Duration.ofMinutes(20));
 
         return SubscribeResponseDto.from(savedSubscribe, payment);
     }
@@ -87,13 +88,16 @@ public class SubscribeService {
     public List<SubscribeResponseDto> findAllSubscribes(AuthMember authMember) {
         Member member = Member.fromAuthMember(authMember);
 
-        return subscribeRepository.findAllByMember(member).stream()
+        // Id 기준 내림차순
+        List<Subscribe> subscribes = subscribeRepository.findAllByMember(member, Sort.by(Sort.Order.desc("id")));
+        return subscribes.stream()
                 .map(subscribe -> {
                     Payment payment = paymentFinder.findBySubscribeId(subscribe.getId());
                     return SubscribeResponseDto.from(subscribe, payment);
                 })
                 .collect(Collectors.toList());
     }
+
 
     // 구독 취소
     @Transactional

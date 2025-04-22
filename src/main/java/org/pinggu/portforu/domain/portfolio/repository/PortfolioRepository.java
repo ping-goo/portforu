@@ -8,6 +8,8 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface PortfolioRepository extends JpaRepository<Portfolio, Long> {
+
     Page<Portfolio> findAllByMemberId(Long memberId, Pageable pageable);
+
 }
 

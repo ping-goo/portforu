@@ -17,8 +17,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Set;
-
 @Service
 @RequiredArgsConstructor
 public class AuthService {
@@ -66,7 +64,12 @@ public class AuthService {
                 savedMember.getProvider()
         );
 
-        refreshTokenRepository.save(new RefreshToken(savedMember.getId(), refreshToken));
+        refreshTokenRepository.save(
+                RefreshToken.builder()
+                        .memberId(savedMember.getId())
+                        .token(refreshToken)
+                        .build()
+        );
 
         return SignUpResponseDto.builder()
                 .accessToken(accessToken)
@@ -105,6 +108,7 @@ public class AuthService {
                 member.getUserRole(),
                 member.getProvider()
         );
+
         String refreshToken = jwtUtil.createRefreshToken(
                 member.getId(),
                 member.getEmail(),
@@ -115,11 +119,14 @@ public class AuthService {
                 member.getProvider()
         );
 
-        refreshTokenRepository.findById(member.getId())
-                .ifPresentOrElse(
-                        existing -> existing.updateToken(refreshToken),
-                        () -> refreshTokenRepository.save(new RefreshToken(member.getId(), refreshToken))
-                );
+        refreshTokenRepository.findById(member.getId()).ifPresentOrElse(existing -> existing.updateToken(refreshToken),
+                () -> refreshTokenRepository.save(
+                        RefreshToken.builder()
+                                .memberId(member.getId())
+                                .token(refreshToken)
+                                .build()
+                )
+        );
 
         return new SignInResponseDto(accessToken, refreshToken);
     }
