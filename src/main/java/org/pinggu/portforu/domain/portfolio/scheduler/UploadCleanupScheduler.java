@@ -28,4 +28,5 @@ public class UploadCleanupScheduler {
             uploadedFileRepository.delete(file);
         }
     }
+
 }

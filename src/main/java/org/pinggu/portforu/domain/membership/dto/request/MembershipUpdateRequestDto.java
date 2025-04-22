@@ -21,4 +21,5 @@ public class MembershipUpdateRequestDto {
 
     @YearMinNow
     private Integer year;
+
 }

@@ -71,6 +71,7 @@ public class PortfolioMemberController {
             @Valid @RequestBody PortfolioUpdateRequestDto requestDto
     ) {
         portfolioService.updatePortfolio(authMember, portfolioId, requestDto);
+
         return ResponseEntity.ok(ApiResponse.of("포트폴리오 수정이 완료되었습니다."));
     }
 

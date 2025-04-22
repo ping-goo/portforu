@@ -11,7 +11,7 @@ import org.pinggu.portforu.domain.member.entity.Member;
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Table(name ="portfolios")
-@SQLDelete(sql = "UPDATE portfolios  SET is_deleted = true WHERE id = ?")
+@SQLDelete(sql = "UPDATE portfolios SET is_deleted = true WHERE id = ?")
 @Where(clause = "is_deleted = false")
 public class Portfolio extends BaseEntity {
 
@@ -49,15 +49,9 @@ public class Portfolio extends BaseEntity {
     }
 
     public void update(String newTitle, String newDescription, String newFileUrl) {
-        if (newTitle != null && !newTitle.isBlank()) {
-            this.title = newTitle;
-        }
-        if (newDescription != null && !newDescription.isBlank()) {
-            this.description = newDescription;
-        }
-        if (newFileUrl != null && !newFileUrl.isBlank()) {
-            this.fileUrl = newFileUrl;
-        }
+        if (newTitle != null) this.title = newTitle;
+        if (newDescription != null) this.description = newDescription;
+        if (newFileUrl != null) this.fileUrl = newFileUrl;
     }
 
 }

@@ -50,15 +50,11 @@ public class Membership extends BaseEntity {
         this.quantity++;
     }
 
-    // 업데이트
     public void update(String newName, Integer newPrice, Integer newQuantity, Integer newYear) {
-        if (newName     != null && !newName.isBlank())
-            this.name     = newName;
-        if (newPrice    != null)
-            this.price    = newPrice;
-        if (newQuantity != null)
-            this.quantity = newQuantity;
-        if (newYear     != null)
-            this.year     = newYear;
+        if (newName != null) this.name = newName;
+        if (newPrice != null) this.price = newPrice;
+        if (newQuantity != null) this.quantity = newQuantity;
+        if (newYear != null) this.year = newYear;
     }
+
 }

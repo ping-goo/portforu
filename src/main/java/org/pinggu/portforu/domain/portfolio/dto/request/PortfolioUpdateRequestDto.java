@@ -14,4 +14,5 @@ public class PortfolioUpdateRequestDto {
     private String description;
 
     private String portfolioFileUrl;
+
 }

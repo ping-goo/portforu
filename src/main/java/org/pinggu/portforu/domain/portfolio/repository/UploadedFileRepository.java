@@ -10,8 +10,10 @@ import java.util.List;
 import java.util.Optional;
 
 public interface UploadedFileRepository extends JpaRepository<UploadedFile, Long> {
+
     Optional<UploadedFile> findByFileUrl(String fileUrl);
 
     @Query("SELECT f FROM UploadedFile f WHERE f.used = false AND f.createdAt < :cutoff")
     List<UploadedFile> findUnusedFilesOlderThan(@Param("cutoff") Instant cutoff);
+
 }
