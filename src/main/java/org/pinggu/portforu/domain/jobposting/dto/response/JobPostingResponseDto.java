@@ -8,7 +8,7 @@ import java.time.Instant;
 
 @Getter
 @Builder
-public class    JobPostingResponseDto {
+public class JobPostingResponseDto {
 
     private final Long id;
     private final String name;

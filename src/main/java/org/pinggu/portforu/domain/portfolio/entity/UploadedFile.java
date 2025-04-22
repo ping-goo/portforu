@@ -34,4 +34,5 @@ public class UploadedFile {
     public void markUsed() {
         this.used = true;
     }
+
 }

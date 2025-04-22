@@ -35,4 +35,5 @@ public class PortfolioUploadController {
             throw new CustomException(HttpStatus.BAD_REQUEST, "파일 업로드 실패");
         }
     }
+
 }

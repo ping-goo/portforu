@@ -30,4 +30,5 @@ public class MembershipResponseDto {
                 .isDeleted(membership.getIsDeleted())
                 .build();
     }
+
 }

@@ -37,7 +37,7 @@ public class MemberController {
     ) {
         memberService.updateMember(authMember, requestDto);
 
-        return ResponseEntity.ok(ApiResponse.of("수정완료"));
+        return ResponseEntity.ok(ApiResponse.of("회원 정보 수정이 완료되었습니다."));
     }
 
     @Member
@@ -48,7 +48,7 @@ public class MemberController {
     ) {
         memberService.updatePassword(authMember, requestDto);
 
-        return ResponseEntity.ok(ApiResponse.of("수정 완료"));
+        return ResponseEntity.ok(ApiResponse.of("비밀번호 수정이 완료되었습니다."));
     }
 
     @Member
