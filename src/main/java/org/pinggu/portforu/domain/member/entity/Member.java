@@ -5,6 +5,8 @@ import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.SQLDelete;
+import org.hibernate.annotations.Where;
 import org.pinggu.portforu.common.annotation.SoftDelete;
 import org.pinggu.portforu.common.domain.BaseEntity;
 import org.pinggu.portforu.common.dto.AuthMember;
@@ -14,7 +16,8 @@ import org.pinggu.portforu.domain.member.enums.UserRole;
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Table(name = "members")
-@SoftDelete(sql = "UPDATE members SET isDeleted = true WHERE id = ?")
+@SQLDelete(sql = "UPDATE members SET is_deleted = true WHERE id = ?")
+@Where(clause = "is_deleted = false")
 public class Member extends BaseEntity {
 
     @Column(length = 100, unique = true, nullable = false)

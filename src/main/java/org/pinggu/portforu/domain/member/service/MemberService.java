@@ -8,6 +8,7 @@ import org.pinggu.portforu.domain.member.dto.request.PasswordUpdateRequestDto;
 import org.pinggu.portforu.domain.member.dto.response.MemberResponseDto;
 import org.pinggu.portforu.domain.member.dto.request.MemberUpdateRequestDto;
 import org.pinggu.portforu.domain.member.entity.Member;
+import org.pinggu.portforu.domain.member.repository.MemberRepository;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -20,6 +21,7 @@ public class MemberService {
 
     private final MemberFinder memberFinder;
     private final PasswordEncoder passwordEncoder;
+    private final MemberRepository memberRepository;
 
     @Transactional(readOnly = true)
     public MemberResponseDto findMember(AuthMember authMember, Long id) {
@@ -74,7 +76,9 @@ public class MemberService {
             throw new CustomException(HttpStatus.BAD_REQUEST, "비밀번호 확인에 실패했습니다.");
         }
 
-        return member.softDelete();
+        memberRepository.delete(member);
+
+        return member.getId();
     }
 
 }
