@@ -66,7 +66,7 @@ public class Payment extends BaseEntity {
         if (this.status != PaymentStatus.COMPLETED) {
             throw new IllegalStateException("결제가 완료된 상태에서만 취소할 수 있습니다.");
         }
-        this.status = PaymentStatus.CANCELLED;
+        this.status = PaymentStatus.CANCELED;
     }
 
     public void assignPaymentMethod(PaymentMethod paymentMethod) {

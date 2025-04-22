@@ -53,14 +53,14 @@ public class Subscribe extends BaseEntity {
     }
 
     public void cancel() {
-        if (this.status == SubscribeStatus.CANCELLED) {
+        if (this.status == SubscribeStatus.CANCELED) {
             throw new IllegalStateException("이미 취소된 구독입니다.");
         }
         if ((this.status == SubscribeStatus.PENDING && this.getCreatedAt().isBefore(Instant.now().minusSeconds(60)))
                 || (this.status != SubscribeStatus.ACTIVE && this.status != SubscribeStatus.PENDING)) {
             throw new IllegalStateException("구독이 활성 상태이거나 결제 직후 대기 상태일 때만 취소할 수 있습니다.");
         }
-        this.status = SubscribeStatus.CANCELLED;
+        this.status = SubscribeStatus.CANCELED;
     }
 
     public void expire() {

@@ -22,7 +22,7 @@ public interface SubscribeRepository extends JpaRepository<Subscribe, Long> {
     JOIN Payment p ON p.subscribe = s
     WHERE s.member.id = :memberId
     AND s.membership.id = :membershipId
-    AND s.status IN ('ACTIVE', 'CANCELLED')
+    AND s.status IN ('ACTIVE', 'CANCELED')
     AND p.status = 'COMPLETED'
     """)
     boolean hasValidSubscription(@Param("memberId") Long memberId,

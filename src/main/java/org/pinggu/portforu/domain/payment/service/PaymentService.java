@@ -130,7 +130,7 @@ public class PaymentService {
 
         Payment payment = paymentFinder.findBySubscribeId(subscribeId);
 
-        if (payment.getStatus() == PaymentStatus.CANCELLED) {
+        if (payment.getStatus() == PaymentStatus.CANCELED) {
             throw new CustomException(HttpStatus.BAD_REQUEST, "이미 취소된 결제입니다.");
         }
 
@@ -141,7 +141,7 @@ public class PaymentService {
         try {
             cancelTossPayment(payment.getPaymentKey(), cancelReason);
             payment.cancel();
-            subscribeService.updateSubscriptionStatus(subscribeId, PaymentStatus.CANCELLED);
+            subscribeService.updateSubscriptionStatus(subscribeId, PaymentStatus.CANCELED);
 
             log.info("결제 취소 완료: orderId={}, subscribeId={}, reason={}", orderId, subscribeId, cancelReason);
 
