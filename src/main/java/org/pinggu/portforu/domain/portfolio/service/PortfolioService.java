@@ -138,7 +138,6 @@ public class PortfolioService {
                 requestDto.getDescription(),
                 newFileUrl
         );
-
     }
 
     @Transactional
@@ -152,5 +151,4 @@ public class PortfolioService {
         portfolioRepository.delete(portfolio);
         return portfolio.getId();
     }
-
 }

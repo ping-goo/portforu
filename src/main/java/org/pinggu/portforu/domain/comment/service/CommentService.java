@@ -73,7 +73,6 @@ public class CommentService {
             throw new CustomException(HttpStatus.UNAUTHORIZED, "수정 권한이 없습니다.");
         }
         comment.update(requestDto.getContent());
-
     }
 
     @Transactional
@@ -91,4 +90,5 @@ public class CommentService {
     }
 
 }
+
 

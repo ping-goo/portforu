@@ -16,7 +16,7 @@ import org.pinggu.portforu.domain.subscribe.entity.Subscribe;
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Table(name = "payments")
-@SQLDelete(sql = "UPDATE payments  SET is_deleted = true WHERE id = ?")
+@SQLDelete(sql = "UPDATE payments SET is_deleted = true WHERE id = ?")
 @Where(clause = "is_deleted = false")
 public class Payment extends BaseEntity {
 
