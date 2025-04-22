@@ -34,7 +34,7 @@ public class MembershipAdminController {
     ) {
         membershipService.updateMembership(membershipId, requestDto);
 
-        return ResponseEntity.ok(ApiResponse.of("수정되었습니다"));
+        return ResponseEntity.ok(ApiResponse.of("멤버십 수정이 완료되었습니다."));
     }
 
     @Admin

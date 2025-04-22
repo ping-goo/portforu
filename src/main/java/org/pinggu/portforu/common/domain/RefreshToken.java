@@ -10,7 +10,6 @@ import lombok.NoArgsConstructor;
 @Entity
 @Getter
 @NoArgsConstructor
-@Builder
 public class RefreshToken {
 
     @Id
@@ -19,6 +18,7 @@ public class RefreshToken {
     @Column(length = 512, nullable = false)
     private String token;
 
+    @Builder
     public RefreshToken(Long memberId, String token) {
         this.memberId = memberId;
         this.token = token;

@@ -38,6 +38,7 @@ public class MemberController {
             @Valid @RequestBody MemberUpdateRequestDto requestDto
     ) {
         memberService.updateMember(authMember, id, requestDto);
+
         return ResponseEntity.ok(ApiResponse.of("수정완료"));
     }
 
@@ -49,6 +50,7 @@ public class MemberController {
             @Valid @RequestBody PasswordUpdateRequestDto requestDto
     ) {
         memberService.updatePassword(authMember, id, requestDto);
+
         return ResponseEntity.ok(ApiResponse.of("수정 완료"));
     }
 
