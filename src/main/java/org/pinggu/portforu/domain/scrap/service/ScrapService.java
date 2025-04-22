@@ -31,7 +31,7 @@ public class ScrapService {
         Member member = Member.fromAuthMember(authMember);
         JobPosting jobPosting = jobPostingFinder.findJobPostingById(jobPostingId);
 
-        Scrap scrap = scrapRepository.findByMemberAndJobPosting(member, jobPosting)
+        Scrap scrap = scrapRepository.findByMemberIdAndJobPostingId(member.getId(), jobPosting.getId())
                 .map(existingScrap -> {
                     if (!existingScrap.getIsDeleted()) {
                         existingScrap.softDelete();

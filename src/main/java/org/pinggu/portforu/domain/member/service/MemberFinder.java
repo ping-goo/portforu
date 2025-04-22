@@ -26,7 +26,7 @@ public class MemberFinder {
                 .orElseThrow(() -> new CustomException(HttpStatus.NOT_FOUND, "존재하지 않는 회원정보입니다."));
 
         if (member.getIsDeleted()) {
-            throw new CustomException(HttpStatus.BAD_REQUEST, "이미 삭제된 회원입니다.");
+            throw new CustomException(HttpStatus.BAD_REQUEST, "삭제된 회원입니다.");
         }
 
         return member;

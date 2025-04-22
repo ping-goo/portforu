@@ -17,5 +17,5 @@ public @interface SoftDelete {
     String sql();
 
     @AliasFor(annotation = Where.class, attribute = "clause")
-    String clause() default "isDeleted = false";
+    String clause() default "is_deleted = false";
 }
