@@ -42,8 +42,8 @@ public class CommentController {
     @PutMapping("/{portfolioId}/{commentId}")
     public ResponseEntity<ApiResponse<String>> updateComment(
             @AuthenticationPrincipal AuthMember authMember,
-            @PathVariable Long portfolioId,
-            @PathVariable Long commentId,
+            @PathVariable("portfolioId") Long portfolioId,
+            @PathVariable("commentId") Long commentId,
             @Valid @RequestBody CommentRequestDto requestDto
     ) {
         commentService.updateComment(authMember, portfolioId, commentId, requestDto);

@@ -24,29 +24,26 @@ public class MemberService {
     private final MemberRepository memberRepository;
 
     @Transactional(readOnly = true)
-    public MemberResponseDto findMember(AuthMember authMember, Long id) {
-        Member member = memberFinder.findMemberById(id);
-        memberFinder.validateOwnership(authMember, id);
+    public MemberResponseDto findMember(AuthMember authMember) {
+        Member member = memberFinder.findMemberById(authMember.getId());
 
         return MemberResponseDto.from(member);
     }
 
     @Transactional
     public void updateMember(
-            AuthMember authMember, Long id, MemberUpdateRequestDto requestDto
+            AuthMember authMember, MemberUpdateRequestDto requestDto
     ) {
-        memberFinder.validateOwnership(authMember, id);
-        Member member = memberFinder.findMemberById(id);
+        Member member = memberFinder.findMemberById(authMember.getId());
 
         member.updateMemberInfo(requestDto.getName(), requestDto.getPhoneNumber(), requestDto.getAddress());
     }
 
     @Transactional
     public void updatePassword(
-            AuthMember authMember, Long id, PasswordUpdateRequestDto requestDto
+            AuthMember authMember, PasswordUpdateRequestDto requestDto
     ) {
-        memberFinder.validateOwnership(authMember, id);
-        Member member = memberFinder.findMemberById(id);
+        Member member = memberFinder.findMemberById(authMember.getId());
 
         if(!passwordEncoder.matches(requestDto.getOldPassword(), member.getPassword())) {
             throw new CustomException(HttpStatus.BAD_REQUEST, "기존 비밀번호가 일치하지 않습니다.");
@@ -63,10 +60,9 @@ public class MemberService {
 
     @Transactional
     public Long deleteMember(
-            AuthMember authMember, Long id, MemberDeleteRequestDto requestDto
+            AuthMember authMember, MemberDeleteRequestDto requestDto
     ) {
-        memberFinder.validateOwnership(authMember, id);
-        Member member = memberFinder.findMemberById(id);
+        Member member = memberFinder.findMemberById(authMember.getId());
 
         if (!passwordEncoder.matches(requestDto.getPassword(), member.getPassword())) {
             throw new CustomException(HttpStatus.BAD_REQUEST, "잘못된 비밀번호입니다.");

@@ -22,46 +22,42 @@ public class MemberController {
     private final MemberService memberService;
 
     @Member
-    @GetMapping("/{id}")
+    @GetMapping
     public ResponseEntity<ApiResponse<MemberResponseDto>> findMember(
-            @AuthenticationPrincipal AuthMember authMember,
-            @PathVariable Long id
+            @AuthenticationPrincipal AuthMember authMember
     ) {
-        return ResponseEntity.ok().body(ApiResponse.of(memberService.findMember(authMember, id)));
+        return ResponseEntity.ok().body(ApiResponse.of(memberService.findMember(authMember)));
     }
 
     @Member
-    @PutMapping("/{id}")
+    @PutMapping
     public ResponseEntity<ApiResponse<String>> updateMember(
             @AuthenticationPrincipal AuthMember authMember,
-            @PathVariable Long id,
             @Valid @RequestBody MemberUpdateRequestDto requestDto
     ) {
-        memberService.updateMember(authMember, id, requestDto);
+        memberService.updateMember(authMember, requestDto);
 
         return ResponseEntity.ok(ApiResponse.of("수정완료"));
     }
 
     @Member
-    @PutMapping("/{id}/password")
+    @PutMapping("/password")
     public ResponseEntity<ApiResponse<String>> updatePassword(
             @AuthenticationPrincipal AuthMember authMember,
-            @PathVariable Long id,
             @Valid @RequestBody PasswordUpdateRequestDto requestDto
     ) {
-        memberService.updatePassword(authMember, id, requestDto);
+        memberService.updatePassword(authMember, requestDto);
 
         return ResponseEntity.ok(ApiResponse.of("수정 완료"));
     }
 
     @Member
-    @DeleteMapping("/{id}")
+    @DeleteMapping
     public ResponseEntity<ApiResponse<Long>> deleteMember(
             @AuthenticationPrincipal AuthMember authMember,
-            @PathVariable Long id,
             @Valid @RequestBody MemberDeleteRequestDto requestDto
     ) {
-        return ResponseEntity.ok(ApiResponse.of(memberService.deleteMember(authMember, id, requestDto)));
+        return ResponseEntity.ok(ApiResponse.of(memberService.deleteMember(authMember, requestDto)));
     }
 
 }
