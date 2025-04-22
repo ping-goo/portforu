@@ -28,11 +28,12 @@ public class MembershipAdminController {
 
     @Admin
     @PutMapping("/{membershipId}")
-    public ResponseEntity<ApiResponse<MembershipResponseDto>> updateMembership(
+    public ResponseEntity<ApiResponse<String>> updateMembership(
             @PathVariable("membershipId") Long membershipId,
             @Valid @RequestBody MembershipUpdateRequestDto requestDto
     ) {
-        return ResponseEntity.ok(ApiResponse.of(membershipService.updateMembership(membershipId, requestDto)));
+        membershipService.updateMembership(membershipId, requestDto);
+        return ResponseEntity.ok(ApiResponse.of("수정되었습니다"));
     }
 
     @Admin
