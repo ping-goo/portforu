@@ -11,7 +11,7 @@ import org.pinggu.portforu.domain.member.entity.Member;
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Table(name ="portfolios")
-@SQLDelete(sql = "UPDATE comment  SET is_deleted = true WHERE id = ?")
+@SQLDelete(sql = "UPDATE portfolios  SET is_deleted = true WHERE id = ?")
 @Where(clause = "is_deleted = false")
 public class Portfolio extends BaseEntity {
 
