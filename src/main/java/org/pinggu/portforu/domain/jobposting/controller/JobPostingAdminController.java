@@ -31,7 +31,9 @@ public class JobPostingAdminController {
             @PathVariable("jobPostingId") Long jobPostingId,
             @RequestBody JobPostingUpdateRequestDto requestDto
     ) {
-        return ResponseEntity.ok().body(ApiResponse.of(jobPostingService.updateJobPosting(jobPostingId, requestDto)));
+        jobPostingService.updateJobPosting(jobPostingId, requestDto);
+
+        return ResponseEntity.ok().body(ApiResponse.of("채용공고 수정이 완료되었습니다."));
     }
 
     @Admin

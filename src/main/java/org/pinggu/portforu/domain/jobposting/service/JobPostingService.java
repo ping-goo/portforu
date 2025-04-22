@@ -55,13 +55,11 @@ public class JobPostingService {
     }
 
     @Transactional
-    public String updateJobPosting(Long jobPostingId, JobPostingUpdateRequestDto requestDto) {
+    public void updateJobPosting(Long jobPostingId, JobPostingUpdateRequestDto requestDto) {
         JobPosting jobPosting = jobPostingFinder.findJobPostingById(jobPostingId);
 
         jobPosting.update(requestDto.getName(), requestDto.getIndustry(), requestDto.getAddress(), requestDto.getSalary(),
                 requestDto.getQualifications(), requestDto.getPreferential(), requestDto.getClosingDate());
-
-        return "채용공고 수정이 완료되었습니다.";
     }
 
     @Transactional

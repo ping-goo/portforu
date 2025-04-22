@@ -33,6 +33,7 @@ public class MembershipAdminController {
             @Valid @RequestBody MembershipUpdateRequestDto requestDto
     ) {
         membershipService.updateMembership(membershipId, requestDto);
+
         return ResponseEntity.ok(ApiResponse.of("수정되었습니다"));
     }
 

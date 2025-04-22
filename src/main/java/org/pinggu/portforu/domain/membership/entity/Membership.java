@@ -39,6 +39,13 @@ public class Membership extends BaseEntity {
         this.year = year;
     }
 
+    public void update(String name, Integer price, Integer quantity, Integer year) {
+        if (name != null) this.name = name;
+        if (price != null) this.price = price;
+        if (quantity != null) this.quantity = quantity;
+        if (year != null) this.year = year;
+    }
+
     // 정원 감소
     public void decreaseQuantity() {
         if (this.quantity <= 0) {
@@ -51,4 +58,5 @@ public class Membership extends BaseEntity {
     public void increaseQuantity() {
         this.quantity++;
     }
+
 }

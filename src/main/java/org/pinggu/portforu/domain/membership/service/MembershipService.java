@@ -6,10 +6,10 @@ import org.pinggu.portforu.domain.membership.dto.request.MembershipUpdateRequest
 import org.pinggu.portforu.domain.membership.dto.response.MembershipResponseDto;
 import org.pinggu.portforu.domain.membership.entity.Membership;
 import org.pinggu.portforu.domain.membership.repository.MembershipRepository;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.Instant;
 import java.util.List;
 
 @RequiredArgsConstructor
@@ -35,7 +35,7 @@ public class MembershipService {
 
     @Transactional(readOnly = true)
     public List<MembershipResponseDto> findAllMemberships() {
-        return membershipRepository.findAllActiveMemberships().stream()
+        return membershipRepository.findAll(Sort.by(Sort.Direction.DESC, "id")).stream()
                 .map(MembershipResponseDto::from)
                 .toList();
     }
@@ -46,26 +46,19 @@ public class MembershipService {
     }
 
     @Transactional
-    public MembershipResponseDto updateMembership(
-            Long membershipId,
-            MembershipUpdateRequestDto request
-    ) {
+    public void updateMembership(Long membershipId, MembershipUpdateRequestDto requestDto) {
+        Membership membership = membershipFinder.findById(membershipId);
 
-        Instant now = Instant.now();
-        membershipRepository.updateMembership(
-                membershipId, request.getName(), request.getPrice(), request.getQuantity(), request.getYear(), now
-        );
-
-        Membership updatedMembership = membershipFinder.findById(membershipId);
-
-        return MembershipResponseDto.from(updatedMembership);
+        membership.update(requestDto.getName(), requestDto.getPrice(), requestDto.getQuantity(), requestDto.getYear());
     }
 
     @Transactional
     public Long deleteMembership(Long membershipId) {
         Membership membership = membershipFinder.findById(membershipId);
 
-        return membership.softDelete();
+        membershipRepository.delete(membership);
+
+        return membership.getId();
     }
 
 }
