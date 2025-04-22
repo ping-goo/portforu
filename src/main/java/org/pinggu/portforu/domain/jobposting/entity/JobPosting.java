@@ -5,8 +5,8 @@ import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.Where;
-import org.pinggu.portforu.common.annotation.SoftDelete;
 import org.pinggu.portforu.common.domain.BaseEntity;
 
 import java.time.Instant;
@@ -15,7 +15,7 @@ import java.time.Instant;
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Table(name = "job_postings")
-@SoftDelete(sql = "UPDATE job_postings SET is_deleted = true WHERE id = ?")
+@SQLDelete(sql = "UPDATE job_postings SET is_deleted = true WHERE id = ?")
 @Where(clause = "is_deleted = false")
 public class JobPosting extends BaseEntity {
 

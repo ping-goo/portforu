@@ -68,7 +68,9 @@ public class JobPostingService {
     public Long deleteJobPosting(Long jobPostingId) {
         JobPosting jobPosting = jobPostingFinder.findJobPostingById(jobPostingId);
 
-        return jobPosting.softDelete();
+        jobPostingRepository.delete(jobPosting);
+
+        return jobPosting.getId();
     }
 
 }

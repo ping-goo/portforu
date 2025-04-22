@@ -12,6 +12,7 @@ public class ScrapDetailResponseDto {
 
     private final Long id;
     private final Long memberId;
+    private final Long jobPostingId;
     private final String name;
     private final String industry;
     private final String address;
@@ -25,6 +26,7 @@ public class ScrapDetailResponseDto {
         return ScrapDetailResponseDto.builder()
                 .id(scrap.getId())
                 .memberId(scrap.getMember().getId())
+                .jobPostingId(scrap.getJobPosting().getId())
                 .name(scrap.getJobPosting().getName())
                 .industry(scrap.getJobPosting().getIndustry())
                 .address(scrap.getJobPosting().getAddress())
