@@ -2,7 +2,6 @@ package org.pinggu.portforu.domain.subscribe.scheduler;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.pinggu.portforu.domain.subscribe.entity.Subscribe;
 import org.pinggu.portforu.domain.subscribe.enums.SubscribeStatus;
 import org.pinggu.portforu.domain.subscribe.repository.SubscribeRepository;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -10,7 +9,6 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.Instant;
-import java.util.List;
 
 @Slf4j
 @Component

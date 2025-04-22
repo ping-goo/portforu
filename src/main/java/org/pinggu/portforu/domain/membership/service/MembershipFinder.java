@@ -14,14 +14,8 @@ public class MembershipFinder {
     private final MembershipRepository membershipRepository;
 
     public Membership findById(Long id) {
-        Membership membership = membershipRepository.findById(id)
+        return membershipRepository.findById(id)
                 .orElseThrow(() -> new CustomException(HttpStatus.NOT_FOUND, "멤버십이 존재하지 않습니다."));
-
-        if (membership.getIsDeleted()) {
-            throw new CustomException(HttpStatus.BAD_REQUEST, "이미 삭제된 멤버십입니다.");
-        }
-
-        return membership;
     }
 
 }
