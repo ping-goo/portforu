@@ -14,8 +14,6 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.Instant;
-
 @Service
 @RequiredArgsConstructor
 public class JobPostingService {
@@ -43,7 +41,7 @@ public class JobPostingService {
 
     @Transactional(readOnly = true)
     public Page<JobPostingResponseDto> findAllJobPostings(Pagecond pagecond) {
-        Pageable pageable = PageRequest.of(pagecond.getPageNum() - 1, pagecond.getPageSize(), Sort.by(Sort.Order.desc("createdAt")));
+        Pageable pageable = PageRequest.of(pagecond.getPageNum() - 1, pagecond.getPageSize(), Sort.by(Sort.Order.desc("id")));
         Page<JobPosting> jobPostings = jobPostingRepository.findAll(pageable);
 
         return jobPostings.map(JobPostingResponseDto::from);
@@ -57,13 +55,13 @@ public class JobPostingService {
     }
 
     @Transactional
-    public JobPostingResponseDto updateJobPosting(Long jobPostingId, JobPostingUpdateRequestDto requestDto) {
+    public String updateJobPosting(Long jobPostingId, JobPostingUpdateRequestDto requestDto) {
         JobPosting jobPosting = jobPostingFinder.findJobPostingById(jobPostingId);
 
         jobPosting.update(requestDto.getName(), requestDto.getIndustry(), requestDto.getAddress(), requestDto.getSalary(),
                 requestDto.getQualifications(), requestDto.getPreferential(), requestDto.getClosingDate());
 
-        return JobPostingResponseDto.from(jobPosting);
+        return "채용공고 수정이 완료되었습니다.";
     }
 
     @Transactional

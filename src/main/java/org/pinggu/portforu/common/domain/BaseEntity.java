@@ -25,7 +25,7 @@ public class BaseEntity {
     @Column
     private Instant updatedAt;
 
-    @Column(name = "isDeleted",nullable = false)
+    @Column(nullable = false)
     private Boolean isDeleted = Boolean.FALSE;
 
     public Long softDelete() {

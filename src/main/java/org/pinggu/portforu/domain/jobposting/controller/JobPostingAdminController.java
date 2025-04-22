@@ -27,7 +27,7 @@ public class JobPostingAdminController {
 
     @Admin
     @PutMapping("/{jobPostingId}")
-    public ResponseEntity<ApiResponse<JobPostingResponseDto>> updateJobPosting(
+    public ResponseEntity<ApiResponse<String>> updateJobPosting(
             @PathVariable("jobPostingId") Long jobPostingId,
             @RequestBody JobPostingUpdateRequestDto requestDto
     ) {
