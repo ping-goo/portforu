@@ -18,13 +18,14 @@ public interface SubscribeRepository extends JpaRepository<Subscribe, Long> {
     List<Subscribe> findAllByMember(Member member);
 
     @Query("""
-    SELECT COUNT(s) > 0 FROM Subscribe s
-    JOIN Payment p ON p.subscribe = s
-    WHERE s.member.id = :memberId
-    AND s.membership.id = :membershipId
-    AND s.status IN ('ACTIVE', 'CANCELED')
-    AND p.status = 'COMPLETED'
-    """)
+        SELECT COUNT(s) > 0 FROM Subscribe s
+        JOIN Payment p ON p.subscribe = s
+        WHERE s.member.id = :memberId
+        AND s.membership.id = :membershipId
+        AND s.status IN ('ACTIVE', 'CANCELLED')
+        AND p.status = 'COMPLETED'
+        AND s.isDeleted IS FALSE
+        """)
     boolean hasValidSubscription(@Param("memberId") Long memberId,
                                  @Param("membershipId") Long membershipId);
 

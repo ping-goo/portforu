@@ -5,8 +5,8 @@ import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.Where;
-import org.pinggu.portforu.common.annotation.SoftDelete;
 import org.pinggu.portforu.common.domain.BaseEntity;
 import org.pinggu.portforu.domain.payment.enums.PaymentMethod;
 import org.pinggu.portforu.domain.payment.enums.PaymentStatus;
@@ -16,7 +16,7 @@ import org.pinggu.portforu.domain.subscribe.entity.Subscribe;
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Table(name = "payments")
-@SoftDelete(sql = "UPDATE payments SET is_deleted = true WHERE id = ?")
+@SQLDelete(sql = "UPDATE comment  SET is_deleted = true WHERE id = ?")
 @Where(clause = "is_deleted = false")
 public class Payment extends BaseEntity {
 

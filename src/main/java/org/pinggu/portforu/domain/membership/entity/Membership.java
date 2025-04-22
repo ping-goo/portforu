@@ -1,21 +1,19 @@
 package org.pinggu.portforu.domain.membership.entity;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.Where;
+import org.pinggu.portforu.common.annotation.SoftDelete;
 import org.pinggu.portforu.common.domain.BaseEntity;
 
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Table(name = "memberships")
-@SQLDelete(sql = "UPDATE memberships SET is_deleted = true WHERE id = ?")
+@SoftDelete(sql = "UPDATE memberships SET is_deleted = true WHERE id = ?")
 @Where(clause = "is_deleted = false")
 public class Membership extends BaseEntity {
 
@@ -39,13 +37,6 @@ public class Membership extends BaseEntity {
         this.year = year;
     }
 
-    public void update(String name, Integer price, Integer quantity, Integer year) {
-        if (name != null) this.name = name;
-        if (price != null) this.price = price;
-        if (quantity != null) this.quantity = quantity;
-        if (year != null) this.year = year;
-    }
-
     // 정원 감소
     public void decreaseQuantity() {
         if (this.quantity <= 0) {
@@ -59,4 +50,15 @@ public class Membership extends BaseEntity {
         this.quantity++;
     }
 
+    // 업데이트
+    public void update(String newName, Integer newPrice, Integer newQuantity, Integer newYear) {
+        if (newName     != null && !newName.isBlank())
+            this.name     = newName;
+        if (newPrice    != null)
+            this.price    = newPrice;
+        if (newQuantity != null)
+            this.quantity = newQuantity;
+        if (newYear     != null)
+            this.year     = newYear;
+    }
 }

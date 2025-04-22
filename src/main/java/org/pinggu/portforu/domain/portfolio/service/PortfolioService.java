@@ -18,6 +18,7 @@ import org.pinggu.portforu.domain.subscribe.validator.SubscribeValidator;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -56,9 +57,12 @@ public class PortfolioService {
 
     @Transactional(readOnly = true)
     public Page<PortfolioListResponseDto> findAllPortfolios(Pagecond pagecond) {
-        Pageable pageable = PageRequest.of(pagecond.getPageNum() - 1, pagecond.getPageSize());
+        Pageable pageable = PageRequest.of(
+                pagecond.getPageNum() - 1,
+                pagecond.getPageSize(),
+                Sort.by(Sort.Order.desc("id"))
+        );
         Page<Portfolio> portfolioPage = portfolioRepository.findAll(pageable);
-
         return portfolioPage.map(PortfolioListResponseDto::from);
     }
 
@@ -87,9 +91,12 @@ public class PortfolioService {
     public Page<PortfolioListResponseDto> findMyAllPortfolios(AuthMember authMember, Long memberId, Pagecond pagecond) {
         memberFinder.validateOwnership(authMember, memberId);
 
-        Pageable pageable = PageRequest.of(pagecond.getPageNum() - 1, pagecond.getPageSize());
-        Page<Portfolio> portfolios = portfolioRepository.findAllByMember(memberId, pageable);
-
+        Pageable pageable = PageRequest.of(
+                pagecond.getPageNum() - 1,
+                pagecond.getPageSize(),
+                Sort.by(Sort.Order.desc("id"))
+        );
+        Page<Portfolio> portfolios = portfolioRepository.findAllByMemberId(memberId, pageable);
         return portfolios.map(PortfolioListResponseDto::from);
     }
 
@@ -106,7 +113,7 @@ public class PortfolioService {
     }
 
     @Transactional
-    public PortfolioResponseDto updatePortfolio(AuthMember authMember, Long portfolioId, PortfolioUpdateRequestDto requestDto) {
+    public void updatePortfolio(AuthMember authMember, Long portfolioId, PortfolioUpdateRequestDto requestDto) {
         Portfolio portfolio = portfolioFinder.findPortfolioById(portfolioId);
 
         if (!portfolio.getMember().getId().equals(authMember.getId())) {
@@ -132,7 +139,6 @@ public class PortfolioService {
                 newFileUrl
         );
 
-        return PortfolioResponseDto.from(portfolio);
     }
 
     @Transactional
@@ -143,7 +149,8 @@ public class PortfolioService {
             throw new CustomException(HttpStatus.UNAUTHORIZED, "삭제 권한이 없습니다.");
         }
 
-        return portfolio.softDelete();
+        portfolioRepository.delete(portfolio);
+        return portfolio.getId();
     }
 
 }

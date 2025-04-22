@@ -6,7 +6,6 @@ import org.pinggu.portforu.domain.membership.dto.request.MembershipUpdateRequest
 import org.pinggu.portforu.domain.membership.dto.response.MembershipResponseDto;
 import org.pinggu.portforu.domain.membership.entity.Membership;
 import org.pinggu.portforu.domain.membership.repository.MembershipRepository;
-import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -35,7 +34,7 @@ public class MembershipService {
 
     @Transactional(readOnly = true)
     public List<MembershipResponseDto> findAllMemberships() {
-        return membershipRepository.findAll(Sort.by(Sort.Direction.DESC, "id")).stream()
+        return membershipRepository.findAllActiveMemberships().stream()
                 .map(MembershipResponseDto::from)
                 .toList();
     }
