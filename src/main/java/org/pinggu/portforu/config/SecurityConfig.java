@@ -41,7 +41,7 @@ public class SecurityConfig {
                                 "/pay/**","/api/v1/payments/success",
                                 "/api/v1/payments/fail","/favicon.ico",
                                 "/css/**", "/js/**", "/images/**").permitAll()
-                        .anyRequest().permitAll())
+                        .anyRequest().authenticated())
                 .oauth2Login(oauth2 -> oauth2
                         .userInfoEndpoint(userInfo -> userInfo
                                 .userService(customOAuth2UserService))

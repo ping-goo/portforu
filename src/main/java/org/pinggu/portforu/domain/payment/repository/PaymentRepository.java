@@ -23,11 +23,4 @@ public interface PaymentRepository extends JpaRepository<Payment, Long> {
                           @Param("membershipId") Long membershipId,
                           @Param("status") PaymentStatus status);
 
-    //JDBC
-    @Modifying
-    @Query("UPDATE Payment p SET p.status = :status WHERE p.status = :currentStatus AND p.createdAt < :limit AND p.paymentKey IS NULL")
-    int bulkExpireOldPendingPayments(@Param("status") PaymentStatus status,
-                                     @Param("currentStatus") PaymentStatus currentStatus,
-                                     @Param("limit") Instant limit);
-
 }
