@@ -2,7 +2,8 @@ package org.pinggu.portforu.domain.portfolio.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
-import org.pinggu.portforu.common.annotation.SoftDelete;
+import org.hibernate.annotations.SQLDelete;
+import org.hibernate.annotations.Where;
 import org.pinggu.portforu.common.domain.BaseEntity;
 import org.pinggu.portforu.domain.member.entity.Member;
 
@@ -10,7 +11,8 @@ import org.pinggu.portforu.domain.member.entity.Member;
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Table(name ="portfolios")
-@SoftDelete(sql = "UPDATE portfolios SET isDeleted = true WHERE id = ?")
+@SQLDelete(sql = "UPDATE portfolios  SET is_deleted = true WHERE id = ?")
+@Where(clause = "is_deleted = false")
 public class Portfolio extends BaseEntity {
 
     @ManyToOne(fetch = FetchType.LAZY)
@@ -59,3 +61,4 @@ public class Portfolio extends BaseEntity {
     }
 
 }
+

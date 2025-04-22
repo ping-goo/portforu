@@ -5,7 +5,8 @@ import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.pinggu.portforu.common.annotation.SoftDelete;
+import org.hibernate.annotations.SQLDelete;
+import org.hibernate.annotations.Where;
 import org.pinggu.portforu.common.domain.BaseEntity;
 import org.pinggu.portforu.domain.member.entity.Member;
 import org.pinggu.portforu.domain.portfolio.entity.Portfolio;
@@ -14,7 +15,8 @@ import org.pinggu.portforu.domain.portfolio.entity.Portfolio;
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Table(name = "comments")
-@SoftDelete(sql = "UPDATE comments SET isDeleted = true WHERE id = ?")
+@SQLDelete(sql = "UPDATE comments  SET is_deleted = true WHERE id = ?")
+@Where(clause = "is_deleted = false")
 public class Comment extends BaseEntity {
 
     @ManyToOne(fetch = FetchType.LAZY)
@@ -41,3 +43,4 @@ public class Comment extends BaseEntity {
         }
     }
 }
+

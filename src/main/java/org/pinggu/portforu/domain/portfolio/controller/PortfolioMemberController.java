@@ -65,13 +65,15 @@ public class PortfolioMemberController {
 
     @Member
     @PutMapping("/{portfolioId}")
-    public ResponseEntity<ApiResponse<PortfolioResponseDto>> updatePortfolio(
+    public ResponseEntity<ApiResponse<String>> updatePortfolio(
             @AuthenticationPrincipal AuthMember authMember,
-            @PathVariable Long portfolioId,
+            @PathVariable("portfolioId") Long portfolioId,
             @Valid @RequestBody PortfolioUpdateRequestDto requestDto
     ) {
-        return ResponseEntity.ok().body(ApiResponse.of(portfolioService.updatePortfolio(authMember, portfolioId, requestDto)));
+        portfolioService.updatePortfolio(authMember, portfolioId, requestDto);
+        return ResponseEntity.ok(ApiResponse.of("포트폴리오 수정이 완료되었습니다."));
     }
+
 
     @Member
     @DeleteMapping("/{portfolioId}")

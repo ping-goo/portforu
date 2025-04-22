@@ -40,13 +40,15 @@ public class CommentController {
 
     @Member
     @PutMapping("/{portfolioId}/{commentId}")
-    public ResponseEntity<ApiResponse<CommentResponseDto>> updateComment(
+    public ResponseEntity<ApiResponse<String>> updateComment(
             @AuthenticationPrincipal AuthMember authMember,
             @PathVariable("portfolioId") Long portfolioId,
             @PathVariable("commentId") Long commentId,
             @Valid @RequestBody CommentRequestDto requestDto
     ) {
-        return ResponseEntity.ok().body(ApiResponse.of(commentService.updateComment(authMember, portfolioId, commentId, requestDto)));
+        commentService.updateComment(authMember, portfolioId, commentId, requestDto);
+        return ResponseEntity
+                .ok(ApiResponse.of("댓글 수정이 완료되었습니다."));
     }
 
     @Member

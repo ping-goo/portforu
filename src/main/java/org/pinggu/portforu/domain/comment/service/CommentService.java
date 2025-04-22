@@ -11,6 +11,7 @@ import org.pinggu.portforu.domain.member.entity.Member;
 import org.pinggu.portforu.domain.portfolio.entity.Portfolio;
 import org.pinggu.portforu.domain.portfolio.service.PortfolioFinder;
 import org.pinggu.portforu.domain.subscribe.validator.SubscribeValidator;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -54,7 +55,7 @@ public class CommentService {
     public List<CommentResponseDto> findAllComments(Long portfolioId) {
         portfolioFinder.findPortfolioById(portfolioId);
 
-        List<Comment> comments = commentRepository.findByPortfolioId(portfolioId);
+        List<Comment> comments = commentRepository.findByPortfolioId(portfolioId, Sort.by(Sort.Order.desc("id")));
 
         return comments.stream()
                 .filter(comment -> !comment.getIsDeleted())
@@ -63,7 +64,7 @@ public class CommentService {
     }
 
     @Transactional
-    public CommentResponseDto updateComment(AuthMember authMember, Long portfolioId, Long commentId, CommentRequestDto requestDto) {
+    public void updateComment(AuthMember authMember, Long portfolioId, Long commentId, CommentRequestDto requestDto) {
         portfolioFinder.findPortfolioById(portfolioId);
 
         Comment comment = commentFinder.findCommentById(commentId);
@@ -72,8 +73,6 @@ public class CommentService {
             throw new CustomException(HttpStatus.UNAUTHORIZED, "수정 권한이 없습니다.");
         }
         comment.update(requestDto.getContent());
-
-        return CommentResponseDto.from(comment);
     }
 
     @Transactional
@@ -86,8 +85,10 @@ public class CommentService {
             throw new CustomException(HttpStatus.UNAUTHORIZED, "삭제 권한이 없습니다.");
         }
 
-        return comment.softDelete();
+        commentRepository.delete(comment);
+        return comment.getId();
     }
 
 }
+
 

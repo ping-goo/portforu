@@ -7,7 +7,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.Where;
-import org.pinggu.portforu.common.annotation.SoftDelete;
 import org.pinggu.portforu.common.domain.BaseEntity;
 import org.pinggu.portforu.common.dto.AuthMember;
 import org.pinggu.portforu.domain.member.enums.UserRole;
