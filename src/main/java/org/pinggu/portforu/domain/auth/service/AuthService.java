@@ -88,6 +88,10 @@ public class AuthService {
                 () -> new CustomException(HttpStatus.BAD_REQUEST, "가입되지 않은 유저입니다.")
         );
 
+        if (member.getIsDeleted()) {
+            throw new CustomException(HttpStatus.BAD_REQUEST, "탈퇴한 사용자입니다.");
+        }
+
         if (!passwordEncoder.matches(requestDto.getPassword(), member.getPassword())) {
             throw new CustomException(HttpStatus.UNAUTHORIZED, "잘못된 비밀번호입니다.");
         }

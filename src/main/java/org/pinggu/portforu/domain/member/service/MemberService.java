@@ -30,19 +30,17 @@ public class MemberService {
     }
 
     @Transactional
-    public MemberResponseDto updateMember(
+    public void updateMember(
             AuthMember authMember, Long id, MemberUpdateRequestDto requestDto
     ) {
         memberFinder.validateOwnership(authMember, id);
         Member member = memberFinder.findMemberById(id);
 
         member.updateMemberInfo(requestDto.getName(), requestDto.getPhoneNumber(), requestDto.getAddress());
-
-        return MemberResponseDto.from(member);
     }
 
     @Transactional
-    public MemberResponseDto updatePassword(
+    public void updatePassword(
             AuthMember authMember, Long id, PasswordUpdateRequestDto requestDto
     ) {
         memberFinder.validateOwnership(authMember, id);
@@ -59,8 +57,6 @@ public class MemberService {
         String newEncodedPassword = passwordEncoder.encode(requestDto.getNewPassword());
 
         member.updatePassword(newEncodedPassword);
-
-        return MemberResponseDto.from(member);
     }
 
     @Transactional

@@ -32,22 +32,24 @@ public class MemberController {
 
     @Member
     @PutMapping("/{id}")
-    public ResponseEntity<ApiResponse<MemberResponseDto>> updateMember(
+    public ResponseEntity<ApiResponse<String>> updateMember(
             @AuthenticationPrincipal AuthMember authMember,
             @PathVariable Long id,
             @Valid @RequestBody MemberUpdateRequestDto requestDto
     ) {
-        return ResponseEntity.ok().body(ApiResponse.of(memberService.updateMember(authMember, id, requestDto)));
+        memberService.updateMember(authMember, id, requestDto);
+        return ResponseEntity.ok(ApiResponse.of("수정완료"));
     }
 
     @Member
     @PutMapping("/{id}/password")
-    public ResponseEntity<ApiResponse<MemberResponseDto>> updatePassword(
+    public ResponseEntity<ApiResponse<String>> updatePassword(
             @AuthenticationPrincipal AuthMember authMember,
             @PathVariable Long id,
             @Valid @RequestBody PasswordUpdateRequestDto requestDto
     ) {
-        return ResponseEntity.ok().body(ApiResponse.of(memberService.updatePassword(authMember, id, requestDto)));
+        memberService.updatePassword(authMember, id, requestDto);
+        return ResponseEntity.ok(ApiResponse.of("수정 완료"));
     }
 
     @Member
