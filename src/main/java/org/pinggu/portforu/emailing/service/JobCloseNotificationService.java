@@ -1,0 +1,26 @@
+package org.pinggu.portforu.emailing.service;
+
+import lombok.RequiredArgsConstructor;
+import org.pinggu.portforu.domain.scrap.entity.Scrap;
+import org.pinggu.portforu.domain.scrap.repository.ScrapRepository;
+import org.springframework.stereotype.Service;
+import java.util.List;
+
+@Service
+@RequiredArgsConstructor
+public class JobCloseNotificationService {
+
+    private final ScrapRepository scrapRepository;
+    private final MailService mailService;
+
+    public void notifyClosingSoon(Long jobPostingId, String jobTitle) {
+        List<Scrap> scraps = scrapRepository.findMemberIdsByJobPostingId(jobPostingId);
+
+        for (Scrap scrap : scraps) {
+            String email = scrap.getMember().getEmail();
+            String link = scrap.getJobPosting().getLink();
+
+            mailService.sendClosingSoonNotification(email, jobTitle, link);
+        }
+    }
+}
