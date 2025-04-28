@@ -4,6 +4,8 @@ import lombok.RequiredArgsConstructor;
 import org.pinggu.portforu.domain.scrap.entity.Scrap;
 import org.pinggu.portforu.domain.scrap.repository.ScrapRepository;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
 import java.util.List;
 
 @Service
@@ -13,6 +15,7 @@ public class JobCloseNotificationService {
     private final ScrapRepository scrapRepository;
     private final MailService mailService;
 
+    @Transactional
     public void notifyClosingSoon(Long jobPostingId, String jobTitle) {
         List<Scrap> scraps = scrapRepository.findMemberIdsByJobPostingId(jobPostingId);
 

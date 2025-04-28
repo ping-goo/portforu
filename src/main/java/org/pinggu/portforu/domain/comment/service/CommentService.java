@@ -7,10 +7,13 @@ import org.pinggu.portforu.domain.comment.dto.request.CommentRequestDto;
 import org.pinggu.portforu.domain.comment.dto.response.CommentResponseDto;
 import org.pinggu.portforu.domain.comment.entity.Comment;
 import org.pinggu.portforu.domain.comment.repository.CommentRepository;
+import org.pinggu.portforu.domain.jobposting.entity.JobPosting;
 import org.pinggu.portforu.domain.member.entity.Member;
 import org.pinggu.portforu.domain.portfolio.entity.Portfolio;
 import org.pinggu.portforu.domain.portfolio.service.PortfolioFinder;
 import org.pinggu.portforu.domain.subscribe.validator.SubscribeValidator;
+import org.pinggu.portforu.emailing.message.CommentCreatedEvent;
+import org.pinggu.portforu.emailing.producer.CommentNotificationProducer;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -27,6 +30,7 @@ public class CommentService {
     private final CommentFinder commentFinder;
     private final SubscribeValidator subscribeValidator;
     private final CommentRepository commentRepository;
+    private final CommentNotificationProducer commentNotificationProducer;
 
     @Transactional
     public CommentResponseDto saveComment(AuthMember authMember, Long portfolioId, CommentRequestDto requestDto) {
@@ -89,6 +93,34 @@ public class CommentService {
         return comment.getId();
     }
 
+    // 알림용
+    @Transactional
+    public void createComment(AuthMember authMember, Long portfolioId, String content) {
+        Portfolio portfolio = portfolioFinder.findPortfolioById(portfolioId);
+
+        Member writer = Member.fromAuthMember(authMember);
+        Long receiverId = portfolio.getMember().getId();
+        String receiverEmail = portfolio.getMember().getEmail();    // 추가
+        String portfolioTitle = portfolio.getTitle();               // 추가
+
+        Comment comment = Comment.builder()
+                .member(writer)
+                .portfolio(portfolio)
+                .content(content)
+                .build();
+
+        commentRepository.save(comment);
+
+        CommentCreatedEvent event = new CommentCreatedEvent(
+                portfolioId,
+                comment.getId(),
+                receiverId,
+                receiverEmail,
+                portfolioTitle,
+                content
+        );
+        commentNotificationProducer.sendCommentCreatedEvent(event);
+    }
 }
 
 
