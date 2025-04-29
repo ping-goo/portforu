@@ -60,4 +60,14 @@ public class MemberController {
         return ResponseEntity.ok(ApiResponse.of(memberService.deleteMember(authMember, requestDto)));
     }
 
+    @Member
+    @PutMapping("/email-subscription")
+    public ResponseEntity<ApiResponse<String>> updateEmailSubscription(
+            @AuthenticationPrincipal AuthMember authMember,
+            @RequestParam boolean isSubscribed
+    ) {
+        memberService.updateEmailSubscription(authMember, isSubscribed);
+        return ResponseEntity.ok(ApiResponse.of("이메일 수신 설정이 변경되었습니다."));
+    }
+
 }

@@ -1,4 +1,4 @@
-package org.pinggu.portforu.emailing;
+package org.pinggu.portforu.emailing.util;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

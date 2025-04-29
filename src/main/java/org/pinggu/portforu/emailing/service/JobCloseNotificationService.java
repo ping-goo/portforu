@@ -1,6 +1,7 @@
 package org.pinggu.portforu.emailing.service;
 
 import lombok.RequiredArgsConstructor;
+import org.pinggu.portforu.domain.member.entity.Member;
 import org.pinggu.portforu.domain.scrap.entity.Scrap;
 import org.pinggu.portforu.domain.scrap.repository.ScrapRepository;
 import org.springframework.stereotype.Service;
@@ -20,10 +21,10 @@ public class JobCloseNotificationService {
         List<Scrap> scraps = scrapRepository.findMemberIdsByJobPostingId(jobPostingId);
 
         for (Scrap scrap : scraps) {
-            String email = scrap.getMember().getEmail();
+            Member member = scrap.getMember();
             String link = scrap.getJobPosting().getLink();
 
-            mailService.sendClosingSoonNotification(email, jobTitle, link);
+            mailService.sendClosingSoonNotification(member, jobTitle, link);
         }
     }
 }
