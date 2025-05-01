@@ -68,13 +68,14 @@ ____
 |:--:|:--:|:--:|:--:|
 | ![Java](https://img.shields.io/badge/java-007396?style=for-the-badge&logo=java&logoColor=white) | ![Kotlin](https://img.shields.io/badge/kotlin-7F52FF?style=for-the-badge&logo=kotlin&logoColor=white) | ![Spring Boot](https://img.shields.io/badge/springboot-6DB33F?style=for-the-badge&logo=springboot&logoColor=white) | ![Spring Security](https://img.shields.io/badge/springsecurity-6DB33F?style=for-the-badge&logo=springsecurity&logoColor=white) |
 
-| Prometheus | Spring Boot Web | Spring Validation | Spring Data JPA |
+| Spring | Prometheus | Spring Boot Web | Spring Validation |
 |:--:|:--:|:--:|:--:|
-| ![Prometheus](https://img.shields.io/badge/prometheus-E6522C?style=for-the-badge&logo=prometheus&logoColor=white) | ![Web](https://img.shields.io/badge/Spring%20Boot%20Web-6DB33F?style=for-the-badge&logo=spring&logoColor=white) | ![Validation](https://img.shields.io/badge/Spring%20Validation-6DB33F?style=for-the-badge&logo=spring&logoColor=white) | ![JPA](https://img.shields.io/badge/Spring%20Data%20JPA-6DB33F?style=for-the-badge&logo=spring&logoColor=white) |
+| ![Spring](https://img.shields.io/badge/spring-6DB33F?style=for-the-badge&logo=spring&logoColor=white) | ![Prometheus](https://img.shields.io/badge/prometheus-E6522C?style=for-the-badge&logo=prometheus&logoColor=white) | ![Web](https://img.shields.io/badge/Spring%20Boot%20Web-6DB33F?style=for-the-badge&logo=spring&logoColor=white) | ![Validation](https://img.shields.io/badge/Spring%20Validation-6DB33F?style=for-the-badge&logo=spring&logoColor=white) |
 
-| Lombok | JWT |
-|:--:|:--:|
-| ![Lombok](https://img.shields.io/badge/lombok-CA2C92?style=for-the-badge&logo=lombok&logoColor=white) | ![JWT](https://img.shields.io/badge/JWT-000000?style=for-the-badge&logo=jsonwebtokens&logoColor=white) |
+| Spring Data JPA | Lombok | JWT |  
+|:--:|:--:|:--:|
+| ![JPA](https://img.shields.io/badge/Spring%20Data%20JPA-6DB33F?style=for-the-badge&logo=spring&logoColor=white) | ![Lombok](https://img.shields.io/badge/lombok-CA2C92?style=for-the-badge&logo=lombok&logoColor=white) | ![JWT](https://img.shields.io/badge/JWT-000000?style=for-the)
+
 
 ---
 
