@@ -14,7 +14,6 @@ public class CorsConfig {
     @Bean
     public CorsFilter customCorsFilter() {
         CorsConfiguration config = new CorsConfiguration();
-        // 로컬과 프로덕션(http/https) 도메인을 모두 허용
         config.setAllowedOrigins(List.of(
                 "http://localhost:3000",
                 "http://api.portforu.online",
@@ -24,8 +23,7 @@ public class CorsConfig {
         config.setAllowedHeaders(List.of("*"));
         config.setExposedHeaders(List.of("Authorization", "refresh-token"));
         config.setAllowCredentials(true);
-        // 와일드카드 패턴 허용이 필요할 경우
-        // config.setAllowedOriginPatterns(List.of("*"));
+       
 
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", config);
