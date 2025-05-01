@@ -72,6 +72,10 @@ ____
 |:--:|:--:|:--:|:--:|
 | ![Prometheus](https://img.shields.io/badge/prometheus-E6522C?style=for-the-badge&logo=prometheus&logoColor=white) | ![Web](https://img.shields.io/badge/Spring%20Boot%20Web-6DB33F?style=for-the-badge&logo=spring&logoColor=white) | ![Validation](https://img.shields.io/badge/Spring%20Validation-6DB33F?style=for-the-badge&logo=spring&logoColor=white) | ![JPA](https://img.shields.io/badge/Spring%20Data%20JPA-6DB33F?style=for-the-badge&logo=spring&logoColor=white) |
 
+| Lombok | JWT |
+|:--:|:--:|
+| ![Lombok](https://img.shields.io/badge/lombok-CA2C92?style=for-the-badge&logo=lombok&logoColor=white) | ![JWT](https://img.shields.io/badge/JWT-000000?style=for-the-badge&logo=jsonwebtokens&logoColor=white) |
+
 ---
 
 ### 🗄️ Database & Cache
