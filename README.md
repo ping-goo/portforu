@@ -60,6 +60,71 @@ ____
     - 알림 기능
 </details>
 
+## 📚 STACKS
+
+### 🧩 Backend - Language & Framework
+
+| Java | Kotlin | Spring Boot | Spring Security |
+|:--:|:--:|:--:|:--:|
+| ![Java](https://img.shields.io/badge/java-007396?style=for-the-badge&logo=java&logoColor=white) | ![Kotlin](https://img.shields.io/badge/kotlin-7F52FF?style=for-the-badge&logo=kotlin&logoColor=white) | ![Spring Boot](https://img.shields.io/badge/springboot-6DB33F?style=for-the-badge&logo=springboot&logoColor=white) | ![Spring Security](https://img.shields.io/badge/springsecurity-6DB33F?style=for-the-badge&logo=springsecurity&logoColor=white) |
+
+| Prometheus | Spring Boot Web | Spring Validation | Spring Data JPA |
+|:--:|:--:|:--:|:--:|
+| ![Prometheus](https://img.shields.io/badge/prometheus-E6522C?style=for-the-badge&logo=prometheus&logoColor=white) | ![Web](https://img.shields.io/badge/Spring%20Boot%20Web-6DB33F?style=for-the-badge&logo=spring&logoColor=white) | ![Validation](https://img.shields.io/badge/Spring%20Validation-6DB33F?style=for-the-badge&logo=spring&logoColor=white) | ![JPA](https://img.shields.io/badge/Spring%20Data%20JPA-6DB33F?style=for-the-badge&logo=spring&logoColor=white) |
+
+---
+
+### 🗄️ Database & Cache
+
+| MySQL | Redis | Elasticsearch |
+|:--:|:--:|:--:|
+| ![MySQL](https://img.shields.io/badge/mysql-4479A1?style=for-the-badge&logo=mysql&logoColor=white) | ![Redis](https://img.shields.io/badge/redis-FF4438?style=for-the-badge&logo=redis&logoColor=white) | ![Elasticsearch](https://img.shields.io/badge/elasticsearch-005571?style=for-the-badge&logo=elasticsearch&logoColor=white) |
+
+---
+
+### ☁️ Infra & CI/CD
+
+| Docker | Compose | GitHub Actions | EC2 |
+|:--:|:--:|:--:|:--:|
+| ![Docker](https://img.shields.io/badge/docker-2496ED?style=for-the-badge&logo=docker&logoColor=white) | `docker-compose` | ![GitHub Actions](https://img.shields.io/badge/githubactions-2088FF?style=for-the-badge&logo=githubactions&logoColor=white) | ![EC2](https://img.shields.io/badge/amazonec2-FF9900?style=for-the-badge&logo=amazonec2&logoColor=white) |
+
+| S3 | Route 53 | RDS | ELB |
+|:--:|:--:|:--:|:--:|
+| ![S3](https://img.shields.io/badge/amazons3-569A31?style=for-the-badge&logo=amazons3&logoColor=white) | ![Route 53](https://img.shields.io/badge/amazonroute53-8C4FFF?style=for-the-badge&logo=amazonroute53&logoColor=white) | ![RDS](https://img.shields.io/badge/amazonrds-527FFF?style=for-the-badge&logo=amazonrds&logoColor=white) | ![ELB](https://img.shields.io/badge/awselasticloadbalancing-8C4FFF?style=for-the-badge&logo=awselasticloadbalancing&logoColor=white) |
+
+| IAM |
+|:--:|
+| ![IAM](https://img.shields.io/badge/amazoniam-DD344C?style=for-the-badge&logo=amazoniam&logoColor=white) |
+
+---
+
+### 🛠️ Tools
+
+| IntelliJ | ERD Cloud | Swagger | Postman |
+|:--:|:--:|:--:|:--:|
+| ![IntelliJ](https://img.shields.io/badge/IntelliJ%20IDEA-000000?style=for-the-badge&logo=intellijidea&logoColor=white) | `ERD Cloud` | ![Swagger](https://img.shields.io/badge/swagger-85EA2D?style=for-the-badge&logo=swagger&logoColor=black) | ![Postman](https://img.shields.io/badge/postman-FF6C37?style=for-the-badge&logo=postman&logoColor=white) |
+
+| Grafana | Selenium | Jsoup | Kotlin Coroutines |
+|:--:|:--:|:--:|:--:|
+| ![Grafana](https://img.shields.io/badge/grafana-F46800?style=for-the-badge&logo=grafana&logoColor=white) | ![Selenium](https://img.shields.io/badge/selenium-43B02A?style=for-the-badge&logo=selenium&logoColor=white) | `Jsoup` | `Kotlin Coroutines` |
+
+| OAuth | Xvfb |
+|:--:|:--:|
+| `OAuth` | `Xvfb` |
+
+---
+
+### 🤝 Collaboration
+
+| Git | GitHub | Slack | Notion |
+|:--:|:--:|:--:|:--:|
+| ![Git](https://img.shields.io/badge/git-F05032?style=for-the-badge&logo=git&logoColor=white) | ![GitHub](https://img.shields.io/badge/github-181717?style=for-the-badge&logo=github&logoColor=white) | ![Slack](https://img.shields.io/badge/slack-4A154B?style=for-the-badge&logo=slack&logoColor=white) | ![Notion](https://img.shields.io/badge/notion-000000?style=for-the-badge&logo=notion&logoColor=white) |
+
+| Zep | Figma |
+|:--:|:--:|
+| `Zep` | ![Figma](https://img.shields.io/badge/figma-F24E1E?style=for-the-badge&logo=figma&logoColor=white) |
+
+
 ------
 
 
