@@ -1,7 +1,9 @@
 package org.pinggu.portforu.config;
 
+import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.Ordered;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import org.springframework.web.filter.CorsFilter;
@@ -12,7 +14,7 @@ import java.util.List;
 public class WebConfig {
 
     @Bean
-    public CorsFilter corsFilter() {
+    public FilterRegistrationBean<CorsFilter> corsFilterRegistration() {
         CorsConfiguration swaggerConfig = new CorsConfiguration();
         swaggerConfig.addAllowedOriginPattern("*");
         swaggerConfig.setAllowedMethods(List.of("GET", "OPTIONS"));
@@ -28,11 +30,14 @@ public class WebConfig {
         apiConfig.addExposedHeader("refresh-token");
         apiConfig.setAllowCredentials(true);
 
-        var source = new UrlBasedCorsConfigurationSource();
+        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/v3/api-docs/**", swaggerConfig);
         source.registerCorsConfiguration("/swagger-ui/**", swaggerConfig);
         source.registerCorsConfiguration("/**", apiConfig);
 
-        return new CorsFilter(source);
+        FilterRegistrationBean<CorsFilter> bean =
+                new FilterRegistrationBean<>(new CorsFilter(source));
+        bean.setOrder(Ordered.HIGHEST_PRECEDENCE);
+        return bean;
     }
 }
