@@ -1,43 +1,18 @@
 package org.pinggu.portforu.config;
 
-import org.springframework.boot.web.servlet.FilterRegistrationBean;
-import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.core.Ordered;
-import org.springframework.web.cors.CorsConfiguration;
-import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
-import org.springframework.web.filter.CorsFilter;
-
-import java.util.List;
+import org.springframework.web.servlet.config.annotation.CorsRegistry;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 @Configuration
-public class WebConfig {
-
-    @Bean
-    public FilterRegistrationBean<CorsFilter> corsFilterRegistration() {
-        CorsConfiguration swaggerConfig = new CorsConfiguration();
-        swaggerConfig.addAllowedOriginPattern("*");
-        swaggerConfig.setAllowedMethods(List.of("GET", "OPTIONS"));
-        swaggerConfig.addAllowedHeader("*");
-        swaggerConfig.setAllowCredentials(false);
-
-        CorsConfiguration apiConfig = new CorsConfiguration();
-        apiConfig.addAllowedOrigin("http://localhost:3000");
-        apiConfig.addAllowedOrigin("https://api.portforu.online");
-        apiConfig.setAllowedMethods(List.of("GET","POST","PUT","DELETE","OPTIONS"));
-        apiConfig.addAllowedHeader("*");
-        apiConfig.addExposedHeader("Authorization");
-        apiConfig.addExposedHeader("refresh-token");
-        apiConfig.setAllowCredentials(true);
-
-        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-        source.registerCorsConfiguration("/v3/api-docs/**", swaggerConfig);
-        source.registerCorsConfiguration("/swagger-ui/**", swaggerConfig);
-        source.registerCorsConfiguration("/**", apiConfig);
-
-        FilterRegistrationBean<CorsFilter> bean =
-                new FilterRegistrationBean<>(new CorsFilter(source));
-        bean.setOrder(Ordered.HIGHEST_PRECEDENCE);
-        return bean;
+public class WebConfig implements WebMvcConfigurer {
+    @Override
+    public void addCorsMappings(CorsRegistry registry) {
+        registry.addMapping("/**")
+                .allowedOrigins("http://localhost:3000") // 프론트엔드 URL
+                .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
+                .allowedHeaders("*")
+                .exposedHeaders("Authorization", "refresh-token")
+                .allowCredentials(true);
     }
 }
