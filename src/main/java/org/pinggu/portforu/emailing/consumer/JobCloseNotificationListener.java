@@ -17,7 +17,6 @@ import org.springframework.stereotype.Component;
 public class JobCloseNotificationListener {
 
     private final JobCloseNotificationService jobCloseNotificationService;
-    private final CommentNotificationService commentNotificationService;
 
     @RabbitListener(queues = "job.closing-soon.queue")
     public void handleJobClosingSoon(@Payload JobClosingSoonMessage message) {
@@ -32,11 +31,4 @@ public class JobCloseNotificationListener {
         private String jobTitle;
     }
 
-    @RabbitListener(queues = "comment-created-queue")
-    public void handleCommentCreated(@Payload CommentCreatedEvent event) {
-        log.info("댓글 알림 수신: postId={}, commentId={}, receiverMemberId={}",
-                event.getPostId(), event.getCommentId(), event.getReceiverMemberId());
-
-        commentNotificationService.notifyCommentCreated(event);
-    }
 }

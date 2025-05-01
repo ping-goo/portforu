@@ -2,9 +2,12 @@ package org.pinggu.portforu.emailing.service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.pinggu.portforu.domain.jobposting.entity.JobPosting;
 import org.pinggu.portforu.domain.member.entity.Member;
 import org.pinggu.portforu.emailing.util.MailSenderHelper;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 @Slf4j
 @Service
@@ -44,13 +47,33 @@ public class MailService {
     }
 
     // 채용고고 업데이트 메일링(멤버십 대상)
-    public void sendNewJobPostingNotification(Member member, String subject, String text) {
+    public void sendNewJobPostingNotification(Member member, String subject, int crawledCount, List<JobPosting> jobPostings) {
         mailSenderHelper.sendIfSubscribed(member, (helper, m) -> {
             try {
                 helper.setSubject(subject);
 
-                String fullBody = mailSenderHelper.appendUnsubscribeLink(text, m);
-                helper.setText(fullBody, true); // HTML 모드
+                StringBuilder body = new StringBuilder();
+
+                // 인삿말 + 건수 안내
+                body.append(String.format(
+                        "<p>안녕하세요 회원님.<br><br>" +
+                                "오늘 총 <strong>%d건</strong>의 채용공고가 업데이트 되었습니다.<br>" +
+                                "지금 새로운 공고를 확인해보세요.</p><br>",
+                        crawledCount
+                ));
+
+                // 공고 리스트
+                body.append("<p>최근 등록된 채용공고:</p><ul>");
+                for (JobPosting job : jobPostings) {
+                    body.append(String.format(
+                            "<li><a href=\"%s\" style=\"color:#1a73e8; text-decoration:underline;\">%s</a> - %s</li>",
+                            job.getLink(), job.getTitle(), job.getCompany()
+                    ));
+                }
+                body.append("</ul>");
+
+                String fullBody = mailSenderHelper.appendUnsubscribeLink(body.toString(), m);
+                helper.setText(fullBody, true);
             } catch (Exception e) {
                 log.error("메일 내용 구성 실패: {}", e.getMessage(), e);
             }

@@ -2,6 +2,8 @@ package org.pinggu.portforu.emailing.consumer;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.pinggu.portforu.domain.jobposting.entity.JobPosting;
+import org.pinggu.portforu.domain.jobposting.service.JobPostingService;
 import org.pinggu.portforu.domain.member.entity.Member;
 import org.pinggu.portforu.domain.member.service.MemberService;
 import org.pinggu.portforu.domain.subscribe.validator.SubscribeValidator;
@@ -23,6 +25,7 @@ public class CrawlFinishNotificationListener {
     private final MailService mailService;
     private final MemberService memberService;
     private final SubscribeValidator subscribeValidator;
+    private final JobPostingService jobPostingService;
 
     @RabbitListener(queues = "crawl.complete.queue")
     public void handleCrawlFinished(@Payload Map<String, Object> message) {
@@ -35,19 +38,20 @@ public class CrawlFinishNotificationListener {
         LocalDate today = LocalDate.now();
         String todayFormatted = today.format(DateTimeFormatter.ofPattern("yyyy년 MM월 dd일"));
 
+        // 최근 채용공고 5건 조회
+        List<JobPosting> latestJobs = jobPostingService.findLatest5Postings();
+
         // 이메일 수신 동의 조회
         List<Member> members = memberService.findAllEmailSubscribedMembers();
         int sentCount = 0;
 
         for (Member member : members) {
-            if (subscribeValidator.isSubscribed(member.getId())) { // 활성 멤버십 구독자만 메일 발송
+            if (subscribeValidator.isSubscribed(member.getId())) {
                 mailService.sendNewJobPostingNotification(
                         member,
                         "[PortForU] " + todayFormatted + " 채용공고 업데이트",
-                        "안녕하세요 회원님.\n\n" +
-                                "오늘 총 " + crawledCount + " 건의 채용공고가 업데이트 되었습니다.\n" +
-                                "지금 새로운 공고를 확인해보세요.\n\n" +
-                                "감사합니다."
+                        crawledCount,
+                        latestJobs
                 );
                 sentCount++;
             }

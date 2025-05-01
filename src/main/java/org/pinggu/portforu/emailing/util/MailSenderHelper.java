@@ -48,6 +48,15 @@ public class MailSenderHelper {
     public String appendUnsubscribeLink(String originalHtml, Member member) {
         String token = member.getUnsubscribeToken();
         String unsubscribeUrl = "https://portforu.online/emails/unsubscribe?token=" + token;
-        return originalHtml + "<br><br><a href=\"" + unsubscribeUrl + "\">[구독 해지하기]</a>";
+        return originalHtml + String.format(
+                """
+                <br><br>
+                <p style="font-size:12px; color:gray;">
+                    메일 수신을 원치 않으시면 아래 버튼을 눌러주세요.<br>
+                    <a href="%s" style="color:#1a73e8; text-decoration:underline;">구독 해지하기</a>
+                </p>
+                """,
+                unsubscribeUrl
+        );
     }
 }

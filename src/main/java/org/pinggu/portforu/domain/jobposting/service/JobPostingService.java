@@ -14,6 +14,8 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+
 @Service
 @RequiredArgsConstructor
 public class JobPostingService {
@@ -81,6 +83,12 @@ public class JobPostingService {
         jobPostingRepository.delete(jobPosting);
 
         return jobPosting.getId();
+    }
+
+    @Transactional(readOnly = true)
+    public List<JobPosting> findLatest5Postings() {
+        Pageable pageable = PageRequest.of(0, 5, Sort.by(Sort.Order.desc("createdAt")));
+        return jobPostingRepository.findAll(pageable).getContent();
     }
 
 }

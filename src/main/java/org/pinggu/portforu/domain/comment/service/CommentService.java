@@ -1,6 +1,7 @@
 package org.pinggu.portforu.domain.comment.service;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.pinggu.portforu.common.dto.AuthMember;
 import org.pinggu.portforu.common.exception.CustomException;
 import org.pinggu.portforu.domain.comment.dto.request.CommentRequestDto;
@@ -22,6 +23,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 import java.util.stream.Collectors;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class CommentService {
@@ -51,6 +53,21 @@ public class CommentService {
                 .build();
 
         Comment savedComment = commentRepository.save(comment);
+
+        // 알림 발행 로직 추가
+        if (!portfolio.getMember().getId().equals(member.getId())) {
+            CommentCreatedEvent event = new CommentCreatedEvent(
+                    portfolio.getId(),
+                    savedComment.getId(),
+                    portfolio.getMember().getId(),
+                    portfolio.getMember().getEmail(),
+                    portfolio.getTitle(),
+                    requestDto.getContent()
+            );
+            commentNotificationProducer.sendCommentCreatedEvent(event);
+            log.info("[댓글 알림] 큐 발행 완료: {}", event);
+        }
+
 
         return CommentResponseDto.from(savedComment);
     }
@@ -93,34 +110,6 @@ public class CommentService {
         return comment.getId();
     }
 
-    // 알림용
-    @Transactional
-    public void createComment(AuthMember authMember, Long portfolioId, String content) {
-        Portfolio portfolio = portfolioFinder.findPortfolioById(portfolioId);
-
-        Member writer = Member.fromAuthMember(authMember);
-        Long receiverId = portfolio.getMember().getId();
-        String receiverEmail = portfolio.getMember().getEmail();    // 추가
-        String portfolioTitle = portfolio.getTitle();               // 추가
-
-        Comment comment = Comment.builder()
-                .member(writer)
-                .portfolio(portfolio)
-                .content(content)
-                .build();
-
-        commentRepository.save(comment);
-
-        CommentCreatedEvent event = new CommentCreatedEvent(
-                portfolioId,
-                comment.getId(),
-                receiverId,
-                receiverEmail,
-                portfolioTitle,
-                content
-        );
-        commentNotificationProducer.sendCommentCreatedEvent(event);
-    }
 }
 
 
