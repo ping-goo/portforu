@@ -1,5 +1,7 @@
 # PortForU - Team Ping-gu
 
+![Image](https://github.com/user-attachments/assets/919b7463-f245-4bd4-89cc-6101848486fe)
+
 ---
 
 
@@ -13,12 +15,12 @@
 - [⚒️트러블 슈팅 및 성능 개선](#트러블-슈팅-및-성능-개선)
 
 
-
+____
 
 
 
 # 👀프로젝트 소개
-____
+
 
 점점 어려워지는 취업 , 꽁꽁 얼어붙은 취업시장 위를 걸어다니는 개발자들..🫂
 
@@ -35,6 +37,7 @@ ____
 펭귄처럼 귀엽지만, 실력은 날카로운 **우리 팀 핑구(PortForU)가 나타났습니다!**
 
 
+![Image](https://github.com/user-attachments/assets/50c8999a-9873-4372-8dcc-b6d6d956d873)
 
 ## 🚒 "포트폴리오를 구해줄게!"
 
@@ -52,12 +55,12 @@ IT기업 합격 **포트폴리오를 공유**하고,
 **PortForU가 당신의 구직 여정을 함께 걷겠습니다.**
 
 
-
+-------
 
 
 # ✨주요 기능
 
--------
+
 
 <details>
   <summary> 🏢 기업별 채용공고 및 스크랩 </summary>
@@ -113,7 +116,7 @@ IT기업 합격 **포트폴리오를 공유**하고,
 
 
 
-
+------
 
 
 
@@ -122,7 +125,7 @@ IT기업 합격 **포트폴리오를 공유**하고,
 - 📆 개발 일정 : 2025.04.01 ~ 2025.05.04
 - 🐧 개발 주체 : [Team Ping-gu](#팀원-소개)
 
-------
+
 
 ### ☁️ Cloud Architecture
 
@@ -1041,11 +1044,11 @@ IT기업 합격 **포트폴리오를 공유**하고,
 </details>
 </details>
 
-
+------
 
 # 📚STACKS
 
-------
+
 
 ### 🧩 Backend - Language & Framework
 
@@ -1115,11 +1118,11 @@ IT기업 합격 **포트폴리오를 공유**하고,
 | `Zep` | ![Figma](https://img.shields.io/badge/figma-F24E1E?style=for-the-badge&logo=figma&logoColor=white) |
 
 
+------
 
 
 # 🤔기술적 의사결정
 
-------
 
 <details>
   <summary> 🧠 멤버십 구독 결제 시스템 구현 - TossPG 연동 </summary>
@@ -2756,11 +2759,11 @@ PortforU 프로젝트의 인프라는 **보안**, **확장성**, **자동화**, 
 </details>
 
 
-
+---
 
 # ⚒️트러블 슈팅 및 성능 개선
 
----
+
 <details>
   <summary> 🩹 멤버십 중복 결제 문제 </summary>
 
@@ -3117,10 +3120,11 @@ RUN apt-get install -y --no-install-recommends \
 </details>
 
 
+---------------------------
+
 
 # ❤️팀원 소개
 
----------------------------
 
 <table>
   <thead>
@@ -3132,7 +3136,10 @@ RUN apt-get install -y --no-install-recommends \
   </thead>
   <tbody>
     <tr>
-      <td>김한이 (팀 리더)</td>
+      <td>
+        <img src="https://github.com/user-attachments/assets/53a379b8-0295-4390-8548-3512cc4e8f2d" width="80"><br>  
+        김한이 (팀 리더)
+      </td>
       <td>
         🍗 Portfolio & Comment CRUD<br>
         🍗 채용공고 크롤링<br>
@@ -3148,7 +3155,10 @@ RUN apt-get install -y --no-install-recommends \
       </td>
     </tr>
     <tr>
-      <td>김유란 (부 리더)</td>
+      <td>
+        <img src="https://github.com/user-attachments/assets/50c8999a-9873-4372-8dcc-b6d6d956d873" width="80"><br>
+        김유란 (부 리더)
+      </td>
       <td>
         💎 Jobposting & Scrap CRUD<br>
         💎 소셜 로그인 구현(네이버)<br>
@@ -3166,7 +3176,10 @@ RUN apt-get install -y --no-install-recommends \
       </td>
     </tr>
     <tr>
-      <td>정청원 (팀원)</td>
+      <td>
+        <img src="https://github.com/user-attachments/assets/df3f600f-0bcb-4936-ba8c-1279f8cc2de9" width="80"><br>
+        정청원 (팀원)
+      </td>
       <td>
         ⚾️ Membership CRUD<br>
         ⚾️ 소셜 로그인 구현(카카오)<br>
@@ -3205,7 +3218,10 @@ RUN apt-get install -y --no-install-recommends \
       </td>
     </tr>
     <tr>
-      <td>문정호 (팀원)</td>
+      <td>
+        <img src="https://github.com/user-attachments/assets/9093608b-19d1-4d21-b3d2-c132a5f8edce" width="80"><br>
+        문정호 (팀원)
+      </td>
       <td>
         📖 Subscribe & Payment CRUD<br>
         📖 PG 연동<br>
@@ -3222,7 +3238,10 @@ RUN apt-get install -y --no-install-recommends \
       </td>
     </tr>
     <tr>
-      <td>김지영 (팀원)</td>
+      <td>
+        <img src="https://github.com/user-attachments/assets/ad742c32-9491-4f7e-8d82-467fa6598197" width="80"><br>
+        김지영 (팀원)
+      </td>
       <td>
         ☕️ 채용공고 크롤링<br>
         ☕️ 비동기 처리 - RabbitMQ, SMTP
