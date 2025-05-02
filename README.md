@@ -128,14 +128,19 @@ IT기업 합격 **포트폴리오를 공유**하고,
 
 
 ### ☁️ Cloud Architecture
+![Image](https://github.com/user-attachments/assets/98294961-8805-41c7-8795-3d6715bf7e8c)
 
 ### 🔗 CI/CD
+![Image](https://github.com/user-attachments/assets/547e8f68-4313-4489-97b8-fee04347e446)
 
 ### ⛓️ ERD
+<img width="1187" alt="Image" src="https://github.com/user-attachments/assets/38f930c8-b435-410f-a32d-b167df5312c4" />
 
 ### 📈 FLOW CHART
+![Image](https://github.com/user-attachments/assets/8d9e0217-0803-43f2-a7ff-01a0c9eb8819)
 
 ### 🖋️ WIRE FRAME
+<img width="893" alt="Image" src="https://github.com/user-attachments/assets/7524acf6-bc86-4143-8022-0a2b290a8ba1" />
 
 ### 🧾 API
 <details>
