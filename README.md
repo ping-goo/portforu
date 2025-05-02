@@ -1101,9 +1101,10 @@ IT기업 합격 **포트폴리오를 공유**하고,
 |:--:|:--:|:--:|:--:|
 | ![Grafana](https://img.shields.io/badge/grafana-F46800?style=for-the-badge&logo=grafana&logoColor=white) | ![Selenium](https://img.shields.io/badge/selenium-43B02A?style=for-the-badge&logo=selenium&logoColor=white) | `Jsoup` | `Kotlin Coroutines` |
 
-| OAuth | Xvfb |
-|:--:|:--:|
-| `OAuth` | `Xvfb` |
+| OAuth | Xvfb | RabbitMQ |
+|:--:|:--:|:--:|
+| `OAuth` | `Xvfb` | [![RabbitMQ](https://img.shields.io/badge/RabbitMQ-FF6600?style=for-the-badge&logo=rabbitmq&logoColor=white)](https://www.rabbitmq.com/)
+
 
 ---
 
