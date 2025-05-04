@@ -11,10 +11,19 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class RabbitMQConfig {
 
+    // 댓글 알림용 큐
     @Bean
     public Queue commentCreatedQueue() {
         return new Queue("comment-created-queue", true);
     }
+
+    // 크롤링 완료 알림용 큐
+    @Bean
+    public Queue crawlCompleteQueue() {return new Queue("crawl.complete.queue", true);}
+
+    // 채용 마감 임박 알림 큐
+    @Bean
+    public Queue jobClosingSoonQueue() {return new Queue("job.closing-soon.queue", true);}
 
     @Bean
     public MessageConverter messageConverter() {
