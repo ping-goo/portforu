@@ -24,6 +24,10 @@ repositories {
 }
 
 dependencies {
+    //prometheus
+    implementation 'org.springframework.boot:spring-boot-starter-actuator'
+    implementation 'io.micrometer:micrometer-registry-prometheus'
+
     implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
     implementation 'com.googlecode.json-simple:json-simple:1.1.1'
     implementation 'org.springframework.boot:spring-boot-starter-web'
@@ -44,8 +48,15 @@ dependencies {
     testImplementation 'org.springframework.security:spring-security-test'
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
 
+
+    // swagger
+    implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.7.0'
+
     // Redis
     implementation 'org.springframework.boot:spring-boot-starter-data-redis'
+    
+    //분산락사용을 하기위해
+    implementation 'org.redisson:redisson-spring-boot-starter:3.23.5'
 
     // aws
     implementation "org.springframework.cloud:spring-cloud-starter-aws:2.2.6.RELEASE"
@@ -60,6 +71,14 @@ dependencies {
 
     // RabbitMQ
     implementation 'org.springframework.boot:spring-boot-starter-amqp'
+
+    // elasticsearch
+    implementation 'co.elastic.clients:elasticsearch-java:8.12.1'
+    implementation 'jakarta.json:jakarta.json-api:2.1.1'
+    implementation 'org.glassfish:jakarta.json:2.0.1'
+
+    implementation 'com.fasterxml.jackson.datatype:jackson-datatype-jsr310'
+
 }
 
 tasks.named('test') {

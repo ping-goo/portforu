@@ -38,13 +38,8 @@ public interface SubscribeRepository extends JpaRepository<Subscribe, Long> {
                                 @Param("toStatus") SubscribeStatus toStatus,
                                 @Param("now") Instant now);
 
-    // 구독자 메일링용
-    @Query("""
-        SELECT s.member.email FROM Subscribe s
-        WHERE s.status = 'ACTIVE'
-        AND s.startDate <= CURRENT_TIMESTAMP
-        AND s.endDate >= CURRENT_TIMESTAMP
-        AND s.isDeleted = false
-    """)
-    List<String> findAllActiveSubscribedMemberEmails();
+    List<Subscribe> findAllByStatusAndEndDateBefore(SubscribeStatus status, Instant now);
+
+    long countByStatus(SubscribeStatus status);
+
 }

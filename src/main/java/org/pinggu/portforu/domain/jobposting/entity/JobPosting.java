@@ -1,6 +1,9 @@
 package org.pinggu.portforu.domain.jobposting.entity;
 
-import jakarta.persistence.*;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Index;
+import jakarta.persistence.Table;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
@@ -9,13 +12,17 @@ import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.Where;
 import org.pinggu.portforu.common.domain.BaseEntity;
 
-import java.time.Instant;
 import java.time.ZonedDateTime;
 
 @Getter
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@Table(name = "job_postings")
+@Table(
+        name = "job_postings",
+        indexes = {
+                @Index(name = "idx_job_posting_link", columnList = "link", unique = true)
+        }
+)
 @SQLDelete(sql = "UPDATE job_postings SET is_deleted = true WHERE id = ?")
 @Where(clause = "is_deleted = false")
 public class JobPosting extends BaseEntity {
@@ -65,6 +72,9 @@ public class JobPosting extends BaseEntity {
     @Column
     private String skills;
 
+    @Column(nullable = false)
+    private boolean indexed = false;
+
     @Builder
     public JobPosting(String title, String company, String location, String link,
                       String salary, String duty, String employmentType,
@@ -87,6 +97,7 @@ public class JobPosting extends BaseEntity {
         this.hiringStartAt     = hiringStartAt;
         this.hiringEndAt       = hiringEndAt;
         this.skills            = skills;
+        this.indexed           = false;
     }
 
     public void update(String title, String company, String location,
@@ -121,4 +132,9 @@ public class JobPosting extends BaseEntity {
         if (skills != null)
             this.skills = skills;
     }
+
+    public void markAsIndexed() {
+        this.indexed = true;
+    }
 }
+
