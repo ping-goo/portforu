@@ -2208,16 +2208,63 @@ RUN apt-get install -y --no-install-recommends \
   - 동시성 안전성과 실행 주기 조절이 쉬운 구조를 확보
 - 실시간 반영은 어렵지만, 안정성과 구현 효율성을 고려할 때 가장 적합한 방식이라 판단
 
-크롤링된 `JobPosting` 데이터가 Elasticsearch에 자동 반영되지 않던 문제는
-
-**메인 서비스 내 스케줄러 기반의 재색인 방식으로 해결**
-
 </details>
 
 <details>
   <summary> 🩹 Hibernate Lazy 로딩 오류: Kotlin getter final 문제 </summary>
 
-- 채워야함
+### [문제 상황 및 원인 분석]
+
+- Spring Boot + Kotlin + Hibernate 프로젝트 실행 시 다음과 같은 오류가 발생
+
+    ```jsx
+    org.hibernate.HibernateException: Getter methods of lazy classes cannot be final
+    ```
+
+- 이는 Hibernate가 엔티티에 대한 Lazy 프록시 객체를 생성할 수 없을 때 발생하며, 구체적으로는 다음과 같은 조건에서 문제 발생
+  - Kotlin은 기본적으로 모든 클래스, 메서드, 프로퍼티가 `final`
+  - Hibernate는 Lazy 로딩 프록시 생성을 위해 엔티티 클래스와 그 getter 메서드가 `open`(=non-final) 상태여야 함
+  - 그러나 BaseEntity는 @MappedSuperclass로 선언되어 있고, getter 메서드는 `final` 상태였음
+  - build.gradle.kts에 allOpen 및 noArg 플러그인이 설정되어 있었으나, 해당 플러그인의 기본 적용 대상은 @Entity에 한정되어 있어 @MappedSuperclass에는 적용되지 않았음
+
+---
+
+### [해결 방안]
+
+1. MappedSuperclass에 `open` 처리 강제 적용
+
+- Gradle allOpen, noArg 플러그인에 jakarta.persistence.MappedSuperclass 어노테이션을 명시적으로 추가
+- 이렇게 하면 Kotlin 컴파일러가 @MappedSuperclass가 붙은 클래스도 자동으로 `open` 처리함
+
+2. BaseEntity 클래스 내부의 프로퍼티 및 메서드에 명시적으로 `open` 키워드 추가
+
+- 컴파일 플러그인이 적용되지 않거나 미묘하게 동작하지 않는 상황까지 방지
+- Hibernate의 Lazy 로딩 대상이 될 가능성이 있는 필드는 `open`이어야 프록시 생성 가능
+
+---
+
+### [해결 방법]
+
+**build.gradle.kts** 수정
+
+```jsx
+allOpen {
+    annotation("jakarta.persistence.Entity")
+    annotation("jakarta.persistence.MappedSuperclass") // 추가
+}
+noArg {
+    annotation("jakarta.persistence.Entity")
+    annotation("jakarta.persistence.MappedSuperclass") // 추가
+}
+
+```
+
+---
+
+### [결론]
+
+- Kotlin과 Hibernate를 함께 사용할 때는 클래스 및 메서드가 기본적으로 `final`이라는 Kotlin의 특성과, Hibernate의 Lazy 프록시 생성 요구사항(`open`)이 충돌할 수 있음
+- 이는 allOpen/noArg 플러그인을 활용하여 해결할 수 있으며, @MappedSuperclass도 명시적으로 처리 대상에 포함시켜야 함을 유의해야 함
 
 </details>
 
@@ -2263,7 +2310,7 @@ RUN apt-get install -y --no-install-recommends \
       </td>
       <td>
         💎 Jobposting & Scrap CRUD<br>
-        💎 소셜 로그인 구현(네이버)<br>
+        💎 소셜 로그인 구현<br>
         💎 CI/CD 구축<br>
         💎 AWS 인프라 구축<br>
         💎 Elasticsearch
@@ -2284,7 +2331,7 @@ RUN apt-get install -y --no-install-recommends \
       </td>
       <td>
         ⚾️ Membership CRUD<br>
-        ⚾️ 소셜 로그인 구현(카카오)<br>
+        ⚾️ 소셜 로그인 구현<br>
         ⚾️ AWS S3 연동<br>
         ⚾️ Elasticsearch<br>
         ⚾️ 프론트 작업
