@@ -21,7 +21,7 @@ public class RabbitMQConfig {
         return new Jackson2JsonMessageConverter();
     }
 
-    // 🧩 컨테이너에 컨버터 주입
+    // 컨버터 주입
     @Bean
     public SimpleRabbitListenerContainerFactory rabbitListenerContainerFactory(
             ConnectionFactory connectionFactory,

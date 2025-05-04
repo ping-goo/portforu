@@ -11,7 +11,7 @@ public class CommentCreatedEvent {
     private Long postId;
     private Long commentId;
     private Long receiverMemberId;
-    private String receiverEmail;     // 추가
-    private String portfolioTitle;    // 추가
+    private String receiverEmail;
+    private String portfolioTitle;
     private String commentContent;
 }
