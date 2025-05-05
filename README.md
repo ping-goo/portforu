@@ -163,7 +163,7 @@ IT기업 합격 **포트폴리오를 공유**하고,
 
 | Spring Data JPA | Lombok | JWT |  
 |:--:|:--:|:--:|
-| ![JPA](https://img.shields.io/badge/Spring%20Data%20JPA-6DB33F?style=for-the-badge&logo=spring&logoColor=white) | ![Lombok](https://img.shields.io/badge/lombok-CA2C92?style=for-the-badge&logo=lombok&logoColor=white) | ![JWT](https://img.shields.io/badge/JWT-000000?style=for-the)
+| ![JPA](https://img.shields.io/badge/Spring%20Data%20JPA-6DB33F?style=for-the-badge&logo=spring&logoColor=white) | ![Lombok](https://img.shields.io/badge/lombok-CA2C92?style=for-the-badge&logo=lombok&logoColor=white) | ![JWT](https://img.shields.io/badge/JWT-black?style=for-the-badge&logo=JSON%20web%20tokens)
 
 
 ---
@@ -178,33 +178,33 @@ IT기업 합격 **포트폴리오를 공유**하고,
 
 ### ☁️ Infra & CI/CD
 
-| Docker | Compose | GitHub Actions | EC2 |
-|:--:|:--:|:--:|:--:|
-| ![Docker](https://img.shields.io/badge/docker-2496ED?style=for-the-badge&logo=docker&logoColor=white) | `docker-compose` | ![GitHub Actions](https://img.shields.io/badge/githubactions-2088FF?style=for-the-badge&logo=githubactions&logoColor=white) | ![EC2](https://img.shields.io/badge/amazonec2-FF9900?style=for-the-badge&logo=amazonec2&logoColor=white) |
+|                                                 Docker                                                | GitHub Actions | Ubuntu  | EC2 |
+|:-----------------------------------------------------------------------------------------------------:|:------:|:--:|:-:|
+| ![Docker](https://img.shields.io/badge/docker-2496ED?style=for-the-badge&logo=docker&logoColor=white) | ![GitHub Actions](https://img.shields.io/badge/githubactions-2088FF?style=for-the-badge&logo=githubactions&logoColor=white) | ![Ubuntu](https://img.shields.io/badge/Ubuntu-E95420?style=for-the-badge&logo=ubuntu&logoColor=white) | ![EC2](https://img.shields.io/badge/amazonec2-FF9900?style=for-the-badge&logo=amazonec2&logoColor=white) |
 
 | S3 | Route 53 | RDS | ELB |
 |:--:|:--:|:--:|:--:|
 | ![S3](https://img.shields.io/badge/amazons3-569A31?style=for-the-badge&logo=amazons3&logoColor=white) | ![Route 53](https://img.shields.io/badge/amazonroute53-8C4FFF?style=for-the-badge&logo=amazonroute53&logoColor=white) | ![RDS](https://img.shields.io/badge/amazonrds-527FFF?style=for-the-badge&logo=amazonrds&logoColor=white) | ![ELB](https://img.shields.io/badge/awselasticloadbalancing-8C4FFF?style=for-the-badge&logo=awselasticloadbalancing&logoColor=white) |
 
-| IAM |
-|:--:|
-| ![IAM](https://img.shields.io/badge/amazoniam-DD344C?style=for-the-badge&logo=amazoniam&logoColor=white) |
+| IAM |                                                   AWS Elastic Beanstalk                                                    |                                 ECR                                 |
+|:--:|:--------------------------------------------------------------------------------------------------------------------------:|:-------------------------------------------------------------------:|
+| ![IAM](https://img.shields.io/badge/amazoniam-DD344C?style=for-the-badge&logo=amazoniam&logoColor=white) |           ![AWS Elastic Beanstalk](https://img.shields.io/badge/AWSElasticBeanstalk-FF9900?style=for-the-badge)            | ![ECR](https://img.shields.io/badge/ECR-FF9900?style=for-the-badge) |
 
 ---
 
 ### 🛠️ Tools
 
-| IntelliJ | ERD Cloud | Swagger | Postman |
-|:--:|:--:|:--:|:--:|
-| ![IntelliJ](https://img.shields.io/badge/IntelliJ%20IDEA-000000?style=for-the-badge&logo=intellijidea&logoColor=white) | `ERD Cloud` | ![Swagger](https://img.shields.io/badge/swagger-85EA2D?style=for-the-badge&logo=swagger&logoColor=black) | ![Postman](https://img.shields.io/badge/postman-FF6C37?style=for-the-badge&logo=postman&logoColor=white) |
+| IntelliJ |                                               Swagger                                                    |                                                 Postman                                                  |
+|:--:|:--------------------------------------------------------------------------------------------------------:|:-----------------------------------------------:|
+| ![IntelliJ](https://img.shields.io/badge/IntelliJ%20IDEA-000000?style=for-the-badge&logo=intellijidea&logoColor=white) | ![Swagger](https://img.shields.io/badge/swagger-85EA2D?style=for-the-badge&logo=swagger&logoColor=black) | ![Postman](https://img.shields.io/badge/postman-FF6C37?style=for-the-badge&logo=postman&logoColor=white) |
 
-| Grafana | Selenium | Jsoup | Kotlin Coroutines |
-|:--:|:--:|:--:|:--:|
-| ![Grafana](https://img.shields.io/badge/grafana-F46800?style=for-the-badge&logo=grafana&logoColor=white) | ![Selenium](https://img.shields.io/badge/selenium-43B02A?style=for-the-badge&logo=selenium&logoColor=white) | `Jsoup` | `Kotlin Coroutines` |
+| Grafana | Selenium | Jsoup |                                       Kotlin Coroutines                                        |
+|:--:|:--:|:--:|:----------------------------------------------------------------------------------------------:|
+| ![Grafana](https://img.shields.io/badge/grafana-F46800?style=for-the-badge&logo=grafana&logoColor=white) | ![Selenium](https://img.shields.io/badge/selenium-43B02A?style=for-the-badge&logo=selenium&logoColor=white) | ![Jsoup](https://img.shields.io/badge/Jsoup-70b9dc?style=for-the-badge) | ![Kotlin Coroutines](https://img.shields.io/badge/KotlinCoroutines-000000?style=for-the-badge) |
 
-| OAuth | Xvfb | RabbitMQ |
-|:--:|:--:|:--:|
-| `OAuth` | `Xvfb` | [![RabbitMQ](https://img.shields.io/badge/RabbitMQ-FF6600?style=for-the-badge&logo=rabbitmq&logoColor=white)](https://www.rabbitmq.com/)
+|                                  OAuth                                  | Xvfb | RabbitMQ |
+|:-----------------------------------------------------------------------:|:---:|:--:|
+| ![OAuth](https://img.shields.io/badge/OAuth-000000?style=for-the-badge) |  ![Xvfb](https://img.shields.io/badge/Xvfb-000000?style=for-the-badge)   | [![RabbitMQ](https://img.shields.io/badge/RabbitMQ-FF6600?style=for-the-badge&logo=rabbitmq&logoColor=white)](https://www.rabbitmq.com/)
 
 
 ---
@@ -215,9 +215,9 @@ IT기업 합격 **포트폴리오를 공유**하고,
 |:--:|:--:|:--:|:--:|
 | ![Git](https://img.shields.io/badge/git-F05032?style=for-the-badge&logo=git&logoColor=white) | ![GitHub](https://img.shields.io/badge/github-181717?style=for-the-badge&logo=github&logoColor=white) | ![Slack](https://img.shields.io/badge/slack-4A154B?style=for-the-badge&logo=slack&logoColor=white) | ![Notion](https://img.shields.io/badge/notion-000000?style=for-the-badge&logo=notion&logoColor=white) |
 
-| Zep | Figma |
-|:--:|:--:|
-| `Zep` | ![Figma](https://img.shields.io/badge/figma-F24E1E?style=for-the-badge&logo=figma&logoColor=white) |
+|                                   Zep                                   | Figma |                                      ERD Cloud                                       |
+|:-----------------------------------------------------------------------:|:--:|:------------------------------------------------------------------------------------:|
+|   ![Zep](https://img.shields.io/badge/Zep-8C4FFF?style=for-the-badge)   | ![Figma](https://img.shields.io/badge/figma-F24E1E?style=for-the-badge&logo=figma&logoColor=white) | ![ERD Cloud](https://img.shields.io/badge/ERDCloud-6b73d5?style=for-the-badge) |
 
 
 ------
