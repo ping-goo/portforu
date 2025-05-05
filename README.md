@@ -60,7 +60,7 @@ IT기업 합격 **포트폴리오를 공유**하고,
 
 # ✨주요 기능
 
-
+![Image](https://github.com/user-attachments/assets/d6b686bd-a8ef-4fa2-ad6d-fc24e1e4596a)
 
 <details>
   <summary> 🏢 기업별 채용공고 및 스크랩 </summary>
@@ -74,6 +74,8 @@ IT기업 합격 **포트폴리오를 공유**하고,
 
 </details>
 
+![Image](https://github.com/user-attachments/assets/58db9c70-8040-4436-bf82-1f1a85f6119b)
+
 <details>
   <summary> 💳 멤버십 </summary>
 
@@ -81,6 +83,8 @@ IT기업 합격 **포트폴리오를 공유**하고,
 - 구독기능(toss)
 
 </details>
+
+![Image](https://github.com/user-attachments/assets/13f19b27-6708-443a-85f1-a9ace63f6722)
 
 <details>
   <summary> 💿 포트폴리오 </summary>
