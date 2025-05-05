@@ -145,13 +145,18 @@ public class SubscribeService {
                 }
                 subscribe.activate();
                 membership.decreaseQuantity(); // 락 안에서 감소
+
                 membershipRepository.save(membership);
+                subscribeRepository.save(subscribe); // 멤버십 상태변경 반영 필요
+
                 log.info("구독 활성화 완료: subscribeId={}, 상태={}", subscribeId, subscribe.getStatus());
             } else if (paymentStatus == PaymentStatus.FAILED) {
                 subscribe.fail();
+                subscribeRepository.save(subscribe); // 반영
                 log.info("구독 실패 처리됨: subscribeId={}, 상태={}", subscribeId, subscribe.getStatus());
             } else if (paymentStatus == PaymentStatus.EXPIRED) {
                 subscribe.fail();
+                subscribeRepository.save(subscribe); // 반영
                 log.info("결제 만료로 인한 구독 실패 처리됨: subscribeId={}, 상태={}", subscribeId, subscribe.getStatus());
             }
         });
