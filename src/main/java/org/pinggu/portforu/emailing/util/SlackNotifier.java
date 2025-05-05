@@ -24,10 +24,10 @@ public class SlackNotifier {
             log.warn("Slack Webhook URL이 설정되어 있지 않습니다.");
             return;
         }
-
+      
         Map<String, String> payload = new HashMap<>();
         payload.put("text", message);
-
+      
         try {
             restTemplate.postForEntity(slackWebhookUrl, payload, String.class);
 
