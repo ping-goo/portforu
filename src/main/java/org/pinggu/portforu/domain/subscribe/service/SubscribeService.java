@@ -17,6 +17,7 @@ import org.pinggu.portforu.domain.payment.service.PaymentExpireService;
 import org.pinggu.portforu.domain.payment.service.PaymentFinder;
 import org.pinggu.portforu.domain.subscribe.dto.response.SubscribeResponseDto;
 import org.pinggu.portforu.domain.subscribe.entity.Subscribe;
+import org.pinggu.portforu.domain.subscribe.enums.SubscribeStatus;
 import org.pinggu.portforu.domain.subscribe.repository.SubscribeRepository;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
@@ -101,7 +102,7 @@ public class SubscribeService {
         Member member = Member.fromAuthMember(authMember);
 
         // Id 기준 내림차순
-        List<Subscribe> subscribes = subscribeRepository.findAllByMember(member, Sort.by(Sort.Order.desc("id")));
+        List<Subscribe> subscribes = subscribeRepository.findAllByMemberAndStatus(member, SubscribeStatus.ACTIVE, Sort.by(Sort.Order.desc("id")));
         return subscribes.stream()
                 .map(subscribe -> {
                     Payment payment = paymentFinder.findBySubscribeId(subscribe.getId());
