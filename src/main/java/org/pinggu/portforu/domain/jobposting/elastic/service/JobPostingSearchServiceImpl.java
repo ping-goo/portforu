@@ -6,6 +6,9 @@ import co.elastic.clients.elasticsearch._types.query_dsl.Query;
 import co.elastic.clients.elasticsearch._types.query_dsl.TextQueryType;
 import co.elastic.clients.elasticsearch.core.SearchResponse;
 import co.elastic.clients.elasticsearch.core.search.Hit;
+import co.elastic.clients.elasticsearch.indices.AnalyzeRequest;
+import co.elastic.clients.elasticsearch.indices.AnalyzeResponse;
+import co.elastic.clients.elasticsearch.indices.analyze.AnalyzeToken;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.pinggu.portforu.domain.jobposting.elastic.document.JobPostingDocument;
@@ -13,7 +16,6 @@ import org.pinggu.portforu.domain.jobposting.entity.JobPosting;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
@@ -61,20 +63,37 @@ public class JobPostingSearchServiceImpl implements JobPostingSearchService {
         try {
             int from = page * size;
 
-            // 입력 키워드를 소문자로 변환하고, 공백 기준으로 나눔
-            String[] terms = keyword.toLowerCase().split("\\s+");
+            AnalyzeRequest analyzeRequest = AnalyzeRequest.of(a -> a
+                    .index(INDEX_NAME)
+                    .analyzer("korean")
+                    .text(keyword)
+            );
 
-            // 각 단어마다 multi_match 쿼리를 만들어 must 조건으로 추가
+            AnalyzeResponse analyzeResponse = elasticsearchClient.indices().analyze(analyzeRequest);
+
+            List<String> tokens = analyzeResponse.tokens().stream()
+                    .map(AnalyzeToken::token)
+                    .filter(token -> token.length() >= 2)
+                    .distinct()
+                    .collect(Collectors.toList());
+
+            log.info("분석된 검색 키워드: {}", tokens);
+
+            if (tokens.isEmpty()) {
+                log.warn("분석된 키워드가 없습니다. 검색 중단");
+                return Collections.emptyList();
+            }
+
             SearchResponse<JobPostingDocument> response = elasticsearchClient.search(s -> s
                             .index(INDEX_NAME)
                             .from(from)
                             .size(size)
                             .query(q -> q
                                     .bool(b -> b
-                                            .must(Arrays.stream(terms)
-                                                    .map(term -> Query.of(mq -> mq
+                                            .must(tokens.stream()
+                                                    .map(token -> Query.of(mq -> mq
                                                             .multiMatch(m -> m
-                                                                    .query(term)
+                                                                    .query(token)
                                                                     .fields("title", "company", "location", "salary", "duty",
                                                                             "employmentType", "experienceYears", "keyAbilities", "skills")
                                                                     .type(TextQueryType.PhrasePrefix)
@@ -100,6 +119,9 @@ public class JobPostingSearchServiceImpl implements JobPostingSearchService {
 
         } catch (IOException e) {
             log.error("Search failed", e);
+            return Collections.emptyList();
+        } catch (Exception e) {
+            log.error("Unexpected error during search: {}", e.getMessage(), e);
             return Collections.emptyList();
         }
     }
