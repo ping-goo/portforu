@@ -17,6 +17,7 @@ import org.pinggu.portforu.domain.payment.service.PaymentExpireService;
 import org.pinggu.portforu.domain.payment.service.PaymentFinder;
 import org.pinggu.portforu.domain.subscribe.dto.response.SubscribeResponseDto;
 import org.pinggu.portforu.domain.subscribe.entity.Subscribe;
+import org.pinggu.portforu.domain.subscribe.enums.SubscribeStatus;
 import org.pinggu.portforu.domain.subscribe.repository.SubscribeRepository;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
@@ -101,7 +102,7 @@ public class SubscribeService {
         Member member = Member.fromAuthMember(authMember);
 
         // Id 기준 내림차순
-        List<Subscribe> subscribes = subscribeRepository.findAllByMember(member, Sort.by(Sort.Order.desc("id")));
+        List<Subscribe> subscribes = subscribeRepository.findAllByMemberAndStatus(member, SubscribeStatus.ACTIVE, Sort.by(Sort.Order.desc("id")));
         return subscribes.stream()
                 .map(subscribe -> {
                     Payment payment = paymentFinder.findBySubscribeId(subscribe.getId());
@@ -145,13 +146,18 @@ public class SubscribeService {
                 }
                 subscribe.activate();
                 membership.decreaseQuantity(); // 락 안에서 감소
+
                 membershipRepository.save(membership);
+                subscribeRepository.save(subscribe); // 멤버십 상태변경 반영 필요
+
                 log.info("구독 활성화 완료: subscribeId={}, 상태={}", subscribeId, subscribe.getStatus());
             } else if (paymentStatus == PaymentStatus.FAILED) {
                 subscribe.fail();
+                subscribeRepository.save(subscribe); // 반영
                 log.info("구독 실패 처리됨: subscribeId={}, 상태={}", subscribeId, subscribe.getStatus());
             } else if (paymentStatus == PaymentStatus.EXPIRED) {
                 subscribe.fail();
+                subscribeRepository.save(subscribe); // 반영
                 log.info("결제 만료로 인한 구독 실패 처리됨: subscribeId={}, 상태={}", subscribeId, subscribe.getStatus());
             }
         });
