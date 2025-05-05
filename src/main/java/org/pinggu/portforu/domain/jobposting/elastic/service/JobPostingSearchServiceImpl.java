@@ -90,7 +90,7 @@ public class JobPostingSearchServiceImpl implements JobPostingSearchService {
                             .size(size)
                             .query(q -> q
                                     .bool(b -> b
-                                            .must(tokens.stream()
+                                            .should(tokens.stream()
                                                     .map(token -> Query.of(mq -> mq
                                                             .multiMatch(m -> m
                                                                     .query(token)
@@ -101,6 +101,7 @@ public class JobPostingSearchServiceImpl implements JobPostingSearchService {
                                                     ))
                                                     .collect(Collectors.toList())
                                             )
+                                            .minimumShouldMatch(String.valueOf(Math.max(1, tokens.size() / 2)))
                                     )
                             )
                             .sort(sort -> sort
