@@ -17,8 +17,7 @@ import java.util.Optional;
 @Repository
 public interface SubscribeRepository extends JpaRepository<Subscribe, Long> {
 
-    List<Subscribe> findAllByMember(Member member, Sort sort);
-
+    List<Subscribe> findAllByMemberAndStatus(Member member, SubscribeStatus status, Sort sort);
 
     @Query("""
         SELECT COUNT(s) > 0 FROM Subscribe s
