@@ -84,7 +84,7 @@ IT기업 합격 **포트폴리오를 공유**하고,
 
 </details>
 
-![Image](https://github.com/user-attachments/assets/13f19b27-6708-443a-85f1-a9ace63f6722)
+![Image](https://github.com/user-attachments/assets/536129ba-bb40-49d2-8d19-9a17a482b31a)
 
 <details>
   <summary> 💿 포트폴리오 </summary>
