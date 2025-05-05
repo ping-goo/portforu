@@ -132,7 +132,8 @@ IT기업 합격 **포트폴리오를 공유**하고,
 
 
 ### ☁️ Cloud Architecture
-![Image](https://github.com/user-attachments/assets/98294961-8805-41c7-8795-3d6715bf7e8c)
+![image](https://github.com/user-attachments/assets/d1ec172d-6256-4709-895b-de9bb65d40bd)
+
 
 ### 🔗 CI/CD
 ![Image](https://github.com/user-attachments/assets/547e8f68-4313-4489-97b8-fee04347e446)
