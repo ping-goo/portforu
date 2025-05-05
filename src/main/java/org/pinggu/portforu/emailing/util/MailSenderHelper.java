@@ -38,40 +38,11 @@ public class MailSenderHelper {
             messageBuilder.accept(helper, member);
 
             mailSender.send(mimeMessage);
-            String subject = helper.getMimeMessage().getSubject();
-
-            log.info("이메일 발송 완료 (HTML): to={}, subject={}", actualEmail, subject);
-
-            // ✅ 성공 알림 Slack 전송
-            slackNotifier.send(String.format("""
-            [메일 발송 성공]
-            회원 ID: %d
-            저장된 이메일: %s
-            전송 대상 이메일: %s
-            제목: %s
-            """,
-                    member.getId(),
-                    member.getEmail(),
-                    actualEmail,
-                    subject
-            ));
+            log.info("이메일 발송 완료 (HTML): to={}, subject={}", member.getEmail(), helper.getMimeMessage().getSubject());
 
         } catch (Exception e) {
-            log.error("이메일 발송 실패: to={}, error={}", actualEmail, e.getMessage(), e);
-
-            // ✅ 실패 알림 Slack 전송
-            slackNotifier.send(String.format("""
-            [메일 발송 실패]
-            회원 ID: %d
-            저장된 이메일: %s
-            전송 대상 이메일: %s
-            오류: %s
-            """,
-                    member.getId(),
-                    member.getEmail(),
-                    actualEmail,
-                    e.getMessage()
-            ));
+            log.error("이메일 발송 실패: to={}, error={}", member.getEmail(), e.getMessage(), e);
+            slackNotifier.send("[메일 발송 실패]\n수신자: " + member.getEmail() + "\n오류: " + e.getMessage());
         }
     }
 
