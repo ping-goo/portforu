@@ -10,4 +10,5 @@ public interface JobPostingRepository extends JpaRepository<JobPosting, Long> {
     Optional<JobPosting> findByLink(String link);
     boolean existsByIndexedFalse();
     List<JobPosting> findTop100ByIndexedFalse();
+    List<JobPosting> findByTitleContaining(String title);
 }
